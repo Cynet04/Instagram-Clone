@@ -296,3 +296,10 @@
 - [x] Profile: copy profile bio button
 - [x] Messages: scroll DM body to bottom on open/send
 - [x] Notifications: "Hide read" toggle (local filter)
+
+## Phase 25: New Autonomous Features (2026-11-08)
+- [ ] Post actions: "Copy post ID" (debug/support)
+- [ ] Feed: remember scroll position per view (restore on return)
+- [ ] Profile: display post location in grid/list context where useful
+- [ ] Notifications: show type filter active state
+- [ ] Settings: "Copy app build info" button
