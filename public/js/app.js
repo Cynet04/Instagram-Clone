@@ -54,6 +54,10 @@ function timeAgo(ts) {
   return `${Math.floor(h / 24)}d`;
 }
 
+function setDocumentTitle(text) {
+  document.title = text ? `${text} • Instagram Clone` : "Instagram Clone";
+}
+
 function setNavActive(view) {
   document.querySelectorAll("[data-nav-view]").forEach((b) => {
     const active = b.dataset.navView === view;
@@ -69,6 +73,8 @@ function routeHash() {
 function setView(view, opts = {}) {
   state.view = view;
   setNavActive(view);
+  const titles = { feed: "Feed", explore: "Explore", notifications: "Notifications", saved: "Saved", messages: "Messages", profile: "Profile", search: "Search" };
+  if (!opts.skipTitle) setDocumentTitle(view === "profile" && opts.username ? `@${opts.username}` : (titles[view] || ""));
   if (!opts.fromHash) {
     const next = view === "profile" && opts.username ? `#/profile/${encodeURIComponent(opts.username)}` : `#/${view}`;
     if (location.hash !== next) history.replaceState(null, "", next);
@@ -349,13 +355,15 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   if (!username) {
     if (location.hash.startsWith("#/profile/") && !opts.fromRoute) history.replaceState(null, "", "#/profile");
     el("view-profile").innerHTML = emptyState("Log in to view your profile", "Your profile and posts will appear here.");
-    setView("profile", { skipLoad: true, fromHash: opts.fromRoute });
+    setDocumentTitle("Profile");
+    setView("profile", { skipLoad: true, fromHash: opts.fromRoute, skipTitle: true });
     return;
   }
   const hash = `#/profile/${encodeURIComponent(username)}`;
   if (location.hash !== hash) history.replaceState(null, "", hash);
+  setDocumentTitle(`@${username}`);
   el("view-profile").innerHTML = loadingState("Loading profile...");
-  setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username });
+  setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username, skipTitle: true });
   try {
     const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
     let savedPosts = [];
