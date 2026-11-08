@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Clone</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-inner">
+        <button class="brand" data-view="feed" aria-label="Home">Instagram</button>
+        <input id="searchInput" class="search" placeholder="Search" />
+        <nav class="nav-actions">
+          <button data-view="feed" title="Home">⌂</button>
+          <button data-view="messages" title="Messages">✉</button>
+          <button id="newPostBtn" title="Create">＋</button>
+          <button data-view="explore" title="Explore">🧭</button>
+          <button data-view="profile" title="Profile">👤</button>
+          <button id="authBtn" class="auth-btn">Log in</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-col">
+        <section id="stories" class="stories card"></section>
+        <section id="composer" class="card composer hidden">
+          <h3>Create post</h3>
+          <form id="postForm">
+            <input type="file" name="image" accept="image/*" />
+            <input type="url" name="imageUrl" placeholder="Or image URL" />
+            <textarea name="caption" placeholder="Write a caption..." maxlength="2200"></textarea>
+            <button type="submit">Share</button>
+          </form>
+        </section>
+        <section id="view-feed"></section>
+        <section id="view-explore" class="hidden"></section>
+        <section id="view-messages" class="hidden"></section>
+        <section id="view-profile" class="hidden"></section>
+        <section id="view-search" class="hidden"></section>
+      </section>
+
+      <aside class="side-col">
+        <div id="meCard" class="card side-user"></div>
+        <div class="card side-box">
+          <h4>Suggestions For You</h4>
+          <div id="suggestions"></div>
+        </div>
+        <footer class="side-footer">Instagram Clone • Autonomous Build • Local Demo</footer>
+      </aside>
+    </main>
+
+    <dialog id="authDialog">
+      <form id="authForm" method="dialog">
+        <h3 id="authTitle">Log in</h3>
+        <input name="username" placeholder="Username" required minlength="3" />
+        <input name="name" placeholder="Name (signup)" />
+        <input name="password" type="password" placeholder="Password" required minlength="6" />
+        <div class="row">
+          <button id="authSubmit" value="default">Continue</button>
+          <button id="authToggle" type="button">Need an account?</button>
+        </div>
+        <p id="authError" class="error"></p>
+      </form>
+    </dialog>
+
+    <script src="/js/app.js" type="module"></script>
+  </body>
+</html>

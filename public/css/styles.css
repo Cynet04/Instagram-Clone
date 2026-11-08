@@ -1,0 +1,76 @@
+:root {
+  --bg: #fafafa;
+  --card: #fff;
+  --line: #dbdbdb;
+  --text: #262626;
+  --muted: #8e8e8e;
+  --blue: #0095f6;
+  --red: #ed4956;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 16px; }
+
+.nav { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 975px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 16px; }
+.brand { border: 0; background: none; font-size: 28px; font-family: "Segoe Script", "Brush Script MT", cursive; padding: 0; }
+.search { flex: 0 1 268px; margin-left: auto; background: #efefef; border: 0; border-radius: 8px; padding: 10px 14px; }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+.nav-actions button { border: 0; background: none; font-size: 20px; padding: 6px; }
+.auth-btn { font-size: 14px !important; color: var(--blue); font-weight: 600; }
+
+.layout { max-width: 975px; margin: 24px auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 630px) 320px; gap: 28px; align-items: start; }
+.stories { display: flex; gap: 14px; padding: 16px; overflow-x: auto; }
+.story { text-align: center; min-width: 66px; }
+.story img, .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #d6249f; padding: 2px; background: #fff; }
+.story span { display: block; font-size: 12px; margin-top: 4px; max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.composer { padding: 14px; }
+.composer form { display: grid; gap: 8px; }
+.composer input, .composer textarea, #authDialog input { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+.composer button, #authSubmit { background: var(--blue); color: #fff; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+
+.post-head, .post-actions, .post-likes, .post-caption, .comments, .comment-form { padding: 0 14px; }
+.post-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.post-head .avatar { width: 34px; height: 34px; border-width: 1px; }
+.post-user { font-weight: 600; font-size: 14px; }
+.post-time { color: var(--muted); font-size: 12px; margin-left: auto; }
+.post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #eee; }
+.post-actions { display: flex; gap: 10px; padding-top: 10px; }
+.post-actions button { border: 0; background: none; font-size: 22px; padding: 0; }
+.post-actions button.liked { color: var(--red); }
+.post-likes { font-weight: 600; font-size: 14px; padding-top: 6px; }
+.post-caption { padding-top: 6px; font-size: 14px; line-height: 1.4; }
+.comments { padding: 8px 14px; color: #444; font-size: 14px; }
+.comment { margin: 4px 0; }
+.comment-form { display: flex; border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 14px; gap: 8px; }
+.comment-form input { flex: 1; border: 0; outline: 0; }
+.comment-form button { border: 0; background: none; color: var(--blue); font-weight: 600; }
+
+.side-col { position: sticky; top: 84px; }
+.side-user { padding: 14px; display: flex; gap: 12px; align-items: center; }
+.side-user .meta small { color: var(--muted); display: block; }
+.side-box { padding: 14px; }
+.side-box h4 { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+.suggestion { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.suggestion .avatar { width: 32px; height: 32px; }
+.suggestion button { margin-left: auto; border: 0; background: none; color: var(--blue); font-weight: 600; }
+.side-footer { color: #c7c7c7; font-size: 12px; padding: 8px 4px; }
+
+.profile-head { padding: 20px; display: flex; gap: 24px; align-items: center; }
+.profile-head .avatar { width: 96px; height: 96px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #eee; }
+.explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+
+#authDialog { border: 1px solid var(--line); border-radius: 12px; padding: 18px; width: min(92vw, 360px); }
+#authDialog::backdrop { background: rgba(0,0,0,.45); }
+#authDialog form { display: grid; gap: 10px; }
+#authDialog .row { display: flex; gap: 8px; align-items: center; }
+#authToggle { border: 0; background: none; color: var(--blue); font-size: 13px; }
+.error { color: #c00; min-height: 1.2em; margin: 0; font-size: 13px; }
+
+@media (max-width: 900px) { .side-col { display: none; } .layout { grid-template-columns: 1fr; } .search { display: none; } }
