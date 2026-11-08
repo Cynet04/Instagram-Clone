@@ -805,3 +805,11 @@ ull user cleanly (verify) and 401 not used for polling
 otif-time uses 	imeAgo (done)
 - [ ] Server: all JSON error responses use { error } shape (verify core paths)
 - [x] Phase bump to 88
+
+## Phase 89: New Autonomous Features (2026-11-08)
+- [x] Phase 89 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: ria-label on delete includes "post"
+- [x] Comments: report/delete button labels are specific
+- [x] DM: send form button keeps accessible label
+- [x] Phase bump to 89

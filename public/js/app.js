@@ -68,7 +68,7 @@ function postHtml(p) {
         <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
+        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post">Delete</button>` : ""}
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
@@ -91,7 +91,7 @@ function postHtml(p) {
           <span>${pinned?`<strong class="muted" style="font-size:11px;margin-right:6px">Pinned</strong>`:""}<strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <span class="comment-actions">
             <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
-            ${state.me && c.user?.id === state.me.id ? `<button class="comment-edit-btn" type="button" aria-label="Edit comment">Edit</button>` : ""}${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
+            ${state.me && c.user?.id === state.me.id ? `<button class="comment-edit-btn" type="button" aria-label="Edit comment">Edit</button>` : ""}${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report this comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete this comment">Delete</button>` : ""}
           </span>
         </div>`; }).join(""); })()}</div>
       <form class="comment-form">
@@ -1050,7 +1050,7 @@ function bindPostActions(root) {
       input.value = "";
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
-        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-copy-btn" type="button" aria-label="Copy comment">Copy</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
+        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-copy-btn" type="button" aria-label="Copy comment">Copy</button><button class="comment-delete-btn" type="button" aria-label="Delete this comment">Delete</button></span></div>`;
         bindPostActions(postEl);
         refreshNotificationsBadge(); refreshDmBadge();
       } catch (err) { optimistic.remove(); input.value = text; toast(err.message, "error"); }
