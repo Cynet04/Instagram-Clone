@@ -444,3 +444,11 @@
 - [x] Settings: export button disabled while in flight
 - [x] Search: trim query before API call (already trims)
 - [x] Phase bump to 43
+
+## Phase 44: New Autonomous Features (2026-11-08)
+- [x] Phase 44 autonomous batch complete (2026-11-08)
+- [x] Post: show "Saved" state text in save button aria-label
+- [ ] Feed: retry action in error state wired (data-retry-action) � verify binding
+- [x] Profile: show "Copy username" button
+- [x] Notifications: hide button uses consistent spacing
+- [x] Phase bump to 44
