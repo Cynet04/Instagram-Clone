@@ -48,7 +48,8 @@
 - [x] Follow/unfollow (API + profile counts + follow notifications)
 - [x] Profile edit (bio/name/avatar URL, persisted via `/api/me/profile`)
 - [x] Post delete (owner-only delete, local upload cleanup, notification/save cleanup)
-- [ ] Hashtag links/search
+- [x] Hashtag links/search (caption hashtag parsing + clickable search)
+- [ ] Comment likes
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -61,4 +62,5 @@
 - 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified.
 - 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified.
 - 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified.
-- 2026-11-08: Post delete added for owners with saved/notification cleanup and local upload file removal. Server restarted and health verified. Next: hashtag links/search.
+- 2026-11-08: Post delete added for owners with saved/notification cleanup and local upload file removal. Server restarted and health verified.
+- 2026-11-08: Hashtag links/search added (caption parsing, clickable tags, hashtag-aware search API). Server restarted and health/search verified. Next: comment likes.
