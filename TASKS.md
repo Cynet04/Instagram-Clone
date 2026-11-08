@@ -564,3 +564,11 @@
 - [x] Feed: ensure refresh button not duplicated
 - [x] Settings: phase/build info uses APP_BUILD consistently (done)
 - [x] Phase bump to 58
+
+## Phase 59: New Autonomous Features (2026-11-08)
+- [x] Phase 59 autonomous batch complete (2026-11-08)
+- [x] Verification: tests pass, health OK, repo clean before batch
+- [ ] Post: ria-label on comments count includes post author context
+- [x] Profile: saved tab button hidden for non-owners (already)
+- [x] Settings: show session hint (cookie-based)
+- [x] Phase bump to 59
