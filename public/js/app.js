@@ -262,7 +262,7 @@ async function loadExplore(q = "") {
     el("view-explore").innerHTML = `<div class="card" style="padding:14px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px">
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
-        ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
+        ${query ? `<button id="clearExplore" class="mini-btn secondary" type="button" aria-label="Clear explore search">Clear</button>` : ""}
       </div>
       <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
@@ -288,7 +288,7 @@ async function loadNotifications() {
   try {
     const { notifications, unread } = await api("/api/notifications");
     updateBadge(unread);
-    el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
+    el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" type="button" aria-label="Mark all notifications as read" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
       (notifications.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
@@ -299,7 +299,14 @@ async function loadNotifications() {
           : "";
         return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}" tabindex="0" role="button" aria-label="${esc(actor)} ${esc(msg.replace(/<[^>]+>/g, ""))}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}</div>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
-    el("markReadBtn")?.addEventListener("click", async () => { const res = await api("/api/notifications/read", { method: "POST", body: "{}" }); updateBadge(res.unread ?? 0); loadNotifications(); });
+    el("markReadBtn")?.addEventListener("click", async () => {
+      try {
+        const res = await api("/api/notifications/read", { method: "POST", body: "{}" });
+        updateBadge(res.unread ?? 0);
+        toast("Notifications marked as read.");
+        loadNotifications();
+      } catch (e) { toast(e.message, "error"); }
+    });
     el("view-notifications").querySelectorAll("button[data-follow-user]").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.stopPropagation();
