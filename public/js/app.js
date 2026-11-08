@@ -77,16 +77,16 @@ function postHtml(p) {
       <div class="post-likes">${p.likesCount} likes${mine && typeof p.savesCount === "number" ? ` · ${p.savesCount} saves` : ""}</div>
       <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
       ${(p.comments||[]).length>1?`<div style="margin:0 14px 6px"><label class="muted" style="font-size:12px">Sort comments <select class="comment-sort" data-post-id="${esc(p.id)}" style="margin-left:6px;background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:2px 6px"><option value="top">Top</option><option value="newest">Newest</option><option value="oldest">Oldest</option></select></label></div>`:""}
-      <div class="comments" data-comment-sort="top">${[...(p.comments || [])].sort((a,b)=> (b.likesCount||0)-(a.likesCount||0) || (b.createdAt||0)-(a.createdAt||0)).map((c) => {
+      <div class="comments" data-comment-sort="top">${(() => { const pins=new Set(pinnedCommentIds(p.id)); const arr=[...(p.comments||[])]; arr.sort((a,b)=> (pins.has(b.id)-pins.has(a.id)) || (b.likesCount||0)-(a.likesCount||0) || (b.createdAt||0)-(a.createdAt||0)); return arr.map((c) => { const pinned=pins.has(c.id);
         const canDelete = state.me && (c.user?.id === state.me.id || mine);
         return `
-        <div class="comment" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}">
-          <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
+        <div class="comment ${pinned?"comment-pinned":""}" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}" style="${pinned?"background:var(--hover,rgba(0,0,0,.04));border-radius:8px;padding:4px 6px":""}">
+          <span>${pinned?`<strong class="muted" style="font-size:11px;margin-right:6px">Pinned</strong>`:""}<strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <span class="comment-actions">
             <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
             ${state.me && c.user?.id === state.me.id ? `<button class="comment-edit-btn" type="button" aria-label="Edit comment">Edit</button>` : ""}${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
           </span>
-        </div>`; }).join("")}</div>
+        </div>`; }).join(""); })()}</div>
       <form class="comment-form">
         <input name="text" placeholder="Add a comment..." maxlength="500" aria-label="Add a comment" ${state.me ? "" : "disabled"} />
         <button ${state.me ? "" : "disabled"}>Post</button>
