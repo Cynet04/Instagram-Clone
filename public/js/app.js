@@ -108,11 +108,16 @@ function postHtml(p) {
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
       <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
-      <div class="comments">${(p.comments || []).map((c) => `
-        <div class="comment" data-comment-id="${c.id}">
+      <div class="comments">${(p.comments || []).map((c) => {
+        const canDelete = state.me && (c.user?.id === state.me.id || mine);
+        return `
+        <div class="comment" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}">
           <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
-          <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="Like comment">Like ${c.likesCount || 0}</button>
-        </div>`).join("")}</div>
+          <span class="comment-actions">
+            <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="Like comment">Like ${c.likesCount || 0}</button>
+            ${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
+          </span>
+        </div>`; }).join("")}</div>
       <form class="comment-form">
         <input name="text" placeholder="Add a comment..." maxlength="500" ${state.me ? "" : "disabled"} />
         <button ${state.me ? "" : "disabled"}>Post</button>
@@ -419,6 +424,16 @@ function bindPostActions(root) {
           const res = await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}/like`, { method: "POST", body: "{}" });
           btn.classList.toggle("liked", res.liked);
           btn.textContent = `Like ${res.likesCount}`;
+        } catch (e) { alert(e.message); }
+      });
+    });
+    postEl.querySelectorAll(".comment-delete-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!state.me || !confirm("Delete this comment?")) return;
+        const commentId = btn.closest(".comment")?.dataset.commentId;
+        try {
+          await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}`, { method: "DELETE" });
+          btn.closest(".comment")?.remove();
         } catch (e) { alert(e.message); }
       });
     });

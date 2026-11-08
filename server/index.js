@@ -268,6 +268,23 @@ app.post("/api/posts/:id/comments", (req, res) => {
   res.json({ comment: mapComment(db, comment, me) });
 });
 
+app.delete("/api/posts/:id/comments/:commentId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  post.comments = post.comments || [];
+  const idx = post.comments.findIndex((c) => c.id === req.params.commentId);
+  if (idx < 0) return res.status(404).json({ error: "Comment not found." });
+  const comment = post.comments[idx];
+  if (comment.userId !== me.id && post.userId !== me.id) return res.status(403).json({ error: "You can only delete your own comments or comments on your post." });
+  post.comments.splice(idx, 1);
+  db.notifications = (db.notifications || []).filter((n) => !(n.postId === post.id && n.type === "comment_like" && n.text === comment.text && n.userId === comment.userId));
+  saveDb(db);
+  res.json({ ok: true });
+});
+
 app.post("/api/posts/:id/comments/:commentId/like", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);

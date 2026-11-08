@@ -57,8 +57,11 @@
 - [x] Clickable profile links on posts/comments
 - [x] Explore search/filter integration (search input filters explore grid; clear)
 - [x] Post detail/open interactions (API `/api/posts/:id`, feed/profile/explore open dialog)
-- [x] Accessibility/keyboard polish (skip link, main landmark, focus styles, dialog aria labels, Escape handling)
-- [ ] Additional autonomous features (e.g., profile deep links in URL hash, comment delete, optimistic UI, loading/empty states)
+- [x] Comment delete (owner can delete own comments or comments on own post; API + UI)
+- [ ] Profile deep links in URL hash
+- [ ] Optimistic UI updates
+- [ ] Loading/empty states
+- [ ] Additional autonomous features
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -78,4 +81,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Accessibility/keyboard polish added (skip link, main landmark, focus-visible styles, dialog aria labels, Escape-to-close). Server/client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Comment delete added (DELETE `/api/posts/:id/comments/:commentId`; comment owner or post owner can delete; UI delete action with related notification cleanup). Server/client syntax and health verified. Next: profile deep links in URL hash.
