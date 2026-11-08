@@ -344,7 +344,7 @@
 
 ## Phase 31: New Autonomous Features (2026-11-08)
 - [ ] Post: show saves count label as "save/saves" correctly
-- [ ] Feed: "No more posts" only when not loading (already) — add aria-live polite
+- [ ] Feed: "No more posts" only when not loading (already) ï¿½ add aria-live polite
 - [ ] Profile: posts stat uses same label style
 - [ ] Messages: show conversation empty state when no contacts
 - [ ] Server: include phase in /api/health as 31
