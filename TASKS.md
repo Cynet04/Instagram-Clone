@@ -771,3 +771,11 @@
 - [ ] Client: loadMe handles unauthenticated state cleanly
 - [x] Feed: duplicate post guard in append path (done)
 - [x] Phase bump to 84
+
+## Phase 85: New Autonomous Features (2026-11-08)
+- [x] Phase 85 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] DM: delete message confirm not required for MVP; keep quick
+- [ ] Post: Copy post ID available in actions (done)
+- [x] Profile: avatar dialog close button has label (done)
+- [x] Phase bump to 85
