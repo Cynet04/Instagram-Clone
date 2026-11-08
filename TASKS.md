@@ -452,3 +452,10 @@
 - [x] Profile: show "Copy username" button
 - [x] Notifications: hide button uses consistent spacing
 - [x] Phase bump to 44
+
+## Phase 45: New Autonomous Features (2026-11-08)
+- [ ] Post: report button has confirm text already — add aria-label clarity
+- [ ] Messages: show "Muted" badge in conversation list
+- [ ] Search: show @me hint in placeholder (already supports) — add aria description
+- [ ] Profile: list view shows post date
+- [ ] Phase bump to 45
