@@ -327,6 +327,22 @@ app.delete("/api/posts/:id/comments/:commentId", (req, res) => {
   res.json({ ok: true });
 });
 
+app.patch("/api/posts/:id/comments/:commentId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  const comment = (post.comments || []).find((c) => c.id === req.params.commentId);
+  if (!comment) return res.status(404).json({ error: "Comment not found." });
+  if (comment.userId !== me.id) return res.status(403).json({ error: "You can only edit your own comments." });
+  const text = String(req.body.text || "").trim().slice(0, 500);
+  if (!text) return res.status(400).json({ error: "Comment required." });
+  comment.text = text;
+  saveDb(db);
+  res.json({ comment: mapComment(db, comment, me) });
+});
+
 app.post("/api/posts/:id/comments/:commentId/report", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);

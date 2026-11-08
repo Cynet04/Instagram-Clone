@@ -83,7 +83,7 @@ function postHtml(p) {
           <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <span class="comment-actions">
             <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
-            ${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
+            ${state.me && c.user?.id === state.me.id ? `<button class="comment-edit-btn" type="button" aria-label="Edit comment">Edit</button>` : ""}${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
           </span>
         </div>`; }).join("")}</div>
       <form class="comment-form">
@@ -829,6 +829,16 @@ function bindPostActions(root) {
           btn.setAttribute("aria-label", prevLiked ? "Unlike comment" : "Like comment");
         toast(e.message, "error");
         }
+      });
+    });
+    postEl.querySelectorAll(".comment-edit-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!state.me) return openAuth();
+        const node = btn.closest(".comment"); const commentId = node?.dataset.commentId;
+        const current = (node?.querySelector("span")?.textContent || "").replace(/^[^:]*:/, "").trim() || (node?.innerText || "");
+        const next = prompt("Edit comment:", current); if (next == null) return;
+        try { const { comment } = await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}`, { method: "PATCH", body: JSON.stringify({ text: next.slice(0,500) }) }); const strong = node?.querySelector("strong.profile-link"); node.querySelector("span").innerHTML = `${strong ? strong.outerHTML : ""} ${esc(comment.text || "")}`; toast("Comment updated."); }
+        catch (e) { toast(e.message, "error"); }
       });
     });
     postEl.querySelectorAll(".comment-report-btn").forEach((btn) => {
