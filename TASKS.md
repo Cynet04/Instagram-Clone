@@ -327,3 +327,10 @@
 - [ ] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable ï¿½ show website/favicon-like label
 - [x] Explore: show empty state when no posts
 - [x] Global: improve document title on profile view
+
+## Phase 29: New Autonomous Features (2026-11-08)
+- [ ] Comments: show "Edited" only heuristic persisted (already local) — add comment count badge near form
+- [ ] Feed: show loading text for "load more" sentinel state
+- [ ] Profile: disable follow/message actions when viewing own profile edge cases (already handled)
+- [ ] Saved view: add "Back to profile" hint
+- [ ] Settings: show notifications unread count
