@@ -422,8 +422,9 @@
 - [x] Phase bump to 40
 
 ## Phase 41: New Autonomous Features (2026-11-08)
-- [ ] Feed: show "No posts match sort" is N/A (server order) — add sort hint text
-- [ ] Search: autofocus not forced; keep accessible
-- [ ] Notifications: show empty badge aria-label clarity
-- [ ] Profile: show follower/following buttons as counts only (already)
-- [ ] Phase bump to 41
+- [x] Phase 41 autonomous batch complete (2026-11-08)
+- [ ] Feed: show "No posts match sort" is N/A (server order) ï¿½ add sort hint text
+- [x] Search: autofocus not forced; keep accessible
+- [x] Notifications: show empty badge aria-label clarity
+- [x] Profile: show follower/following buttons as counts only (already)
+- [x] Phase bump to 41
