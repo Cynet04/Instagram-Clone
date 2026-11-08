@@ -588,3 +588,11 @@
 - [x] Search results: profile links announce destination
 - [x] Profile: stats buttons have descriptive labels
 - [x] Phase bump to 61
+
+## Phase 62: New Autonomous Features (2026-11-08)
+- [x] Phase 62 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Post: save/share actions announce result via toast (already)
+- [ ] Feed: #feedRefreshBtn has aria-label
+- [ ] Notifications: filter <select> label association (already has aria-label)
+- [x] Phase bump to 62
