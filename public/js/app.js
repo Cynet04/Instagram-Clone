@@ -344,11 +344,26 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
   bindPostOpen(el("view-profile"));
   el("followBtn")?.addEventListener("click", async () => {
+    const btn = el("followBtn");
+    const count = el("followersCount");
+    const prevFollowing = btn.classList.contains("secondary");
+    const prevCount = Number((count?.textContent || "0").match(/\d+/)?.[0] || 0);
+    const nextFollowing = !prevFollowing;
+    btn.classList.toggle("secondary", nextFollowing);
+    btn.textContent = nextFollowing ? "Following" : "Follow";
+    if (count) count.textContent = String(Math.max(0, prevCount + (nextFollowing ? 1 : -1)));
     try {
-      await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
-      loadProfile(user.username, tab);
+      const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
+      btn.classList.toggle("secondary", !!res.following);
+      btn.textContent = res.following ? "Following" : "Follow";
+      if (count && typeof res.followers === "number") count.textContent = String(res.followers);
       refreshNotificationsBadge();
-    } catch (e) { alert(e.message); }
+    } catch (e) {
+      btn.classList.toggle("secondary", prevFollowing);
+      btn.textContent = prevFollowing ? "Following" : "Follow";
+      if (count) count.textContent = String(prevCount);
+      alert(e.message);
+    }
   });
   el("editProfileBtn")?.addEventListener("click", () => {
     const f = el("profileEditForm");
