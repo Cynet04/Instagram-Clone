@@ -323,75 +323,80 @@ async function refreshNotificationsBadge() {
 async function loadProfile(username, tab = "posts", opts = {}) {
   if (!username) {
     if (location.hash.startsWith("#/profile/") && !opts.fromRoute) history.replaceState(null, "", "#/profile");
-    el("view-profile").innerHTML = `<div class="card" style="padding:16px">Log in to view your profile.</div>`;
+    el("view-profile").innerHTML = emptyState("Log in to view your profile", "Your profile and posts will appear here.");
     setView("profile", { skipLoad: true, fromHash: opts.fromRoute });
     return;
   }
   const hash = `#/profile/${encodeURIComponent(username)}`;
   if (location.hash !== hash) history.replaceState(null, "", hash);
-  const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
-  let savedPosts = [];
-  if (isMe && tab === "saved" && state.me) {
-    try { savedPosts = (await api("/api/saved")).posts || []; } catch {}
-  }
-  const gridPosts = tab === "saved" ? savedPosts : posts;
-  el("view-profile").innerHTML = `
-    <div class="card">
-      <div class="profile-head">
-        <img class="avatar" src="${avatar(user)}" alt="" />
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <h2 style="margin:0">${esc(user.username)}</h2>
-            ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
-            ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
-            <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link">Share</button>
-          </div>
-          <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
-          <div><strong>${esc(user.name || "")}</strong></div>
-          <div>${esc(user.bio || "")}</div>
-        </div>
-      </div>
-      ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
-    </div>
-    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
-  bindPostOpen(el("view-profile"));
-  el("followBtn")?.addEventListener("click", async () => {
-    const btn = el("followBtn");
-    const count = el("followersCount");
-    const prevFollowing = btn.classList.contains("secondary");
-    const prevCount = Number((count?.textContent || "0").match(/\d+/)?.[0] || 0);
-    const nextFollowing = !prevFollowing;
-    btn.classList.toggle("secondary", nextFollowing);
-    btn.textContent = nextFollowing ? "Following" : "Follow";
-    if (count) count.textContent = String(Math.max(0, prevCount + (nextFollowing ? 1 : -1)));
-    try {
-      const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
-      btn.classList.toggle("secondary", !!res.following);
-      btn.textContent = res.following ? "Following" : "Follow";
-      if (count && typeof res.followers === "number") count.textContent = String(res.followers);
-      refreshNotificationsBadge();
-    } catch (e) {
-      btn.classList.toggle("secondary", prevFollowing);
-      btn.textContent = prevFollowing ? "Following" : "Follow";
-      if (count) count.textContent = String(prevCount);
-      alert(e.message);
+  el("view-profile").innerHTML = loadingState("Loading profile...");
+  setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username });
+  try {
+    const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
+    let savedPosts = [];
+    if (isMe && tab === "saved" && state.me) {
+      try { savedPosts = (await api("/api/saved")).posts || []; } catch {}
     }
-  });
-  el("editProfileBtn")?.addEventListener("click", () => {
-    const f = el("profileEditForm");
-    f.name.value = state.me?.name || "";
-    f.bio.value = state.me?.bio || "";
-    f.avatar.value = state.me?.avatar || "";
-    el("profileEditError").textContent = "";
-    showDialog(el("profileEditDialog"));
-  });
-  el("shareProfileBtn")?.addEventListener("click", async () => {
-    const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
-    try { await navigator.clipboard?.writeText(url); toast("Profile link copied."); el("shareProfileBtn").textContent = "Copied"; setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500); }
-    catch { prompt("Copy profile link:", url); toast("Copy the profile link from the prompt."); }
-  });
-  el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
-  setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username: user.username });
+    const gridPosts = tab === "saved" ? savedPosts : posts;
+    el("view-profile").innerHTML = `
+      <div class="card">
+        <div class="profile-head">
+          <img class="avatar" src="${avatar(user)}" alt="${esc(user.username)} avatar" onerror="this.onerror=null;this.src='https://placehold.co/192x192/f5f5f5/737373?text=User'" />
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <h2 style="margin:0">${esc(user.username)}</h2>
+              ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
+              ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
+              <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link">Share</button>
+            </div>
+            <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
+            <div><strong>${esc(user.name || "")}</strong></div>
+            <div>${esc(user.bio || "")}</div>
+          </div>
+        </div>
+        ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
+      </div>
+      <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
+    bindPostOpen(el("view-profile"));
+    el("followBtn")?.addEventListener("click", async () => {
+      const btn = el("followBtn");
+      const count = el("followersCount");
+      const prevFollowing = btn.classList.contains("secondary");
+      const prevCount = Number((count?.textContent || "0").match(/\d+/)?.[0] || 0);
+      const nextFollowing = !prevFollowing;
+      btn.classList.toggle("secondary", nextFollowing);
+      btn.textContent = nextFollowing ? "Following" : "Follow";
+      if (count) count.textContent = String(Math.max(0, prevCount + (nextFollowing ? 1 : -1)));
+      try {
+        const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
+        btn.classList.toggle("secondary", !!res.following);
+        btn.textContent = res.following ? "Following" : "Follow";
+        if (count && typeof res.followers === "number") count.textContent = String(res.followers);
+        refreshNotificationsBadge();
+      } catch (e) {
+        btn.classList.toggle("secondary", prevFollowing);
+        btn.textContent = prevFollowing ? "Following" : "Follow";
+        if (count) count.textContent = String(prevCount);
+        toast(e.message, "error");
+      }
+    });
+    el("editProfileBtn")?.addEventListener("click", () => {
+      const f = el("profileEditForm");
+      f.name.value = state.me?.name || "";
+      f.bio.value = state.me?.bio || "";
+      f.avatar.value = state.me?.avatar || "";
+      el("profileEditError").textContent = "";
+      showDialog(el("profileEditDialog"));
+    });
+    el("shareProfileBtn")?.addEventListener("click", async () => {
+      const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
+      try { await navigator.clipboard?.writeText(url); toast("Profile link copied."); el("shareProfileBtn").textContent = "Copied"; setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500); }
+      catch { prompt("Copy profile link:", url); toast("Copy the profile link from the prompt."); }
+    });
+    el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
+  } catch (e) {
+    el("view-profile").innerHTML = errorState(e.message || "Failed to load profile.");
+  }
 }
 
 async function loadSearch(q) {

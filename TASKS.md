@@ -75,7 +75,8 @@
 - [x] Search loading/empty-state polish (search shows loading state, clearer empty users/posts results, error state)
 - [x] Post share/copy link + deep-link route (post Share copies `#/post/:id`; route opens post dialog)
 - [x] Reusable toast/status polish (toast element + share/copy feedback for post/profile links)
-- [ ] Additional autonomous features (e.g., profile post counts refresh polish, notification/profile follow-state refinements, search/profile loading refinements)
+- [x] Profile loading/error polish (profile shows loading state, clearer login/empty/error states, avatar fallback)
+- [ ] Additional autonomous features (e.g., notification/profile follow-state refinements, search/profile loading refinements, lightweight mobile nav polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -101,3 +102,4 @@
 - 2026-11-08: Search loading/empty-state polish added (search loading indicator, clearer users/posts empty results, and error handling). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post share/copy link and deep-link route added (post Share copies `#/post/:id`; hash route opens post detail dialog). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Reusable toast/status polish added (global toast UI and copy/share feedback for post/profile links). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Profile loading/error polish added (profile loading indicator, clearer login/empty/error states, avatar fallback, and toast on follow failure). Client syntax and health verified. Next: additional autonomous features.
