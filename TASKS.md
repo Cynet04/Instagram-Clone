@@ -532,3 +532,11 @@
 - [x] Profile: show "Posts/Saved" as navigation tabs with aria-controls context
 - [x] Settings: show repo/local app name consistently
 - [x] Phase bump to 54
+
+## Phase 55: New Autonomous Features (2026-11-08)
+- [x] Phase 55 autonomous batch complete (2026-11-08)
+- [x] Notifications: unread count in view header
+- [x] Post actions: "Copy post link" in detail dialog already present
+- [x] Profile: show "Following you" not supported by API; keep simple
+- [x] Messages: conversation list shows aria-selected style via class
+- [x] Phase bump to 55
