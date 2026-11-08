@@ -885,3 +885,10 @@ otif-time uses 	imeAgo (done)
 - [x] Profile: load error shows retry action
 - [x] Notifications: error state passes retry action (done)
 - [x] Phase bump to 98
+
+## Phase 99: New Autonomous Features (2026-11-08)
+- [x] Baseline green (Phase 98 follow-up fix pushed)
+- [ ] Health: include uptimeSec in /api/health
+- [ ] Client: show uptime in settings health status when present
+- [ ] Post: copy-post-id button has title
+- [ ] Phase bump to 99
