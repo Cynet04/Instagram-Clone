@@ -168,7 +168,7 @@ function postHtml(p) {
           </span>
         </div>`; }).join("")}</div>
       <form class="comment-form">
-        <input name="text" placeholder="Add a comment..." maxlength="500" ${state.me ? "" : "disabled"} />
+        <input name="text" placeholder="Add a comment..." maxlength="500" aria-label="Add a comment" ${state.me ? "" : "disabled"} />
         <button ${state.me ? "" : "disabled"}>Post</button>
       </form>
     </article>`;
