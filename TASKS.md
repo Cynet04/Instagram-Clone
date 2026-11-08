@@ -306,8 +306,16 @@
 - [x] Phase 25 autonomous batch complete (2026-11-08)
 
 ## Phase 26: New Autonomous Features (2026-11-08)
-- [ ] Post: show comment count in actions/meta
-- [ ] Feed: "Jump to first post" from back-to-top behavior enhancement
-- [ ] Profile: quick "Open in Explore" context for hashtags in bio (none) / show posts/saves labels clearly
-- [ ] Messages: disable send button while request in-flight (UI guard)
-- [ ] Notifications: persist "Hide read" state visibly
+- [x] Phase 26 autonomous batch complete (2026-11-08)
+- [x] Post: show comment count in actions/meta
+- [x] Feed: "Jump to first post" from back-to-top behavior enhancement
+- [x] Profile: quick "Open in Explore" context for hashtags in bio (none) / show posts/saves labels clearly
+- [x] Messages: disable send button while request in-flight (UI guard)
+- [x] Notifications: persist "Hide read" state visibly
+
+## Phase 27: New Autonomous Features (2026-11-08)
+- [ ] Feed: show post author avatar fallback consistently
+- [ ] Post header: relative time only on small screens logic not needed; add "· edited" already done — add location icon text
+- [ ] Profile: followers/following dialogs show empty state text
+- [ ] Search: show result counts in section headers
+- [ ] Settings: quick link to open /api/health in new tab
