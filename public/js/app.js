@@ -1041,6 +1041,17 @@ function openAuth(mode = "login") {
   showDialog(el("authDialog"));
 }
 
+function renderMe() {
+  const btn = el("authBtn");
+  if (btn) {
+    const label = btn.querySelector(".nav-label") || btn;
+    label.textContent = state.me ? "Log out" : "Log in";
+    btn.setAttribute("aria-label", state.me ? "Log out" : "Log in");
+    btn.title = state.me ? "Log out" : "Log in";
+  }
+  document.querySelectorAll('[data-nav-view="profile"]').forEach((b)=>{ b.disabled = false; });
+}
+
 async function loadMe() {
   const { user } = await api("/api/me");
   state.me = user;
