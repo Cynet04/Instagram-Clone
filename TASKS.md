@@ -103,6 +103,7 @@
 - [x] Search input/action refinements (`type="search"` + autocomplete off; search follow/view buttons have explicit aria labels)
 - [x] Sidebar profile quick-link (logged-in sidebar card opens current profile via keyboard/clickable profile link)
 - [x] Post dialog focus polish (opening post detail moves focus into dialog content)
+- [x] Story viewer keyboard polish (ArrowLeft/ArrowRight navigate stories while story dialog is open; previous disabled at start)
 - [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility/perf polish)
 
 ## Progress Log
@@ -157,6 +158,7 @@
 - 2026-11-08: Search input/action refinements added (`type="search"` + autocomplete off; search follow/view buttons include explicit aria labels/state sync). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Sidebar profile quick-link added (logged-in sidebar card opens current profile). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post dialog focus polish added (opening post detail moves focus into dialog content). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Story viewer keyboard polish added (ArrowLeft/ArrowRight navigation while story dialog open; previous disabled at start). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.

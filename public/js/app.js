@@ -990,6 +990,13 @@ document.addEventListener("keydown", (e) => {
   ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
 });
 
+document.addEventListener("keydown", (e) => {
+  const story = el("storyDialog");
+  if (!story?.open) return;
+  if (e.key === "ArrowLeft") { e.preventDefault(); if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } }
+  if (e.key === "ArrowRight") { e.preventDefault(); if (state.storyIndex < state.stories.length - 1) { state.storyIndex++; renderStory(); } else closeDialog(story); }
+});
+
 async function handleRoute() {
   const route = routeHash();
   if (!route || route === "feed") return setView("feed", { fromHash: true });
