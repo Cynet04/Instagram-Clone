@@ -106,7 +106,9 @@
 - [x] Story viewer keyboard polish (ArrowLeft/ArrowRight navigate stories while story dialog is open; previous disabled at start)
 - [x] Profile/share refinements (profile share button state guarded with element ref; copy feedback preserved)
 - [x] Story viewer/add-story accessibility polish (`Your story` button has aria label; opening story viewer focuses navigation control)
-- [ ] Additional autonomous features (e.g., small route refinements, accessibility/perf polish, DM/share refinements)
+- [x] Error recovery polish (shared error states include contextual Try again actions)
+- [x] Client robustness fix (added missing `timeAgo`/`avatar` helpers; fixed stray story keydown listener typo)
+- [ ] Additional autonomous features (e.g., share refinements, small UX refinements, perf polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
