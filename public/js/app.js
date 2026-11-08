@@ -188,6 +188,7 @@ function renderStory() {
   const s = state.stories[state.storyIndex];
   if (!s) return;
   el("storyImage").src = s.image;
+  el("storyImage").alt = `Story by ${s.user?.username || "user"}`;
   el("storyMeta").textContent = `${s.user?.username || "story"} • ${timeAgo(s.createdAt)}`;
 }
 

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -112,15 +112,13 @@
       </form>
     </dialog>
 
-    <dialog id="storyDialog" class="story-dialog">
-      <div class="story-view">
-        <button id="storyPrev" type="button" aria-label="Previous">â€¹</button>
-        <div class="story-frame">
-          <div id="storyMeta" class="story-meta"></div>
-          <img id="storyImage" alt="Story" />
-        </div>
-        <button id="storyNext" type="button" aria-label="Next">â€º</button>
-        <button id="storyClose" type="button" class="story-close" aria-label="Close">Ã—</button>
+    <dialog id="storyDialog" class="story-dialog" aria-label="Story viewer">
+      <button id="storyClose" type="button" class="story-close" aria-label="Close story">x</button>
+      <img id="storyImage" class="story-image" alt="Story image" />
+      <div id="storyMeta" class="story-meta"></div>
+      <div class="story-nav">
+        <button id="storyPrev" type="button" aria-label="Previous story">Prev</button>
+        <button id="storyNext" type="button" aria-label="Next story">Next</button>
       </div>
     </dialog>
 
