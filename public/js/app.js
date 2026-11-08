@@ -1,4 +1,4 @@
-const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false } };
+const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false }, dm: { userId: null } };
 
 const el = (id) => document.getElementById(id);
 const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search"];
@@ -222,8 +222,39 @@ async function loadSearch(q) {
   setView("search");
 }
 
-function renderMessages() {
-  el("view-messages").innerHTML = `<div class="card" style="padding:16px"><h3 style="margin-top:0">Messages</h3><p>Direct messaging UI scaffolded for Phase 7. Chat persistence will be added in the next autonomous phases.</p><div style="border:1px solid var(--line);border-radius:8px;padding:12px;min-height:180px;color:var(--muted)">Select a conversation to start messaging.</div></div>`;
+async function renderMessages() {
+  if (!state.me) { el("view-messages").innerHTML = `<div class="card" style="padding:16px">Log in to use messages.</div>`; return; }
+  try {
+    const { conversations, contacts } = await api("/api/messages/conversations");
+    const list = [...conversations];
+    for (const c of contacts || []) if (!list.some((x) => x.user?.id === c.id)) list.push({ user: c, last: null });
+    if (!state.dm.userId && list[0]?.user?.id) state.dm.userId = list[0].user.id;
+    const active = list.find((x) => x.user?.id === state.dm.userId)?.user || null;
+    const thread = active ? await api(`/api/messages/${active.id}`) : { messages: [] };
+    el("view-messages").innerHTML = `<div class="card dm">
+      <div class="dm-list">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
+        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
+      </div>
+      <div class="dm-chat">
+        <div class="dm-head">${active ? esc(active.username) : "Select a conversation"}</div>
+        <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}">${esc(m.text)}</div>`).join("") || `<div style="color:var(--muted)">No messages yet.</div>`}</div>
+        ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" /><button>Send</button></form>` : ``}
+      </div>
+    </div>`;
+    el("view-messages").querySelectorAll("[data-dm]").forEach((n) => n.onclick = () => { state.dm.userId = n.dataset.dm; renderMessages(); });
+    el("dmForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = e.currentTarget.querySelector("input[name=text]");
+      const text = input.value.trim();
+      if (!text || !state.dm.userId) return;
+      await api(`/api/messages/${state.dm.userId}`, { method: "POST", body: JSON.stringify({ text }) });
+      input.value = "";
+      renderMessages();
+    });
+    const body = el("view-messages").querySelector(".dm-body");
+    if (body) body.scrollTop = body.scrollHeight;
+  } catch (e) { el("view-messages").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
 }
 
 function bindPostActions(root) {

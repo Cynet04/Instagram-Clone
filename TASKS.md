@@ -43,7 +43,7 @@
 - [x] Notifications (like/comment events, list, unread badge, mark-read)
 - [x] Infinite scroll / pagination (feed offset/limit + intersection observer)
 - [x] CSS image filters (selectable on upload, rendered in feed/explore)
-- [ ] Real-time-ish message persistence UI
+- [x] Real-time-ish message persistence UI (conversations, thread view, send)
 - [ ] Story viewer modal
 - [ ] Follow/unfollow
 - [ ] Profile edit (bio/avatar)
@@ -54,4 +54,5 @@
 - 2026-11-08: Phase 9 started — dark mode toggle added; nav encoding normalized; server health verified.
 - 2026-11-08: Bookmarks/saved posts added (per-user save API, saved view, feed save state).
 - 2026-11-08: Notifications added for likes/comments with unread badge and mark-read. Server restarted and health verified.
-- 2026-11-08: Feed pagination/infinite scroll and CSS image filters added (upload filter select, feed/explore rendering, `/api/feed` offset/limit/hasMore). Server restarted and API verified. Next: message persistence UI.
+- 2026-11-08: Feed pagination/infinite scroll and CSS image filters added. Server restarted and API verified.
+- 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified. Next: story viewer modal.

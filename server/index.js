@@ -245,6 +245,50 @@ app.post("/api/notifications/read", (req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/api/messages/conversations", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const mine = (db.messages || []).filter((m) => m.from === me.id || m.to === me.id);
+  const map = new Map();
+  for (const m of mine) {
+    const otherId = m.from === me.id ? m.to : m.from;
+    const prev = map.get(otherId);
+    if (!prev || m.createdAt > prev.createdAt) map.set(otherId, m);
+  }
+  const conversations = [...map.entries()].map(([userId, last]) => ({
+    user: safeUser(db.users.find((u) => u.id === userId)),
+    last: { ...last, fromUser: safeUser(db.users.find((u) => u.id === last.from)) }
+  })).filter((c) => c.user).sort((a, b) => b.last.createdAt - a.last.createdAt);
+  const contacts = db.users.filter((u) => u.id !== me.id).map(safeUser);
+  res.json({ conversations, contacts });
+});
+
+app.get("/api/messages/:userId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const other = db.users.find((u) => u.id === req.params.userId);
+  if (!other) return res.status(404).json({ error: "User not found." });
+  const messages = (db.messages || []).filter((m) => (m.from === me.id && m.to === other.id) || (m.from === other.id && m.to === me.id)).sort((a, b) => a.createdAt - b.createdAt).map((m) => ({ ...m, fromUser: safeUser(db.users.find((u) => u.id === m.from)) }));
+  res.json({ user: safeUser(other), messages });
+});
+
+app.post("/api/messages/:userId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const other = db.users.find((u) => u.id === req.params.userId);
+  if (!other) return res.status(404).json({ error: "User not found." });
+  const text = String(req.body.text || "").trim();
+  if (!text) return res.status(400).json({ error: "Message required." });
+  const msg = { id: nanoid(10), from: me.id, to: other.id, text: text.slice(0, 1000), createdAt: Date.now() };
+  db.messages = db.messages || [];
+  db.messages.push(msg);
+  saveDb(db);
+  res.json({ message: { ...msg, fromUser: safeUser(me) } });
+});
+
 app.get("/api/stories", (req, res) => {
   const db = loadDb();
   const stories = [...db.stories].sort((a, b) => b.createdAt - a.createdAt).map((s) => ({ ...s, user: safeUser(db.users.find((u) => u.id === s.userId)) }));

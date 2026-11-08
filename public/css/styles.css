@@ -38,6 +38,19 @@ button { cursor: pointer; }
 .notif { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: start; }
 .notif:last-child { border-bottom: 0; }
 .notif.unread { background: rgba(0,149,246,.08); }
+.dm { display: grid; grid-template-columns: 260px 1fr; min-height: 420px; }
+.dm-list { border-right: 1px solid var(--line); }
+.dm-item { padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.dm-item.active { background: rgba(0,149,246,.08); }
+.dm-chat { display: flex; flex-direction: column; }
+.dm-head { padding: 12px 14px; border-bottom: 1px solid var(--line); font-weight: 600; }
+.dm-body { flex: 1; padding: 14px; overflow: auto; display: flex; flex-direction: column; gap: 8px; }
+.dm-msg { max-width: 75%; padding: 8px 12px; border-radius: 18px; background: var(--input); }
+.dm-msg.me { align-self: flex-end; background: var(--blue); color: #fff; }
+.dm-form { display: flex; gap: 8px; border-top: 1px solid var(--line); padding: 10px; }
+.dm-form input { flex: 1; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--card); color: var(--text); }
+.dm-form button { border: 0; background: var(--blue); color: #fff; border-radius: 999px; padding: 0 14px; font-weight: 600; }
+@media (max-width: 700px) { .dm { grid-template-columns: 1fr; } .dm-list { border-right: 0; border-bottom: 1px solid var(--line); } }
 
 .layout { max-width: 975px; margin: 24px auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 630px) 320px; gap: 28px; align-items: start; }
 .stories { display: flex; gap: 14px; padding: 16px; overflow-x: auto; }
