@@ -925,3 +925,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Client: settings diagnostics include userAgent (short)
 - [ ] Profile: "Copy @" button has 	itle
 - [x] Phase bump to 103
+
+## Phase 104: New Autonomous Features (2026-11-08)
+- [x] Phase 104 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 103)
+- [ ] Post: Comment button has 	itle
+- [ ] Profile: Block button has 	itle when present
+- [ ] Notifications: follow button in notifications has ria-label
+- [x] Phase bump to 104
