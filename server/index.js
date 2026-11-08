@@ -47,7 +47,7 @@ function loadDb() {
     return db;
   }
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
-  db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [], following: Array.isArray(u.following) ? u.following : [] }));
+  db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [], following: Array.isArray(u.following) ? u.following : [], blocked: Array.isArray(u.blocked) ? u.blocked : [] }));
   db.posts = (db.posts || []).map((p) => ({
     ...p,
     filter: p.filter || "none",
@@ -162,14 +162,13 @@ function mapPost(db, p, me) {
 app.get("/api/feed", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
-  const offset = Math.max(0, Number(req.query.offset || 0));
-  const limit = Math.min(50, Math.max(1, Number(req.query.limit || 10)));
-  const all = [...db.posts].sort((a, b) => b.createdAt - a.createdAt);
-  const slice = all.slice(offset, offset + limit);
-  const posts = slice.map((p) => mapPost(db, p, me));
-  res.json({ posts, offset, limit, total: all.length, hasMore: offset + slice.length < all.length });
+  const blocked = new Set([...(me?.blocked || []), ...db.users.filter((u) => (u.blocked || []).includes(me?.id)).map((u)=>u.id)].filter(Boolean));
+  const offset = Math.max(0, Number(req.query.offset) || 0);
+  const limit = Math.min(20, Math.max(1, Number(req.query.limit) || 5));
+  const all = [...db.posts].filter((p)=>!blocked.has(p.userId)).sort((a, b) => b.createdAt - a.createdAt);
+  const posts = all.slice(offset, offset + limit).map((p) => mapPost(db, p, me));
+  res.json({ posts, nextOffset: offset + posts.length, hasMore: offset + posts.length < all.length, total: all.length });
 });
-
 app.get("/api/posts/:id", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
@@ -527,6 +526,26 @@ app.get("/api/users/:username", (req, res) => {
   res.json({ user: safeUser(user), posts, followers, following, followersList: followersList.map(safeUser), followingList: followingList.map(safeUser), isFollowing, isMe: !!me && me.id === user.id });
 });
 
+
+app.post("/api/users/:username/block", (req, res) => {
+  const db = loadDb();
+  const meUser = currentUser(req, db);
+  if (!meUser) return res.status(401).json({ error: "Login required." });
+  const me = db.users.find((u) => u.id === meUser.id);
+  const target = db.users.find((u) => u.username.toLowerCase() === req.params.username.toLowerCase());
+  if (!me || !target) return res.status(404).json({ error: "User not found." });
+  if (target.id === me.id) return res.status(400).json({ error: "Cannot block yourself." });
+  me.blocked = Array.isArray(me.blocked) ? me.blocked : [];
+  target.following = Array.isArray(target.following) ? target.following : [];
+  me.following = Array.isArray(me.following) ? me.following : [];
+  const i = me.blocked.indexOf(target.id);
+  let blocked;
+  if (i >= 0) { me.blocked.splice(i, 1); blocked = false; }
+  else { me.blocked.push(target.id); blocked = true; me.following = me.following.filter((id) => id !== target.id); target.following = target.following.filter((id) => id !== me.id); }
+  saveDb(db);
+  res.json({ blocked });
+});
+
 app.post("/api/users/:username/follow", (req, res) => {
   const db = loadDb();
   const meUser = currentUser(req, db);
@@ -546,23 +565,24 @@ app.post("/api/users/:username/follow", (req, res) => {
 });
 
 app.get("/api/search", (req, res) => {
-  const qRaw = String(req.query.q || "").trim();
-  const q = qRaw.toLowerCase();
   const db = loadDb();
   const me = currentUser(req, db);
+  const blocked = new Set([...(me?.blocked || []), ...db.users.filter((u) => (u.blocked || []).includes(me?.id)).map((u)=>u.id)].filter(Boolean));
+  const qRaw = String(req.query.q || "").trim();
+  const q = qRaw.toLowerCase();
   const saved = new Set(me?.saved || []);
   if (!q) return res.json({ users: [], posts: [], q: qRaw });
-  const users = db.users.filter((u) => u.username.toLowerCase().includes(q.replace(/^#/, "")) || (u.name || "").toLowerCase().includes(q)).map((u) => {
+  const users = db.users.filter((u) => !blocked.has(u.id) && ( u.username.toLowerCase().includes(q.replace(/^#/, "")) || (u.name || "").toLowerCase().includes(q))).map((u) => {
     const s = safeUser(u);
     const followers = db.users.filter((x) => (x.following || []).includes(u.id)).length;
     const isFollowing = me ? (me.following || []).includes(u.id) : false;
     return { ...s, followers, isFollowing, isMe: !!me && me.id === u.id };
   });
-  const posts = db.posts.filter((p) => {
+  const posts = db.posts.filter((p) => !blocked.has(p.userId) && (() => {
     const cap = String(p.caption || "").toLowerCase();
     if (q.startsWith("#")) return cap.includes(q);
     return cap.includes(q) || (p.filter || "").toLowerCase().includes(q);
-  }).map((p) => ({
+  })()).map((p) => ({
     ...p,
     user: safeUser(db.users.find((u) => u.id === p.userId)),
     likesCount: p.likes.length,
