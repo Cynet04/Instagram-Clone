@@ -1,7 +1,8 @@
-const state = { me: null, view: "feed", authMode: "login" };
+const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false } };
 
 const el = (id) => document.getElementById(id);
 const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search"];
+let feedObserver;
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { "Content-Type": "application/json" }, credentials: "same-origin", ...opts });
@@ -32,6 +33,7 @@ function setView(view) {
   for (const v of views) el(`view-${v}`)?.classList.toggle("hidden", v !== view);
   el("stories").classList.toggle("hidden", view !== "feed");
   el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
+  el("feedSentinel")?.classList.toggle("hidden", view !== "feed");
   if (view === "feed") loadFeed();
   if (view === "explore") loadExplore();
   if (view === "notifications") loadNotifications();
@@ -67,6 +69,7 @@ function renderSuggestions(users = []) {
 }
 
 function postHtml(p) {
+  const filter = esc(p.filter || "none");
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
@@ -74,7 +77,7 @@ function postHtml(p) {
         <span class="post-user">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
       </div>
-      <img class="post-image" src="${esc(p.image)}" alt="post" loading="lazy" />
+      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">Comment</button>
@@ -98,16 +101,56 @@ async function loadStories() {
     <div class="story"><img src="${avatar(u)}" alt="" /><span>${esc(u.username)}</span></div>`).join("") || `<div class="story"><span>No stories</span></div>`;
 }
 
-async function loadFeed() {
-  const [{ posts }, search] = await Promise.all([api("/api/feed"), api("/api/search?q=a")]);
-  el("view-feed").innerHTML = posts.map(postHtml).join("") || `<div class="card" style="padding:16px">No posts yet.</div>`;
-  bindPostActions(el("view-feed"));
-  renderSuggestions(search.users || []);
+async function loadFeed(reset = true) {
+  if (state.feed.loading) return;
+  if (reset) {
+    state.feed.offset = 0;
+    state.feed.hasMore = true;
+    el("view-feed").innerHTML = "";
+  }
+  if (!state.feed.hasMore) return;
+  state.feed.loading = true;
+  const statusId = "feedStatus";
+  el(statusId)?.remove();
+  el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status">Loading...</div>`);
+  try {
+    const [feed, search] = await Promise.all([
+      api(`/api/feed?offset=${state.feed.offset}&limit=${state.feed.limit}`),
+      state.feed.offset === 0 ? api("/api/search?q=a") : Promise.resolve({ users: [] })
+    ]);
+    el(statusId)?.remove();
+    if (state.feed.offset === 0) renderSuggestions(search.users || []);
+    const html = (feed.posts || []).map(postHtml).join("");
+    const wrap = document.createElement("div");
+    wrap.innerHTML = html;
+    bindPostActions(wrap);
+    while (wrap.firstChild) el("view-feed").appendChild(wrap.firstChild);
+    state.feed.offset += (feed.posts || []).length;
+    state.feed.hasMore = !!feed.hasMore;
+    if (!el("view-feed").children.length) el("view-feed").innerHTML = `<div class="card" style="padding:16px">No posts yet.</div>`;
+    el("feedSentinel").classList.toggle("hidden", state.view !== "feed");
+    if (!state.feed.hasMore) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">You're all caught up.</div>`);
+  } catch (e) {
+    el(statusId)?.remove();
+    if (!el("view-feed").children.length) el("view-feed").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`;
+  } finally {
+    state.feed.loading = false;
+  }
+}
+
+function setupFeedObserver() {
+  const sentinel = el("feedSentinel");
+  if (!sentinel) return;
+  feedObserver?.disconnect();
+  feedObserver = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting) && state.view === "feed") loadFeed(false);
+  }, { rootMargin: "300px" });
+  feedObserver.observe(sentinel);
 }
 
 async function loadExplore() {
-  const { posts } = await api("/api/feed");
-  el("view-explore").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Explore</h3><div class="explore-grid">${posts.map((p) => `<img src="${esc(p.image)}" alt="" loading="lazy" />`).join("")}</div></div>`;
+  const { posts } = await api("/api/feed?offset=0&limit=30");
+  el("view-explore").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Explore</h3><div class="explore-grid">${(posts || []).map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("")}</div></div>`;
 }
 
 async function loadSaved() {
@@ -212,7 +255,7 @@ function bindPostActions(root) {
       try {
         await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
         input.value = "";
-        if (state.view === "saved") loadSaved(); else loadFeed();
+        if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "search") {/* keep */} else loadFeed(true);
         refreshNotificationsBadge();
       } catch (err) { alert(err.message); }
     });
@@ -264,7 +307,7 @@ el("postForm").addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "Upload failed");
     e.currentTarget.reset();
     el("composer").classList.add("hidden");
-    await loadFeed();
+    await loadFeed(true);
   } catch (err) { alert(err.message); }
 });
 
@@ -280,6 +323,7 @@ el("themeBtn")?.addEventListener("click", () => {
   el("themeBtn").textContent = dark ? "Light" : "Dark";
 });
 applyTheme();
+setupFeedObserver();
 
 await loadMe();
 await loadStories();

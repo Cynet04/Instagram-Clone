@@ -48,7 +48,7 @@ function loadDb() {
   }
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
   db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [] }));
-  db.posts = db.posts || [];
+  db.posts = (db.posts || []).map((p) => ({ ...p, filter: p.filter || "none" }));
   db.stories = db.stories || [];
   db.messages = db.messages || [];
   db.notifications = db.notifications || [];
@@ -129,7 +129,11 @@ app.get("/api/feed", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
   const saved = new Set(me?.saved || []);
-  const posts = [...db.posts].sort((a, b) => b.createdAt - a.createdAt).map((p) => {
+  const offset = Math.max(0, Number(req.query.offset || 0));
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit || 10)));
+  const all = [...db.posts].sort((a, b) => b.createdAt - a.createdAt);
+  const slice = all.slice(offset, offset + limit);
+  const posts = slice.map((p) => {
     const user = db.users.find((u) => u.id === p.userId);
     return {
       ...p,
@@ -140,7 +144,7 @@ app.get("/api/feed", (req, res) => {
       comments: p.comments.map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
     };
   });
-  res.json({ posts });
+  res.json({ posts, offset, limit, total: all.length, hasMore: offset + slice.length < all.length });
 });
 
 app.post("/api/posts", upload.single("image"), (req, res) => {
@@ -149,10 +153,11 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   if (!me) return res.status(401).json({ error: "Login required." });
   const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
   if (!image) return res.status(400).json({ error: "Image required." });
-  const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), createdAt: Date.now(), likes: [], comments: [] };
+  const filter = String(req.body.filter || "none").slice(0, 40);
+  const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), filter, createdAt: Date.now(), likes: [], comments: [] };
   db.posts.unshift(post);
   saveDb(db);
-  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false } });
+  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false } });
 });
 
 app.post("/api/posts/:id/like", (req, res) => {

@@ -33,11 +33,24 @@
           <form id="postForm">
             <input type="file" name="image" accept="image/*" />
             <input type="url" name="imageUrl" placeholder="Or image URL" />
+            <select name="filter" aria-label="Image filter">
+              <option value="none">Filter: None</option>
+              <option value="clarendon">Clarendon</option>
+              <option value="gingham">Gingham</option>
+              <option value="moon">Moon</option>
+              <option value="lark">Lark</option>
+              <option value="reyes">Reyes</option>
+              <option value="juno">Juno</option>
+              <option value="slumber">Slumber</option>
+              <option value="aden">Aden</option>
+              <option value="perpetua">Perpetua</option>
+            </select>
             <textarea name="caption" placeholder="Write a caption..." maxlength="2200"></textarea>
             <button type="submit">Share</button>
           </form>
         </section>
         <section id="view-feed"></section>
+        <div id="feedSentinel" class="feed-sentinel hidden" aria-hidden="true"></div>
         <section id="view-explore" class="hidden"></section>
         <section id="view-notifications" class="hidden"></section>
         <section id="view-saved" class="hidden"></section>

@@ -56,6 +56,18 @@ button { cursor: pointer; }
 .post-user { font-weight: 600; font-size: 14px; }
 .post-time { color: var(--muted); font-size: 12px; margin-left: auto; }
 .post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; }
+.filter-none { filter: none; }
+.filter-clarendon { filter: contrast(1.2) saturate(1.35); }
+.filter-gingham { filter: brightness(1.05) hue-rotate(-10deg); }
+.filter-moon { filter: grayscale(1) contrast(1.1) brightness(1.1); }
+.filter-lark { filter: contrast(.9) saturate(1.1) brightness(1.1); }
+.filter-reyes { filter: sepia(.22) brightness(1.1) contrast(.85) saturate(.75); }
+.filter-juno { filter: contrast(1.15) saturate(1.8); }
+.filter-slumber { filter: saturate(.66) brightness(1.05) sepia(.2); }
+.filter-aden { filter: hue-rotate(-20deg) contrast(.9) saturate(.85) brightness(1.2); }
+.filter-perpetua { filter: contrast(1.1) saturate(1.1) brightness(1.05); }
+.feed-sentinel { height: 1px; }
+.feed-status { text-align: center; color: var(--muted); padding: 12px; font-size: 14px; }
 .post-actions { display: flex; gap: 10px; padding-top: 10px; }
 .post-actions button { border: 0; background: none; font-size: 14px; padding: 0; color: var(--text); font-weight: 600; }
 .post-actions button.saved { color: var(--text); text-decoration: underline; }
