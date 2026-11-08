@@ -124,7 +124,7 @@ async function renderSuggestions(users = []) {
   el("suggestions").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
   el("suggestions").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
     if (!state.me) return openAuth();
-    try { await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" }); loadFeed(true); refreshNotificationsBadge(); } catch (e) { alert(e.message); }
+    try { await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" }); toast("Follow updated."); loadFeed(true); refreshNotificationsBadge(); } catch (e) { toast(e.message, "error"); }
   });
 }
 
@@ -505,7 +505,7 @@ function bindPostOpen(root) {
         el("postDialogBody").innerHTML = postHtml(post);
         bindPostActions(el("postDialogBody"));
         showDialog(el("postDialog"));
-      } catch (err) { alert(err.message); }
+      } catch (err) { toast(err.message, "error"); }
     };
     img.addEventListener("click", open);
     img.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
@@ -532,7 +532,7 @@ function bindPostActions(root) {
       try {
         await api(`/api/posts/${postEl.dataset.id}`, { method: "DELETE" });
         if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
-      } catch (e) { alert(e.message); }
+      } catch (e) { toast(e.message, "error"); }
     });
     postEl.querySelector(".like-btn")?.addEventListener("click", async () => {
       if (!state.me) return openAuth();
@@ -550,7 +550,7 @@ function bindPostActions(root) {
       } catch (e) {
         btn.classList.toggle("liked", prevLiked);
         likesEl.textContent = `${prevCount} likes`;
-        alert(e.message);
+        toast(e.message, "error");
       }
     });
     postEl.querySelector(".save-btn")?.addEventListener("click", async () => {
@@ -571,7 +571,7 @@ function bindPostActions(root) {
         btn.classList.toggle("saved", prevSaved);
         btn.textContent = prevSaved ? "Saved" : "Save";
         postEl.style.opacity = "";
-        alert(e.message);
+        toast(e.message, "error");
       }
     });
     postEl.querySelectorAll(".comment-like-btn").forEach((btn) => {
@@ -590,7 +590,7 @@ function bindPostActions(root) {
         } catch (e) {
           btn.classList.toggle("liked", prevLiked);
           btn.textContent = `Like ${prevCount}`;
-          alert(e.message);
+        toast(e.message, "error");
         }
       });
     });
@@ -603,7 +603,7 @@ function bindPostActions(root) {
         try {
           await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}`, { method: "DELETE" });
           node?.remove();
-        } catch (e) { if (node) node.style.opacity = ""; alert(e.message); }
+        } catch (e) { if (node) node.style.opacity = ""; toast(e.message, "error"); }
       });
     });
     postEl.querySelector(".comment-form")?.addEventListener("submit", async (e) => {
@@ -626,7 +626,7 @@ function bindPostActions(root) {
         optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
         bindPostActions(postEl);
         refreshNotificationsBadge();
-      } catch (err) { optimistic.remove(); input.value = text; alert(err.message); }
+      } catch (err) { optimistic.remove(); input.value = text; toast(err.message, "error"); }
     });
   });
 }
@@ -732,7 +732,7 @@ el("storyForm")?.addEventListener("submit", async (e) => {
     e.currentTarget.reset();
     el("storyCreator").classList.add("hidden");
     await loadStories();
-  } catch (err) { alert(err.message); }
+  } catch (err) { toast(err.message, "error"); }
 });
 el("profileEditForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -801,7 +801,7 @@ async function handleRoute() {
       el("postDialogBody").innerHTML = postHtml(post);
       bindPostActions(el("postDialogBody"));
       showDialog(el("postDialog"));
-    } catch (e) { alert(e.message); }
+    } catch (e) { toast(e.message, "error"); }
     return;
   }
   if (views.includes(route)) return setView(route, { fromHash: true });

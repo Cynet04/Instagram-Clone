@@ -109,3 +109,4 @@
 - 2026-11-08: Notification read-state refinements added (`/api/notifications/read` supports per-notification IDs and returns unread; UI marks opened notifications read, syncs badge, uses toast errors). Server/client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor a11y/composer polish added (`aria-current` nav active state, `aria-busy` loading cards, caption character count, post-share toast). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.
