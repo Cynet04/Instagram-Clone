@@ -829,3 +829,11 @@ otif-time uses 	imeAgo (done)
 - [ ] Client: pi() already throws on non-ok
 - [ ] UI: ensure all dialogs have ria-modal where supported (already)
 - [x] Phase bump to 91
+
+## Phase 92: New Autonomous Features (2026-11-08)
+- [x] Phase 92 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Feed: iew button in post actions has 	itle
+- [x] Messages: DM item avatar not present; keep compact
+- [x] Profile: "Joined" uses locale date (done)
+- [x] Phase bump to 92
