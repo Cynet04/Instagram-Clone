@@ -266,8 +266,8 @@
 
 ## Phase 17: New Autonomous Features (2026-11-08)
 - [x] Fix: restore missing `renderMe()` (login ReferenceError)
-- [ ] Post share count (local/client interaction feedback)
-- [ ] Profile "Joined" placeholder/date if available
-- [ ] DM conversation list last message preview truncation polish
+- [x] Post share count (local/client interaction feedback)
+- [x] Profile "Joined" placeholder/date if available
+- [x] DM conversation list last message preview truncation polish
 - [ ] Composer image URL load error inline message
 - [ ] Search result avatars consistent sizing/fallback
