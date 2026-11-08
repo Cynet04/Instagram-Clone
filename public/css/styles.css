@@ -90,6 +90,8 @@ button { cursor: pointer; }
 .post-dialog .card { margin: 0; max-height: 88vh; overflow: auto; }
 .post-dialog .story-close { top: 8px; right: 8px; }
 .post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; cursor: pointer; }
+.post-image:hover { filter: brightness(.98); }
+body.dark .post-image:hover { filter: brightness(1.04); }
 .filter-none { filter: none; }
 .filter-clarendon { filter: contrast(1.2) saturate(1.35); }
 .filter-gingham { filter: brightness(1.05) hue-rotate(-10deg); }
