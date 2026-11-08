@@ -731,3 +731,11 @@
 - [x] Client: settings health status shows app name from API
 - [x] Phase bump to 79
 - [x] Phase 79 autonomous batch complete (2026-11-08)
+
+## Phase 80: New Autonomous Features (2026-11-08)
+- [x] Phase 80 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: share-post-btn has explicit 	itle
+- [x] Explore: grid item buttons/images announce "Open post details"
+- [x] Profile: "Message" button visible only when appropriate (already)
+- [x] Phase bump to 80
