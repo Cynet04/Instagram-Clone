@@ -757,6 +757,7 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
     renderMe();
     closeDialog(el("profileEditDialog"));
     loadProfile(user.username);
+    toast("Profile updated.");
   } catch (err) { el("profileEditError").textContent = err.message; }
 });
 
@@ -766,9 +767,12 @@ async function refreshHealth() {
   try {
     const res = await fetch("/api/health", { credentials: "same-origin" });
     const data = await res.json().catch(() => ({}));
-    target.textContent = res.ok && data.ok ? "Server connected" : "Server issue";
+    const ok = res.ok && data.ok;
+    target.textContent = ok ? "Server connected" : "Server issue";
+    target.style.color = ok ? "" : "#c00";
   } catch {
     target.textContent = "Server offline";
+    target.style.color = "#c00";
   }
 }
 
@@ -808,7 +812,7 @@ async function handleRoute() {
       el("postDialogBody").innerHTML = postHtml(post);
       bindPostActions(el("postDialogBody"));
       showDialog(el("postDialog"));
-    } catch (e) { toast(e.message, "error"); }
+    } catch (e) { toast(e.message || "Post not found.", "error"); history.replaceState(null, "", "#/feed"); }
     return;
   }
   if (views.includes(route)) return setView(route, { fromHash: true });
