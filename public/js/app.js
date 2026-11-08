@@ -196,9 +196,19 @@ function setupFeedObserver() {
   feedObserver.observe(sentinel);
 }
 
-async function loadExplore() {
-  const { posts } = await api("/api/feed?offset=0&limit=30");
-  el("view-explore").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Explore</h3><div class="explore-grid">${(posts || []).map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("")}</div></div>`;
+async function loadExplore(q = "") {
+  const query = q.trim();
+  const data = query ? await api(`/api/search?q=${encodeURIComponent(query)}`) : await api(`/api/feed?offset=0&limit=30`);
+  const posts = data.posts || [];
+  el("view-explore").innerHTML = `<div class="card" style="padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px">
+      <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
+      ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
+    </div>
+    <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-profile="${esc(p.user?.username || "")}" title="${esc(p.user?.username || "")}" />`).join("") || `<div style="padding:8px;color:var(--muted)">No posts found.</div>`}</div>
+  </div>`;
+  bindProfileLinks(el("view-explore"));
+  el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
 }
 
 async function loadSaved() {
@@ -444,7 +454,12 @@ el("authForm").addEventListener("submit", async (e) => {
 
 document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
 el("newPostBtn").onclick = () => { if (!state.me) return openAuth(); el("composer").classList.toggle("hidden"); };
-el("searchInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && e.currentTarget.value.trim()) loadSearch(e.currentTarget.value.trim()); });
+el("searchInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.currentTarget.value.trim()) {
+    const q = e.currentTarget.value.trim();
+    if (state.view === "explore") loadExplore(q); else loadSearch(q);
+  }
+});
 el("postForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.me) return openAuth();
