@@ -296,3 +296,10 @@
 - [x] Search: Enter key opens first result
 - [x] Settings: button to clear hidden notifications (local)
 - [x] Phase 20 autonomous batch complete (2026-11-08)
+
+## Phase 21: New Autonomous Features (2026-11-08)
+- [ ] Post image click opens detail dialog (existing) with keyboard focus
+- [ ] DM "typing" indicator clears on send
+- [ ] Explore grid shows like count overlay on hover (CSS/title)
+- [ ] Profile website opens in new tab with safe rel (already) + visible external indicator
+- [ ] Empty saved posts shows link to explore
