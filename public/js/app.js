@@ -590,7 +590,7 @@ async function renderSettings() {
   bindProfileLinks(root);
   try {
     const { reports = [] } = await api("/api/me/reports");
-    el("myReportsList").innerHTML = reports.length ? reports.map((r) => `<div class="notif" style="align-items:center"><div style="flex:1"><strong>${esc(r.type)}</strong> ${esc(r.reason || "")} ${r.target?.user?.username ? `· @${esc(r.target.user.username)}` : ""}<div style="color:var(--muted);font-size:12px">${timeAgo(r.createdAt)} · ${esc(r.status || "open")}</div></div>${r.target?.id ? `<button type="button" class="mini-btn secondary" data-post-id="${esc(r.target.id)}">Open</button>` : ""}</div>`).join("") : "No reports submitted.";
+    el("myReportsList").innerHTML = reports.length ? reports.map((r) => `<div class="notif" style="align-items:center"><div style="flex:1"><strong>${esc(r.type)}</strong> ${esc(r.reason || "")} ${r.target?.user?.username ? `· @${esc(r.target.user.username)}` : ""}<div style="color:var(--muted);font-size:12px">${timeAgo(r.createdAt)} · ${esc(r.status || "open")}</div></div>${r.target?.id ? `<button type="button" class="mini-btn secondary" data-post-id="${esc(r.target.id)}">Open image</button>` : ""}</div>`).join("") : "No reports submitted.";
     bindPostOpen(el("myReportsList"));
   } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
@@ -600,7 +600,7 @@ async function renderSettings() {
   root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });
   root.querySelector("#refreshSwBtn")?.addEventListener("click", async ()=>{ if(!("serviceWorker" in navigator)) return toast("Service worker unsupported."); const r=await navigator.serviceWorker.getRegistration().catch(()=>null); const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; toast("Service worker status refreshed."); });
   root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
-    const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
+    const text = JSON.stringify({ app: "Socially MVP", build: APP_BUILD, origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
   });
   root.querySelector("#exportDataBtn")?.addEventListener("click", async (e) => {

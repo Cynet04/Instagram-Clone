@@ -478,8 +478,9 @@
 - [x] Phase bump to 47
 
 ## Phase 48: New Autonomous Features (2026-11-08)
-- [ ] Post: "Open" button labeled "Open image" consistently
-- [ ] DM: quick reply chips hidden when muted conversation? keep simple
-- [ ] Profile: show posts tab count for saved view label not applicable
-- [ ] Settings: include phase in exported diagnostics
-- [ ] Phase bump to 48
+- [x] Phase 48 autonomous batch complete (2026-11-08)
+- [x] Post: "Open" button labeled "Open image" consistently
+- [x] DM: quick reply chips hidden when muted conversation? keep simple
+- [x] Profile: show posts tab count for saved view label not applicable
+- [x] Settings: include phase in exported diagnostics
+- [x] Phase bump to 48
