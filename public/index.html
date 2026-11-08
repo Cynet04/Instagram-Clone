@@ -52,8 +52,15 @@
               <option value="aden">Aden</option>
               <option value="perpetua">Perpetua</option>
             </select>
+            <div id="postPreviewWrap" class="post-preview-wrap hidden">
+              <img id="postPreview" class="post-preview filter-none" alt="Preview" />
+            </div>
             <textarea name="caption" placeholder="Write a caption..." maxlength="2200"></textarea>
-            <button type="submit">Share</button>
+            <div id="postFormStatus" class="form-status" aria-live="polite"></div>
+            <div class="composer-actions">
+              <button type="button" id="postFormReset" class="mini-btn secondary">Reset</button>
+              <button type="submit" id="postFormSubmit">Share</button>
+            </div>
           </form>
         </section>
         <section id="view-feed"></section>

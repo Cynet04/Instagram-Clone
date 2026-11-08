@@ -590,6 +590,20 @@ el("authForm").addEventListener("submit", async (e) => {
 
 document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
 el("newPostBtn").onclick = () => { if (!state.me) return openAuth(); el("composer").classList.toggle("hidden"); };
+function updatePostPreview() {
+  const form = el("postForm"); if (!form) return;
+  const file = form.querySelector('input[name="image"]')?.files?.[0];
+  const url = form.querySelector('input[name="imageUrl"]')?.value?.trim();
+  const filter = form.querySelector('select[name="filter"]')?.value || "none";
+  const src = file ? URL.createObjectURL(file) : url;
+  const wrap = el("postPreviewWrap"); const img = el("postPreview");
+  if (src) { img.src = src; img.className = `post-preview filter-${esc(filter)}`; wrap.classList.remove("hidden"); }
+  else { wrap.classList.add("hidden"); img.removeAttribute("src"); }
+}
+el("postForm")?.querySelector('input[name="image"]')?.addEventListener("change", updatePostPreview);
+el("postForm")?.querySelector('input[name="imageUrl"]')?.addEventListener("input", updatePostPreview);
+el("postForm")?.querySelector('select[name="filter"]')?.addEventListener("change", updatePostPreview);
+el("postFormReset")?.addEventListener("click", () => { el("postForm")?.reset(); updatePostPreview(); el("postFormStatus").textContent = ""; el("postFormStatus").classList.remove("error"); });
 el("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.currentTarget.value.trim()) {
     const q = e.currentTarget.value.trim();
@@ -599,15 +613,24 @@ el("searchInput").addEventListener("keydown", (e) => {
 el("postForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.me) return openAuth();
-  const fd = new FormData(e.currentTarget);
+  const form = e.currentTarget;
+  const fd = new FormData(form);
+  const status = el("postFormStatus"); const submit = el("postFormSubmit");
+  if (!fd.get("image")?.size && !String(fd.get("imageUrl") || "").trim()) {
+    status.textContent = "Choose an image file or provide an image URL."; status.classList.add("error"); return;
+  }
+  status.textContent = "Sharing post..."; status.classList.remove("error");
+  if (submit) { submit.disabled = true; submit.textContent = "Sharing..."; }
   try {
     const res = await fetch("/api/posts", { method: "POST", body: fd, credentials: "same-origin" });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Upload failed");
-    e.currentTarget.reset();
+    form.reset(); updatePostPreview();
+    status.textContent = "Post shared."; status.classList.remove("error");
     el("composer").classList.add("hidden");
     await loadFeed(true);
-  } catch (err) { alert(err.message); }
+  } catch (err) { status.textContent = err.message; status.classList.add("error"); }
+  finally { if (submit) { submit.disabled = false; submit.textContent = "Share"; } setTimeout(() => { if (status?.textContent === "Post shared.") status.textContent = ""; }, 2000); }
 });
 el("storyForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();

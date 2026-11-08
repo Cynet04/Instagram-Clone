@@ -153,3 +153,10 @@ body.dark .hashtag { color: #e0f1ff; }
 .error { color: #c00; min-height: 1.2em; margin: 0; font-size: 13px; }
 
 @media (max-width: 900px) { .side-col { display: none; } .layout { grid-template-columns: 1fr; } .search { display: none; } }
+
+.composer-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+.post-preview-wrap { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--input); }
+.post-preview { display: block; width: 100%; max-height: 360px; object-fit: contain; }
+.form-status { min-height: 1.2em; font-size: 13px; color: var(--muted); }
+.form-status.error { color: #c00; }
+.composer select { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--card); color: var(--text); }
