@@ -15,6 +15,16 @@ function esc(s = "") {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+function loadingState(message = "Loading...") {
+  return `<div class="card state-card" role="status" aria-live="polite"><div class="state-spinner" aria-hidden="true"></div><div>${esc(message)}</div></div>`;
+}
+function emptyState(title, detail = "") {
+  return `<div class="card state-card"><div class="state-title">${esc(title)}</div>${detail ? `<div class="state-detail">${esc(detail)}</div>` : ""}</div>`;
+}
+function errorState(message) {
+  return `<div class="card state-card state-error"><div class="state-title">Something went wrong</div><div class="state-detail">${esc(message)}</div></div>`;
+}
+
 function formatCaption(text = "") {
   const safe = esc(text);
   return safe.replace(/(^|[\s(])#([\p{L}\p{N}_]+)/gu, (m, pre, tag) => `${pre}<a href="#" class="hashtag" data-tag="#${esc(tag)}">#${esc(tag)}</a>`);
@@ -168,19 +178,20 @@ async function loadFeed(reset = true) {
   if (reset) {
     state.feed.offset = 0;
     state.feed.hasMore = true;
-    el("view-feed").innerHTML = "";
+    el("view-feed").innerHTML = loadingState("Loading feed...");
   }
   if (!state.feed.hasMore) return;
   state.feed.loading = true;
   const statusId = "feedStatus";
   el(statusId)?.remove();
-  el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status">Loading...</div>`);
+  if (!reset) el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status">Loading more posts...</div>`);
   try {
     const [feed, search] = await Promise.all([
       api(`/api/feed?offset=${state.feed.offset}&limit=${state.feed.limit}`),
       state.feed.offset === 0 ? api("/api/search?q=a") : Promise.resolve({ users: [] })
     ]);
     el(statusId)?.remove();
+    if (reset) el("view-feed").innerHTML = "";
     if (state.feed.offset === 0) await renderSuggestions(search.users || []);
     const html = (feed.posts || []).map(postHtml).join("");
     const wrap = document.createElement("div");
@@ -189,12 +200,13 @@ async function loadFeed(reset = true) {
     while (wrap.firstChild) el("view-feed").appendChild(wrap.firstChild);
     state.feed.offset += (feed.posts || []).length;
     state.feed.hasMore = !!feed.hasMore;
-    if (!el("view-feed").children.length) el("view-feed").innerHTML = `<div class="card" style="padding:16px">No posts yet.</div>`;
+    if (!el("view-feed").children.length) el("view-feed").innerHTML = emptyState("No posts yet", "When people share photos, they'll appear here.");
     el("feedSentinel").classList.toggle("hidden", state.view !== "feed");
-    if (!state.feed.hasMore) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">You're all caught up.</div>`);
+    if (!state.feed.hasMore && el("view-feed").children.length) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">You're all caught up.</div>`);
   } catch (e) {
     el(statusId)?.remove();
-    if (!el("view-feed").children.length) el("view-feed").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`;
+    if (!el("view-feed").children.length || reset) el("view-feed").innerHTML = errorState(e.message);
+    else el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">${esc(e.message)}</div>`);
   } finally {
     state.feed.loading = false;
   }
@@ -212,30 +224,36 @@ function setupFeedObserver() {
 
 async function loadExplore(q = "") {
   const query = q.trim();
-  const data = query ? await api(`/api/search?q=${encodeURIComponent(query)}`) : await api(`/api/feed?offset=0&limit=30`);
-  const posts = data.posts || [];
-  el("view-explore").innerHTML = `<div class="card" style="padding:14px">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px">
-      <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
-      ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
-    </div>
-    <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" />`).join("") || `<div style="padding:8px;color:var(--muted)">No posts found.</div>`}</div>
-  </div>`;
-  bindPostOpen(el("view-explore"));
-  el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
+  el("view-explore").innerHTML = loadingState("Loading explore...");
+  try {
+    const data = query ? await api(`/api/search?q=${encodeURIComponent(query)}`) : await api(`/api/feed?offset=0&limit=30`);
+    const posts = data.posts || [];
+    el("view-explore").innerHTML = `<div class="card" style="padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px">
+        <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
+        ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
+      </div>
+      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" />`).join("") || ""}</div>
+      ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
+    </div>`;
+    bindPostOpen(el("view-explore"));
+    el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
+  } catch (e) { el("view-explore").innerHTML = errorState(e.message); }
 }
 
 async function loadSaved() {
-  if (!state.me) { el("view-saved").innerHTML = `<div class="card" style="padding:16px">Log in to view saved posts.</div>`; return; }
+  if (!state.me) { el("view-saved").innerHTML = emptyState("Log in to view saved posts", "Your saved posts will appear here."); return; }
+  el("view-saved").innerHTML = loadingState("Loading saved posts...");
   try {
     const { posts } = await api("/api/saved");
-    el("view-saved").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Saved</h3></div>` + (posts.map(postHtml).join("") || `<div class="card" style="padding:16px">No saved posts yet.</div>`);
+    el("view-saved").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0">Saved</h3></div>` + (posts.map(postHtml).join("") || emptyState("No saved posts yet", "Save posts from your feed to see them here."));
     bindPostActions(el("view-saved"));
-  } catch (e) { el("view-saved").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
+  } catch (e) { el("view-saved").innerHTML = errorState(e.message); }
 }
 
 async function loadNotifications() {
-  if (!state.me) { el("view-notifications").innerHTML = `<div class="card" style="padding:16px">Log in to view notifications.</div>`; return; }
+  if (!state.me) { el("view-notifications").innerHTML = emptyState("Log in to view notifications", "Likes, comments, and follows will appear here."); return; }
+  el("view-notifications").innerHTML = loadingState("Loading notifications...");
   try {
     const { notifications, unread } = await api("/api/notifications");
     updateBadge(unread);
@@ -244,9 +262,9 @@ async function loadNotifications() {
         const actor = esc(n.actor?.username || "Someone");
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
         return `<div class="notif ${n.read ? "" : "unread"}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><div><strong>${actor}</strong> ${msg}<div style="color:var(--muted);font-size:12px">${timeAgo(n.createdAt)}</div></div></div>`;
-      }).join("") || `<div style="padding:16px">No notifications yet.</div>`) + `</div>`;
+      }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
-  } catch (e) { el("view-notifications").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
+  } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
 }
 
 function updateBadge(n = 0) {
@@ -325,7 +343,8 @@ async function loadSearch(q) {
 }
 
 async function renderMessages() {
-  if (!state.me) { el("view-messages").innerHTML = `<div class="card" style="padding:16px">Log in to use messages.</div>`; return; }
+  if (!state.me) { el("view-messages").innerHTML = emptyState("Log in to use messages", "Direct messages will appear here."); return; }
+  el("view-messages").innerHTML = loadingState("Loading messages...");
   try {
     const { conversations, contacts } = await api("/api/messages/conversations");
     const list = [...conversations];
@@ -340,7 +359,7 @@ async function renderMessages() {
       </div>
       <div class="dm-chat">
         <div class="dm-head">${active ? esc(active.username) : "Select a conversation"}</div>
-        <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}">${esc(m.text)}</div>`).join("") || `<div style="color:var(--muted)">No messages yet.</div>`}</div>
+        <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}">${esc(m.text)}</div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
         ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" /><button>Send</button></form>` : ``}
       </div>
     </div>`;
@@ -356,7 +375,7 @@ async function renderMessages() {
     });
     const body = el("view-messages").querySelector(".dm-body");
     if (body) body.scrollTop = body.scrollHeight;
-  } catch (e) { el("view-messages").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
+  } catch (e) { el("view-messages").innerHTML = errorState(e.message); }
 }
 
 function bindHashtags(root) {

@@ -60,8 +60,8 @@
 - [x] Comment delete (owner can delete own comments or comments on own post; API + UI)
 - [x] Profile deep links in URL hash (route/hash handling for views and `/profile/:username`)
 - [x] Optimistic UI updates (like/save/comment-like/comment-create/comment-delete with rollback)
-- [ ] Loading/empty states
-- [ ] Additional autonomous features
+- [x] Loading/empty states (shared state cards/spinner + improved feed/explore/saved/notifications/messages states)
+- [ ] Additional autonomous features (e.g., image lazy/fallback polish, profile share links, route-aware nav active state, accessibility refinements)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -81,4 +81,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Optimistic UI updates added (post like/save, comment like/delete, and comment create now update UI immediately with rollback on API failure). Client syntax and health verified. Next: loading/empty states.
+- 2026-11-08: Loading/empty states added (shared loading/empty/error UI helpers, feed/explore/saved/notifications/messages loading states, and improved empty/error copy). Client syntax and health verified. Next: additional autonomous features.
