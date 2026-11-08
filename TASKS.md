@@ -115,7 +115,12 @@
 - [x] Settings route/auth-state UX (settings view refreshes on auth changes; title/route behavior consistent)
 - [x] Copy caption action (post action copies caption text with clipboard/prompt fallback and toast)
 - [x] Double-tap like on feed post image (image double-click likes post without changing open behavior)
-- [ ] Additional autonomous features (e.g., small UX refinements, perf polish)
+- [x] Copy image link action (post action copies image URL with clipboard/prompt fallback and toast)
+- [ ] Open image in new tab action
+- [ ] Recent searches (localStorage) with clear action
+- [ ] Profile counts dialog/list (followers/following basic list)
+- [ ] Settings: app info/version and data notes
+- [ ] Post/report moderation list in settings (MVP local view)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
