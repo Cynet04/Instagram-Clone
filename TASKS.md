@@ -853,3 +853,11 @@ otif-time uses 	imeAgo (done)
 - [ ] Client: post action "Open image" has 	itle
 - [ ] Profile: total likes/comments stat uses ria-label
 - [x] Phase bump to 94
+
+## Phase 95: New Autonomous Features (2026-11-08)
+- [x] Phase 95 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Feed: post image has consistent ria-label for open action
+- [x] DM: delete-message button label clarifies scope
+- [x] Settings: diagnostics payload includes health phase when known
+- [x] Phase bump to 95
