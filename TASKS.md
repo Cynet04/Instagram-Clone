@@ -255,3 +255,10 @@
 - [x] Clear all search history from settings
 - [x] DM quick reply chips for new conversation
 - [x] Phase 15 autonomous batch complete (2026-11-08)
+
+## Phase 16: New Autonomous Features (2026-11-08)
+- [ ] Post location field (create/edit/display, MVP)
+- [ ] "Copy comment text" action
+- [ ] Profile follower/following count refresh on follow actions
+- [ ] Settings: show app storage info (localStorage keys count)
+- [ ] Feed empty state CTA for logged-in users with no follows
