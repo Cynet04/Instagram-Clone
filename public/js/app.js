@@ -595,7 +595,7 @@ async function renderSettings() {
   } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
-  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); toast("Server status refreshed."); });
+  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); const ping = await api("/api/ping").catch(()=>null); if(ping?.pong) toast(`Server healthy · ping phase ${ping.phase||"?"}`); else toast("Server status refreshed."); });
   root.querySelector("#reloadPageBtn")?.addEventListener("click", () => location.reload());
   if("serviceWorker" in navigator){ navigator.serviceWorker.getRegistration().then((r)=>{ const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; }).catch(()=>{}); }
   root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });

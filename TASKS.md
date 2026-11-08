@@ -961,15 +961,23 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 ## Phase 108: New Autonomous Features (2026-11-08)
 - [x] Phase 108 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 107)
-- [ ] Server: add HEAD /api/health support for lightweight checks
+- [x] Server: add HEAD /api/health support for lightweight checks
 - [x] Client: comment like button title reflects state
-- [ ] Post: Open action already titled; ensure explore grid open uses same label
+- [x] Post: Open action already titled; ensure explore grid open uses same label
 - [x] Phase bump to 108
 
 ## Phase 109: New Autonomous Features (2026-11-08)
 - [x] Phase 109 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 108)
-- [ ] Server: add GET /api/ping lightweight endpoint
+- [x] Server: add GET /api/ping lightweight endpoint
 - [x] Client: settings includes "Open /api/ping" link
-- [ ] Client: copyPostDialogLink has title (polish)
+- [x] Client: copyPostDialogLink has title (polish)
 - [x] Phase bump to 109
+
+## Phase 110: New Autonomous Features (2026-11-08)
+- [x] Phase 110 autonomous batch complete (2026-11-08)
+- [x] Baseline green (server restarted to phase 109, TASKS reconciled)
+- [ ] Server: /api/ping includes uptimeSec
+- [ ] Client: settings shows /api/ping result on "Check server" (best-effort)
+- [ ] Post: "View post details" dialog copy-link button has 	itle
+- [x] Phase bump to 110
