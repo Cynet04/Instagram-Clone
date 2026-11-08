@@ -104,7 +104,8 @@
 - [x] Sidebar profile quick-link (logged-in sidebar card opens current profile via keyboard/clickable profile link)
 - [x] Post dialog focus polish (opening post detail moves focus into dialog content)
 - [x] Story viewer keyboard polish (ArrowLeft/ArrowRight navigate stories while story dialog is open; previous disabled at start)
-- [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility/perf polish)
+- [x] Profile/share refinements (profile share button state guarded with element ref; copy feedback preserved)
+- [ ] Additional autonomous features (e.g., small route refinements, accessibility/perf polish, DM/share refinements)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -159,6 +160,7 @@
 - 2026-11-08: Sidebar profile quick-link added (logged-in sidebar card opens current profile). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post dialog focus polish added (opening post detail moves focus into dialog content). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Story viewer keyboard polish added (ArrowLeft/ArrowRight navigation while story dialog open; previous disabled at start). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Profile/share refinements added (profile share button text updates use guarded element ref). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.

@@ -445,24 +445,24 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       el("profileEditError").textContent = "";
       showDialog(el("profileEditDialog"));
     });
-    el("shareProfileBtn")?.addEventListener("click", async () => {
-      const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: `@${user.username} on Instagram Clone`, text: `Check out @${user.username}`, url });
-          toast("Profile shared.");
-          return;
-        }
-        await navigator.clipboard?.writeText(url);
-        toast("Profile link copied.");
-        el("shareProfileBtn").textContent = "Copied";
-        setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500);
-      } catch (e) {
-        if (e?.name === "AbortError") return;
-        try { await navigator.clipboard?.writeText(url); toast("Profile link copied."); }
-        catch { prompt("Copy profile link:", url); toast("Copy the profile link from the prompt."); }
+  el("shareProfileBtn")?.addEventListener("click", async () => {
+    const btn = el("shareProfileBtn");
+    const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `@${user.username} on Instagram Clone`, text: `Check out @${user.username}`, url });
+        toast("Profile shared.");
+        return;
       }
-    });
+      await navigator.clipboard?.writeText(url);
+      toast("Profile link copied.");
+      if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); }
+    } catch (e) {
+      if (e?.name === "AbortError") return;
+      try { await navigator.clipboard?.writeText(url); toast("Profile link copied."); }
+      catch { prompt("Copy profile link:", url); toast("Copy the profile link from the prompt."); }
+    }
+  });
     el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
   } catch (e) {
     el("view-profile").innerHTML = errorState(e.message || "Failed to load profile.");
