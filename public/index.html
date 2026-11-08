@@ -137,6 +137,12 @@
       <div id="listDialogBody"></div>
     </dialog>
 
+    <dialog id="avatarDialog" aria-label="Profile photo preview">
+      <button id="avatarDialogClose" type="button" class="story-close" aria-label="Close">x</button>
+      <img id="avatarDialogImage" alt="Profile photo preview" style="max-width:min(92vw,420px);max-height:70vh;border-radius:12px;display:block" />
+      <div id="avatarDialogMeta" class="story-meta"></div>
+    </dialog>
+
     <dialog id="shortcutsDialog" aria-label="Keyboard shortcuts">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 style="margin:0">Keyboard shortcuts</h3><button id="shortcutsClose" type="button" class="mini-btn secondary" aria-label="Close">Close</button></div>
       <div style="display:grid;gap:8px;font-size:14px"><div><strong>/</strong> Focus search</div><div><strong>g h</strong> Home</div><div><strong>g e</strong> Explore</div><div><strong>g m</strong> Messages</div><div><strong>g n</strong> Notifications</div><div><strong>g p</strong> Profile</div><div><strong>g s</strong> Settings</div><div><strong>?</strong> Shortcuts</div><div><strong>Esc</strong> Close dialogs / clear search focus behavior</div></div>

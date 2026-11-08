@@ -311,7 +311,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     el("view-profile").innerHTML = `
       <div class="card">
         <div class="profile-head">
-          <img class="avatar" src="${avatar(user)}" alt="${esc(user.username)} avatar" onerror="this.onerror=null;this.src='https://placehold.co/192x192/f5f5f5/737373?text=User'" />
+          <img id="profileAvatarPreview" class="avatar" src="${avatar(user)}" alt="${esc(user.username)} avatar" tabindex="0" role="button" aria-label="Preview profile photo for ${esc(user.username)}" onerror="this.onerror=null;this.src='https://placehold.co/192x192/f5f5f5/737373?text=User'" style="cursor:pointer" />
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <h2 style="margin:0">${esc(user.username)}</h2>
@@ -327,6 +327,9 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         ${isMe ? `<div class="profile-tabs" role="tablist" aria-label="Profile sections"><button type="button" role="tab" aria-selected="${tab === "posts" ? "true" : "false"}" data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button type="button" role="tab" aria-selected="${tab === "saved" ? "true" : "false"}" data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
       </div>
       <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="grid-column:1/-1;padding:8px">${emptyState(tab === "saved" ? "No saved posts" : "No posts yet", tab === "saved" ? "Posts you save will appear here." : isMe ? "Share your first photo to get started." : "This user hasn't posted yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:180px">')}</div>`}</div></div>`;
+    const openAvatar = () => { el("avatarDialogImage").src = avatar(user).replace(/&amp;/g,'&'); el("avatarDialogMeta").textContent = `@${user.username}`; showDialog(el("avatarDialog")); el("avatarDialogClose")?.focus?.(); };
+    el("profileAvatarPreview")?.addEventListener("click", openAvatar);
+    el("profileAvatarPreview")?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openAvatar(); } });
     bindPostOpen(el("view-profile"));
     const openList = (title, users = []) => {
       el("listDialogTitle").textContent = title;
