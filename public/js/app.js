@@ -118,39 +118,34 @@ function postHtml(p) {
   const filter = esc(p.filter || "none");
   const mine = state.me && p.user?.id === state.me.id;
   const fallback = "https://placehold.co/1080x1080/f5f5f5/737373?text=Image+unavailable";
+  const comments = Array.isArray(p.comments) ? p.comments : [];
+  const inDialog = !!el("postDialog")?.open; const shown = inDialog ? comments : comments.slice(-2); const more = inDialog ? 0 : Math.max(0, comments.length - shown.length);
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
-        <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
-        <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
-        <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post">Delete</button>` : ""}
+        <img class="avatar profile-link" src="${avatar(p.user)}" alt="" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
+        <button type="button" class="post-user profile-link post-user-btn" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</button>
+        ${p.location ? `<span class="post-location muted">${esc(p.location)}</span>` : ""}
+        <div class="post-menu-wrap"><button type="button" class="post-menu-btn icon-btn" aria-label="More options" title="More options">⋯</button>
+          <div class="post-menu hidden" role="menu">
+            <button type="button" class="share-post-btn" role="menuitem">Copy link</button>
+            <button type="button" class="open-image-btn" role="menuitem">Open image</button>
+            ${mine ? `<button type="button" class="edit-post-btn" role="menuitem">Edit caption</button><button type="button" class="delete-post-btn danger-text" role="menuitem">Delete</button>` : `<button type="button" class="report-post-btn danger-text" role="menuitem">Report</button>`}
+          </div></div>
       </div>
-      <div class="post-image-wrap"><img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by @${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" /><div class="heart-burst" aria-hidden="true">?</div></div>
-            <div class="post-actions" aria-label="Post actions">
-        <button class="like-btn icon-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}" title="${p.likedByMe ? "Unlike" : "Like"}"><span aria-hidden="true" class="action-icon">${p.likedByMe ? "?" : "?"}</span></button>
-        <button class="comment-focus-btn icon-btn" type="button" aria-label="Focus comment input" title="Comment"><span aria-hidden="true" class="action-icon">??</span></button>
-        <button class="share-post-btn icon-btn" type="button" aria-label="Copy post link" title="Share"><span aria-hidden="true" class="action-icon">?</span></button>
-        <button class="copy-caption-btn icon-btn" type="button" aria-label="Copy post caption" title="Copy caption" ${p.caption?"":"disabled"}><span aria-hidden="true" class="action-icon">?</span></button>
-        <button class="open-image-btn icon-btn" type="button" aria-label="Open image in new tab" title="Open image"><span aria-hidden="true" class="action-icon">?</span></button>
-        ${!mine ? '<button class="report-post-btn icon-btn" type="button" aria-label="Report post" title="Report"><span aria-hidden="true" class="action-icon">?</span></button>' : ""}
-        <button class="save-btn icon-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" title="${p.savedByMe ? "Saved" : "Save"}" style="margin-left:auto"><span aria-hidden="true" class="action-icon">${p.savedByMe ? "??" : "??"}</span></button>
+      <div class="post-image-wrap"><img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}`)}" loading="lazy" decoding="async" tabindex="0" role="button" aria-label="Open post details" onerror="this.onerror=null;this.src='${fallback}'" /><div class="heart-burst" aria-hidden="true">♥</div></div>
+      <div class="post-actions" aria-label="Post actions">
+        <button class="like-btn icon-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}" title="${p.likedByMe ? "Unlike" : "Like"}"><span aria-hidden="true" class="action-icon">${p.likedByMe ? "♥" : "♡"}</span></button>
+        <button class="comment-focus-btn icon-btn" type="button" aria-label="Comment" title="Comment"><span aria-hidden="true" class="action-icon">💬</span></button>
+        <button class="share-post-btn icon-btn" type="button" aria-label="Share" title="Share"><span aria-hidden="true" class="action-icon">↗</span></button>
+        <button class="save-btn icon-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" title="${p.savedByMe ? "Saved" : "Save"}" style="margin-left:auto"><span aria-hidden="true" class="action-icon">${p.savedByMe ? "🔖" : "🏷"}</span></button>
       </div>
-      <div class="post-likes">${p.likesCount} ${p.likesCount===1?"like":"likes"}${mine && typeof p.savesCount === "number" ? ` · ${p.savesCount} ${p.savesCount===1?"save":"saves"}` : ""}${shareCount(p.id)?` · ${shareCount(p.id)} shares`:""}</div>
-      <div class="post-caption">${p.location ? `<div class="muted" style="font-size:12px;margin-bottom:2px">📍 ${esc(p.location)}</div>` : ""}<strong class="profile-link" data-profile="${esc(p.user?.username || "")}" aria-label="View @${esc(p.user?.username || "")} profile" role="button" tabindex="0">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
-      ${(p.comments||[]).length>1?`<div style="margin:0 14px 6px"><label class="muted" style="font-size:12px">Sort comments <select class="comment-sort" data-post-id="${esc(p.id)}" style="margin-left:6px;background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:2px 6px"><option value="top">Top</option><option value="newest">Newest</option><option value="oldest">Oldest</option></select></label></div>`:""}
-      <div class="comments" data-comment-sort="top">${(() => { const pins=new Set(pinnedCommentIds(p.id)); const arr=[...(p.comments||[])]; arr.sort((a,b)=> (pins.has(b.id)-pins.has(a.id)) || (b.likesCount||0)-(a.likesCount||0) || (b.createdAt||0)-(a.createdAt||0)); return arr.map((c) => { const pinned=pins.has(c.id);
-        const canDelete = state.me && (c.user?.id === state.me.id || mine);
-        return `
-        <div class="comment ${pinned?"comment-pinned":""}" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}" style="${pinned?"background:var(--hover,rgba(0,0,0,.04));border-radius:8px;padding:4px 6px":""}">
-          <span>${pinned?`<strong class="muted" style="font-size:11px;margin-right:6px">Pinned</strong>`:""}<strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
-          <span class="comment-actions">
-            <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
-            ${state.me && c.user?.id === state.me.id ? `<button class="comment-edit-btn" type="button" aria-label="Edit comment">Edit</button>` : ""}${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report this comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete this comment">Delete</button>` : ""}
-          </span>
-        </div>`; }).join(""); })()}</div>
+      <div class="post-likes"><strong>${Number(p.likesCount||0).toLocaleString()} ${Number(p.likesCount||0)===1?"like":"likes"}</strong></div>
+      <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
+      ${more > 0 ? `<button type="button" class="view-all-comments muted" data-open-post="${p.id}">View all ${comments.length} comments</button>` : ""}
+      <div class="comments">${shown.map((c)=>`<div class="comment"><span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text || "")}</span></div>`).join("")}</div>
       <form class="comment-form">
-        <input name="text" id="commentInput-${p.id}" placeholder="Add a comment..." maxlength="500" aria-label="Add a comment" aria-describedby="commentCount-${p.id}" ${state.me ? "" : "disabled"} />
+        <input name="text" id="commentInput-${p.id}" placeholder="Add a comment..." maxlength="500" aria-label="Add a comment" ${state.me ? "" : "disabled"} />
         <button ${state.me ? "" : "disabled"}>Post</button>
       </form>
     </article>`;
@@ -591,83 +586,41 @@ async function renderSettings() {
   const root = el("view-settings");
   if (!root) return;
   if (!state.me) {
-    root.innerHTML = `<div class="card" style="padding:16px"><h3 style="margin-top:0">Settings</h3><p class="muted">Log in to manage your account.</p><button id="settingsLoginBtn" class="mini-btn" type="button">Log in</button></div>`;
+    root.innerHTML = `<div class="card settings-card"><h3 style="margin-top:0">Settings</h3><p class="muted">Log in to manage your account.</p><button id="settingsLoginBtn" class="mini-btn" type="button">Log in</button></div>`;
     root.querySelector("#settingsLoginBtn")?.addEventListener("click", openAuth);
     return;
   }
   root.innerHTML = `
-    <div class="card" style="padding:16px;display:grid;gap:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-        <h3 style="margin:0">Settings</h3>
-        <button type="button" class="mini-btn secondary" data-profile="${esc(state.me.username)}">View profile</button>
-      </div>
-      <section>
-        <h4 style="margin:0 0 8px">Appearance</h4>
-        <button id="settingsThemeBtn" type="button" class="mini-btn secondary" aria-pressed="${document.body.classList.contains("dark") ? "true" : "false"}">${document.body.classList.contains("dark") ? "Switch to light mode" : "Switch to dark mode"}</button>
-      </section>
-      <section>
-        <h4 style="margin:0 0 8px">Privacy & preferences (local)</h4>
-        <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px"><input type="checkbox" id="activityStatusPref" ${activityStatusEnabled()?"checked":""}/> Show activity status (local indicator)</label>
-        <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px"><input type="checkbox" id="notifSoundPref" ${notifSoundPref()?"checked":""}/> Notification feedback (visual pulse, local)</label>
-        <h5 style="margin:8px 0">Notification preferences</h5>
-        <div id="notifPrefs" style="display:grid;gap:6px;font-size:14px">
-          ${[["like","Likes"],["comment","Comments"],["follow","Follows"],["comment_like","Comment likes"]].map(([k,l])=>`<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-notif-pref="${k}" ${loadNotifPrefs()[k]!==false?"checked":""}/> ${l}</label>`).join("")}
+    <div class="card settings-card">
+      <h3 style="margin:0 0 4px">Settings</h3>
+      <p class="muted" style="margin:0 0 16px">Manage your account and preferences.</p>
+      <section class="settings-section">
+        <h4>Account</h4>
+        <div class="settings-actions">
+          <button type="button" class="mini-btn secondary" data-profile="${esc(state.me.username)}">Edit/view profile</button>
+          <button id="settingsLogoutBtn" type="button" class="mini-btn secondary danger-text">Log out</button>
         </div>
       </section>
-      <section>
-        <h4 style="margin:0 0 8px">Change password</h4>
-        <form id="passwordForm" style="display:grid;gap:8px;max-width:360px">
+      <section class="settings-section">
+        <h4>Appearance</h4>
+        <label class="settings-row"><span>Dark mode</span><input type="checkbox" id="settingsThemeCheck" ${document.body.classList.contains("dark") ? "checked" : ""} aria-label="Dark mode" /></label>
+      </section>
+      <section class="settings-section">
+        <h4>Change password</h4>
+        <form id="passwordForm" class="settings-form">
           <input name="currentPassword" type="password" placeholder="Current password" required minlength="6" maxlength="128" aria-label="Current password" autocomplete="current-password" />
           <input name="newPassword" type="password" placeholder="New password" required minlength="6" maxlength="128" aria-label="New password" autocomplete="new-password" />
-          <button type="submit" id="passwordSubmit">Update password</button>
+          <button type="submit" id="passwordSubmit" class="mini-btn">Update password</button>
           <div id="passwordStatus" class="form-status" aria-live="polite"></div>
         </form>
       </section>
-      <section>
-        <h4 style="margin:0 0 8px">Account</h4>
-        <button id="settingsLogoutBtn" type="button" class="mini-btn secondary">Log out</button>
-      </section>
-      <section>
-        <h4 style="margin:0 0 8px">Local data / diagnostics</h4>
-        <div class="card" style="padding:12px;margin-bottom:12px"><strong>@${esc(state.me.username)}</strong><div class="muted" style="font-size:13px">${esc(state.me.name||"")}${state.me.bio?` · ${esc(String(state.me.bio).slice(0,60))}`:""}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="reloadPageBtn" type="button" class="mini-btn secondary">Reload page</button><a href="/api/health" target="_blank" rel="noopener noreferrer" class="mini-btn secondary" style="text-decoration:none" title="Open API health">Open /api/health</a><a href="/api/version" target="_blank" rel="noopener noreferrer" class="mini-btn secondary" style="text-decoration:none" title="Open API version metadata">Open /api/version</a><a href="/api/ping" target="_blank" rel="noopener noreferrer" class="mini-btn secondary" style="text-decoration:none" title="Open API ping">Open /api/ping</a><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="copyBuildBtn" type="button" class="mini-btn secondary">Copy build info</button><button id="refreshSwBtn" type="button" class="mini-btn secondary">Refresh SW status</button><button id="exportDataBtn" type="button" class="mini-btn secondary">Export my data</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button><button id="clearSearchHistoryBtn" type="button" class="mini-btn secondary">Clear search history</button><button id="clearHiddenNotifsBtn" type="button" class="mini-btn secondary">Clear hidden notifications</button><button id="resetLocalIgBtn" type="button" class="mini-btn secondary">Reset local IG prefs</button></div>
-        <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme/recent searches stored in localStorage. Runtime data/uploads are local and not exported by this client.</div>
-      </section>
-      <section>
-        <h4 style="margin:0 0 8px">My reports (local MVP)</h4>
-        <div id="myReportsList" class="muted" style="font-size:13px">Loading reports...</div>
+      <section class="settings-section">
+        <h4>Preferences</h4>
+        <label class="settings-row"><span>Show activity status</span><input type="checkbox" id="activityStatusPref" ${activityStatusEnabled()?"checked":""} /></label>
       </section>
     </div>`;
-  bindProfileLinks(root);
-  try {
-    const { reports = [] } = await api("/api/me/reports");
-    el("myReportsList").innerHTML = reports.length ? reports.map((r) => `<div class="notif" style="align-items:center"><div style="flex:1"><strong>${esc(r.type)}</strong> ${esc(r.reason || "")} ${r.target?.user?.username ? `· @${esc(r.target.user.username)}` : ""}<div style="color:var(--muted);font-size:12px">${timeAgo(r.createdAt)} · ${esc(r.status || "open")}</div></div>${r.target?.id ? `<button type="button" class="mini-btn secondary" data-post-id="${esc(r.target.id)}">Open image</button>` : ""}</div>`).join("") : "No reports submitted.";
-    bindPostOpen(el("myReportsList"));
-  } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
-  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); const ping = await api("/api/ping").catch(()=>null); if(ping?.pong) toast(`Server healthy · phase ${ping.phase||"?"}${typeof ping.uptimeSec==="number"?` · up ${ping.uptimeSec}s`:""}`); else toast("Server status refreshed."); });
-  root.querySelector("#reloadPageBtn")?.addEventListener("click", () => location.reload());
-  if("serviceWorker" in navigator){ navigator.serviceWorker.getRegistration().then((r)=>{ const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; }).catch(()=>{}); }
-  root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });
-  root.querySelector("#refreshSwBtn")?.addEventListener("click", async ()=>{ if(!("serviceWorker" in navigator)) return toast("Service worker unsupported."); const r=await navigator.serviceWorker.getRegistration().catch(()=>null); const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; toast("Service worker status refreshed."); });
-  root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
-    const text = JSON.stringify({ app: "Socially MVP", build: APP_BUILD, origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", healthPhase: (await api("/api/health").catch(()=>({}))).phase || null, online: navigator.onLine, language: navigator.language || null, userAgent: String(navigator.userAgent||"").slice(0,120), recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
-    try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
-  });
-  root.querySelector("#exportDataBtn")?.addEventListener("click", async (e) => {
-    const b=e.currentTarget; if(b.disabled) return; b.disabled=true; b.textContent="Exporting...";
-    try {
-      const data = await api("/api/me/export");
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = `socially-export-${state.me?.username || "user"}.json`; a.click();
-      URL.revokeObjectURL(url); toast("Data export downloaded.");
-    } catch (e) { toast(e.message, "error"); }
-  });
-  root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); localStorage.removeItem("ig_notif_prefs"); localStorage.removeItem("ig_post_draft"); applyTheme(); toast("Local preferences cleared."); });
-  root.querySelector("#clearSearchHistoryBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_recent_searches"); toast("Search history cleared."); });
-  root.querySelector("#clearHiddenNotifsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_hidden_notifs"); toast("Hidden notifications cleared."); });
-  root.querySelector("#resetLocalIgBtn")?.addEventListener("click", () => { if(!confirm("Reset all local Instagram Clone preferences/state?")) return; Object.keys(localStorage).filter((k)=>k.startsWith("ig_")).forEach((k)=>localStorage.removeItem(k)); applyTheme(); toast("Local IG preferences reset."); renderSettings(); });
   root.querySelector("#activityStatusPref")?.addEventListener("change", (e)=>{ setActivityStatusEnabled(e.target.checked); toast(e.target.checked?"Activity status enabled (local).":"Activity status hidden (local)."); renderMessages(); });
   root.querySelector("#notifSoundPref")?.addEventListener("change", (e)=>{ setNotifSoundPref(e.target.checked); toast(e.target.checked?"Notification feedback enabled.":"Notification feedback disabled."); });
   root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));
