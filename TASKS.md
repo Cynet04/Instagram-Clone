@@ -274,8 +274,16 @@
 - [x] Search result avatars consistent sizing/fallback
 
 ## Phase 22: New Autonomous Features (2026-11-08)
-- [ ] Post caption "edited" indicator when caption changed (client heuristic)
-- [ ] Profile: show total likes received across posts (computed)
-- [ ] DM list: unread dot indicator per conversation
-- [ ] Search: clear button (x) inside search input behavior
-- [ ] Settings: "Reset all local IG prefs" with confirm
+- [x] Phase 22 autonomous batch complete (2026-11-08)
+- [x] Post caption "edited" indicator when caption changed (client heuristic)
+- [x] Profile: show total likes received across posts (computed)
+- [x] DM list: unread dot indicator per conversation
+- [x] Search: clear button (x) inside search input behavior
+- [x] Settings: "Reset all local IG prefs" with confirm
+
+## Phase 23: New Autonomous Features (2026-11-08)
+- [ ] Feed: show "End of feed" when hasMore is false
+- [ ] Post: copy caption text button
+- [ ] Profile: bio character/line safety (no overflow)
+- [ ] Messages: show "You:" prefix for own last message preview
+- [ ] Settings: show current logged-in user summary card
