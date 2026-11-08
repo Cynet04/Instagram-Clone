@@ -115,7 +115,7 @@ app.use(session({
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(path.join(root, "public")));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, phase: 73 }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, phase: 74 }));
 
 app.get("/api/me", (req, res) => {
   const db = loadDb();
@@ -158,7 +158,7 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.post("/api/auth/logout", (req, res) => {
-  req.session.destroy(() => res.json({ ok: true, phase: 73 }));
+  req.session.destroy(() => res.json({ ok: true, phase: 74 }));
 });
 
 function mapPost(db, p, me) {

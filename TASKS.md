@@ -684,3 +684,11 @@
 - [x] Feed: sort persists across sessions (done)
 - [x] Profile: follow button text updates optimistically (done)
 - [x] Phase bump to 73
+
+## Phase 74: New Autonomous Features (2026-11-08)
+- [x] Phase 74 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Search results: "Posts by caption" section only when query non-tag
+- [ ] DM: message timestamps use consistent 	imeAgo
+- [x] Profile: "Edit profile" button visible only for self (already)
+- [x] Phase bump to 74
