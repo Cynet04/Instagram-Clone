@@ -869,3 +869,11 @@ otif-time uses 	imeAgo (done)
 - [ ] Profile: grid images have ria-label (already)
 - [ ] Search: result images have lt (done)
 - [x] Phase bump to 96
+
+## Phase 97: New Autonomous Features (2026-11-08)
+- [x] Phase 97 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] API: posts include updatedAt not tracked; keep immutable MVP semantics
+- [x] Client: optimistic like path avoids stale badge race (best-effort)
+- [ ] Docs: PROGRESS.md not updated this run � summarize next commit
+- [x] Phase bump to 97
