@@ -372,3 +372,11 @@
 - [x] Profile: grid/list toggle label reflects current view clearly
 - [x] Feed: post caption hashtags rendered as links to search
 - [x] Phase bump to 34
+
+## Phase 35: New Autonomous Features (2026-11-08)
+- [x] Phase 35 autonomous batch complete (2026-11-08)
+- [x] Settings: show approximate localStorage usage for IG keys
+- [x] Notifications: disable "Mark read" when badge is zero
+- [x] Feed: accessible label for sort control
+- [x] Post: ensure caption hashtag links bind after dynamic renders
+- [x] Phase bump to 35
