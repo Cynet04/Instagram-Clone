@@ -38,6 +38,7 @@ function setView(view) {
   for (const v of views) el(`view-${v}`)?.classList.toggle("hidden", v !== view);
   el("stories").classList.toggle("hidden", view !== "feed");
   el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
+  el("storyCreator")?.classList.add("hidden");
   el("feedSentinel")?.classList.toggle("hidden", view !== "feed");
   if (view === "feed") loadFeed();
   if (view === "explore") loadExplore();
@@ -107,9 +108,11 @@ function postHtml(p) {
 async function loadStories() {
   const { stories } = await api("/api/stories");
   state.stories = stories || [];
-  el("stories").innerHTML = state.stories.map((s, i) => `
-    <button class="story" type="button" data-story-index="${i}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || `<div class="story"><span>No stories</span></div>`;
+  const add = state.me ? `<button class="story story-add" type="button" id="addStoryBtn"><span class="story-plus">+</span><span>Your story</span></button>` : "";
+  el("stories").innerHTML = add + state.stories.map((s, i) => `
+    <button class="story" type="button" data-story-index="${i}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || (add ? "" : `<div class="story"><span>No stories</span></div>`);
   el("stories").querySelectorAll("[data-story-index]").forEach((b) => b.onclick = () => openStory(Number(b.dataset.storyIndex)));
+  el("addStoryBtn")?.addEventListener("click", () => el("storyCreator").classList.toggle("hidden"));
 }
 
 function renderStory() {
@@ -425,6 +428,17 @@ el("postForm").addEventListener("submit", async (e) => {
     e.currentTarget.reset();
     el("composer").classList.add("hidden");
     await loadFeed(true);
+  } catch (err) { alert(err.message); }
+});
+el("storyForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!state.me) return openAuth();
+  const fd = new FormData(e.currentTarget);
+  try {
+    await api("/api/stories", { method: "POST", body: JSON.stringify(Object.fromEntries(fd.entries())) });
+    e.currentTarget.reset();
+    el("storyCreator").classList.add("hidden");
+    await loadStories();
   } catch (err) { alert(err.message); }
 });
 el("profileEditForm")?.addEventListener("submit", async (e) => {

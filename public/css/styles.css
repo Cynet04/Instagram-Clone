@@ -56,7 +56,8 @@ button { cursor: pointer; }
 .stories { display: flex; gap: 14px; padding: 16px; overflow-x: auto; }
 .story { text-align: center; min-width: 66px; cursor: pointer; border: 0; background: none; color: inherit; }
 .story img, .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #d6249f; padding: 2px; background: var(--card); }
-.story span { display: block; font-size: 12px; margin-top: 4px; max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.story-add .story-plus { width: 56px; height: 56px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 2px dashed var(--blue); color: var(--blue); font-size: 28px; background: var(--card); }
+.story-add span:last-child { display: block; font-size: 12px; margin-top: 4px; }
 #profileEditDialog { border: 1px solid var(--line); border-radius: 12px; padding: 18px; width: min(92vw, 420px); background: var(--card); color: var(--text); }
 #profileEditDialog::backdrop { background: rgba(0,0,0,.45); }
 #profileEditDialog form { display: grid; gap: 10px; }

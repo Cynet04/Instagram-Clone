@@ -28,6 +28,13 @@
     <main class="layout">
       <section class="main-col">
         <section id="stories" class="stories card"></section>
+        <section id="storyCreator" class="card composer hidden">
+          <h3>Add to your story</h3>
+          <form id="storyForm">
+            <input type="url" name="image" placeholder="Story image URL (https://...)" required />
+            <button type="submit">Share story</button>
+          </form>
+        </section>
         <section id="composer" class="card composer hidden">
           <h3>Create post</h3>
           <form id="postForm">

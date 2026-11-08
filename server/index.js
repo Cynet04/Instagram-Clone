@@ -353,6 +353,18 @@ app.post("/api/messages/:userId", (req, res) => {
   res.json({ message: { ...msg, fromUser: safeUser(me) } });
 });
 
+app.post("/api/stories", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const image = String(req.body.image || "").trim();
+  if (!image || !(/^https?:\/\//i.test(image) || image.startsWith("/uploads/"))) return res.status(400).json({ error: "Valid image URL required." });
+  const story = { id: nanoid(8), userId: me.id, image: image.slice(0, 500), createdAt: Date.now() };
+  db.stories.unshift(story);
+  saveDb(db);
+  res.json({ story: { ...story, user: safeUser(me) } });
+});
+
 app.get("/api/stories", (req, res) => {
   const db = loadDb();
   const stories = [...db.stories].sort((a, b) => b.createdAt - a.createdAt).map((s) => ({ ...s, user: safeUser(db.users.find((u) => u.id === s.userId)) }));
