@@ -288,3 +288,10 @@
 - [x] Messages: show "You:" prefix for own last message preview
 - [x] Settings: show current logged-in user summary card
 - [x] Phase 23 autonomous batch complete (2026-11-08)
+
+## Phase 24: New Autonomous Features (2026-11-08)
+- [ ] Post: "Open image" action (new tab)
+- [ ] Feed: sort selector persists in localStorage
+- [ ] Profile: copy profile bio button
+- [ ] Messages: scroll DM body to bottom on open/send
+- [ ] Notifications: "Hide read" toggle (local filter)
