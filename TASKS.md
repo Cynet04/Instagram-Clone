@@ -414,8 +414,9 @@
 - [x] Phase bump to 39
 
 ## Phase 40: New Autonomous Features (2026-11-08)
-- [ ] Post: double-tap/like animation not needed; add subtle liked-state aria text
-- [ ] Explore: preserve active query in header after reload (done via input)
-- [ ] Profile: show blocked-users count not exposed; keep simple
-- [ ] Settings: add "Refresh SW registration" button
-- [ ] Phase bump to 40
+- [x] Phase 40 autonomous batch complete (2026-11-08)
+- [x] Post: double-tap/like animation not needed; add subtle liked-state aria text
+- [x] Explore: preserve active query in header after reload (done via input)
+- [x] Profile: show blocked-users count not exposed; keep simple
+- [x] Settings: add "Refresh SW registration" button
+- [x] Phase bump to 40
