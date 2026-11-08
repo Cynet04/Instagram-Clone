@@ -430,6 +430,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   }
 }
 
+function activityStatusEnabled(){ try { const v=localStorage.getItem("ig_activity_status"); return v===null?true:v==="true"; } catch { return true; } }
+function setActivityStatusEnabled(v){ localStorage.setItem("ig_activity_status", String(!!v)); }
 function loadNotifPrefs(){ try { return { like:true, comment:true, follow:true, comment_like:true, ...(JSON.parse(localStorage.getItem("ig_notif_prefs")||"{}")) }; } catch { return { like:true, comment:true, follow:true, comment_like:true }; } }
 function saveNotifPrefs(p){ localStorage.setItem("ig_notif_prefs", JSON.stringify(p)); }
 function recentSearches() { try { return JSON.parse(localStorage.getItem("ig_recent_searches") || "[]").filter((x) => typeof x === "string"); } catch { return []; } }
@@ -508,7 +510,9 @@ async function renderSettings() {
         <button id="settingsThemeBtn" type="button" class="mini-btn secondary" aria-pressed="${document.body.classList.contains("dark") ? "true" : "false"}">${document.body.classList.contains("dark") ? "Switch to light mode" : "Switch to dark mode"}</button>
       </section>
       <section>
-        <h4 style="margin:0 0 8px">Notification preferences (local)</h4>
+        <h4 style="margin:0 0 8px">Privacy & preferences (local)</h4>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px"><input type="checkbox" id="activityStatusPref" ${activityStatusEnabled()?"checked":""}/> Show activity status (local indicator)</label>
+        <h5 style="margin:8px 0">Notification preferences</h5>
         <div id="notifPrefs" style="display:grid;gap:6px;font-size:14px">
           ${[["like","Likes"],["comment","Comments"],["follow","Follows"],["comment_like","Comment likes"]].map(([k,l])=>`<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-notif-pref="${k}" ${loadNotifPrefs()[k]!==false?"checked":""}/> ${l}</label>`).join("")}
         </div>
@@ -559,6 +563,7 @@ async function renderSettings() {
     } catch (e) { toast(e.message, "error"); }
   });
   root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); localStorage.removeItem("ig_notif_prefs"); applyTheme(); toast("Local preferences cleared."); });
+  root.querySelector("#activityStatusPref")?.addEventListener("change", (e)=>{ setActivityStatusEnabled(e.target.checked); toast(e.target.checked?"Activity status enabled (local).":"Activity status hidden (local)."); renderMessages(); });
   root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));
   root.querySelector("#showShortcutsBtn")?.addEventListener("click", () => showDialog(el("shortcutsDialog")));
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
@@ -598,7 +603,7 @@ async function renderMessages() {
         ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` � ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
-        <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button>` : "Select a conversation"}</div>
+        <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<div><button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>${activityStatusEnabled() ? `<div class="muted" style="font-size:12px;font-weight:400">Active now</div>` : ``}</div><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button>` : "Select a conversation"}</div>
         <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}" data-msg-id="${esc(m.id || "")}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}${m.from === state.me.id && m.id ? ` <button type="button" class="del-msg-btn" data-msg-id="${esc(m.id)}" style="border:0;background:none;color:inherit;cursor:pointer;padding:0;margin-left:6px">Delete</button>` : ""}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
         ${active ? `<div id="dmTyping" class="form-status" aria-live="polite" style="padding:0 14px"></div><form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
       </div>
