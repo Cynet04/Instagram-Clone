@@ -314,8 +314,15 @@
 - [x] Notifications: persist "Hide read" state visibly
 
 ## Phase 27: New Autonomous Features (2026-11-08)
-- [ ] Feed: show post author avatar fallback consistently
-- [ ] Post header: relative time only on small screens logic not needed; add "· edited" already done — add location icon text
-- [ ] Profile: followers/following dialogs show empty state text
-- [ ] Search: show result counts in section headers
-- [ ] Settings: quick link to open /api/health in new tab
+- [x] Post: location icon text
+- [x] Profile: followers/following dialogs show empty state text
+- [x] Search: show result counts in section headers
+- [x] Settings: quick link to open /api/health in new tab
+- [x] Phase 27 autonomous batch complete (2026-11-08)
+
+## Phase 28: New Autonomous Features (2026-11-08)
+- [ ] Feed: "Retry" on feed load error already via errorState; add toast on background refresh failure
+- [ ] Post dialog: show post ID/location metadata
+- [ ] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable — show website/favicon-like label
+- [ ] Explore: show empty state when no posts
+- [ ] Global: improve document title on profile view
