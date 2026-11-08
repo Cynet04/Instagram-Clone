@@ -893,3 +893,11 @@ otif-time uses 	imeAgo (done)
 - [x] Client: show uptime in settings health status when present
 - [x] Post: copy-post-id button has title
 - [x] Phase bump to 99
+
+## Phase 100: New Autonomous Features (2026-11-08)
+- [x] Phase 100 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phases 17-99 complete, server restarted on phase 99)
+- [ ] Server: add GET /api/version (alias-style metadata for tooling)
+- [ ] Client: diagnostics include online and browser language
+- [x] Post dialog: add "Copy post ID" button alongside copy link
+- [x] Phase bump to 100

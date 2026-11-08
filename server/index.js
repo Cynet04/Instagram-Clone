@@ -115,7 +115,8 @@ app.use(session({
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(path.join(root, "public")));
 
-app.get("/api/health", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 99, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()) }); });
+app.get("/api/health", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 100, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()) }); });
+app.get("/api/version", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 100, time: new Date().toISOString() }); });
 
 app.get("/api/me", (req, res) => {
   const db = loadDb();
