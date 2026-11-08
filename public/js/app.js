@@ -445,6 +445,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     try { await navigator.clipboard?.writeText(text); toast("Profile card copied."); } catch { prompt("Profile card:", text); }
   });
   el("saveProfileNoteBtn")?.addEventListener("click", () => { if(!state.me) return; setProfileNote(state.me.id, user.id, el("profilePrivateNote")?.value||""); toast("Private note saved."); });
+  el("copyBioBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(user.bio||""); toast(user.bio ? "Bio copied." : "No bio to copy."); } catch { toast("Could not copy bio."); } });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const btn = el("shareProfileBtn");
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;

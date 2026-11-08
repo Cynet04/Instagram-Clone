@@ -290,8 +290,9 @@
 - [x] Phase 23 autonomous batch complete (2026-11-08)
 
 ## Phase 24: New Autonomous Features (2026-11-08)
-- [ ] Post: "Open image" action (new tab)
-- [ ] Feed: sort selector persists in localStorage
-- [ ] Profile: copy profile bio button
-- [ ] Messages: scroll DM body to bottom on open/send
-- [ ] Notifications: "Hide read" toggle (local filter)
+- [x] Phase 24 autonomous batch complete (2026-11-08)
+- [x] Post: "Open image" action (new tab)
+- [x] Feed: sort selector persists in localStorage
+- [x] Profile: copy profile bio button
+- [x] Messages: scroll DM body to bottom on open/send
+- [x] Notifications: "Hide read" toggle (local filter)
