@@ -754,8 +754,21 @@ async function loadMe() {
   refreshNotificationsBadge();
 }
 
+async function loadSuggestions() {
+  try {
+    const { users = [] } = await api("/api/search?q=a");
+    await renderSuggestions(users);
+  } catch {}
+}
+
 el("authBtn").onclick = async () => {
-  if (state.me) { await api("/api/auth/logout", { method: "POST", body: "{}" }); state.me = null; renderMe(); setView("feed"); toast("Logged out."); }
+  if (state.me) {
+    await api("/api/auth/logout", { method: "POST", body: "{}" });
+    state.me = null; state.dm.userId = null; state.feed.offset = 0; state.feed.hasMore = true;
+    renderMe(); updateBadge(0); loadSuggestions();
+    closeDialog(el("postDialog")); closeDialog(el("storyDialog")); closeDialog(el("profileEditDialog"));
+    setView("feed"); toast("Logged out.");
+  }
   else openAuth("login");
 };
 el("authToggle").onclick = () => openAuth(state.authMode === "login" ? "signup" : "login");
