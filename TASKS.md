@@ -981,3 +981,10 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Client: settings shows /api/ping result on "Check server" (best-effort)
 - [ ] Post: "View post details" dialog copy-link button has 	itle
 - [x] Phase bump to 110
+
+## Phase 111: New Autonomous Features (2026-11-08)
+- [x] Baseline green (phase 110, /api/ping restored)
+- [ ] Server: /api/version and /api/ping use consistent phase from healthPayload/shared const
+- [ ] Client: toast on "Check server" shows uptime when present
+- [ ] Profile: stats use post/posts plural for total
+- [ ] Phase bump to 111

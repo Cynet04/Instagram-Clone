@@ -70,16 +70,15 @@ function postHtml(p) {
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post" title="Delete this post">Delete</button>` : ""}
       </div>
-      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by @${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
-      <div class="post-actions">
-        <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
-        <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
-        <button class="copy-caption-btn" type="button" aria-label="Copy post caption" title="Copy post caption" ${p.caption?"":"disabled"}>Copy caption</button>
-        <button class="copy-image-btn" type="button" aria-label="Copy image link">Copy image</button>
-        <button class="open-image-btn" type="button" aria-label="Open image in new tab" title="Open image in new tab">Open image</button>
-        <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
-        ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
-        <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
+      <div class="post-image-wrap"><img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by @${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" /><div class="heart-burst" aria-hidden="true">?</div></div>
+            <div class="post-actions" aria-label="Post actions">
+        <button class="like-btn icon-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}" title="${p.likedByMe ? "Unlike" : "Like"}"><span aria-hidden="true" class="action-icon">${p.likedByMe ? "?" : "?"}</span></button>
+        <button class="comment-focus-btn icon-btn" type="button" aria-label="Comment" title="Comment"><span aria-hidden="true" class="action-icon">??</span></button>
+        <button class="share-post-btn icon-btn" type="button" aria-label="Copy post link" title="Share"><span aria-hidden="true" class="action-icon">?</span></button>
+        <button class="copy-caption-btn icon-btn" type="button" aria-label="Copy post caption" title="Copy caption" ${p.caption?"":"disabled"}><span aria-hidden="true" class="action-icon">?</span></button>
+        <button class="open-image-btn icon-btn" type="button" aria-label="Open image in new tab" title="Open image"><span aria-hidden="true" class="action-icon">?</span></button>
+        ${!mine ? '<button class="report-post-btn icon-btn" type="button" aria-label="Report post" title="Report"><span aria-hidden="true" class="action-icon">?</span></button>' : ""}
+        <button class="save-btn icon-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" title="${p.savedByMe ? "Saved" : "Save"}" style="margin-left:auto"><span aria-hidden="true" class="action-icon">${p.savedByMe ? "??" : "??"}</span></button>
       </div>
       <div class="post-likes">${p.likesCount} ${p.likesCount===1?"like":"likes"}${mine && typeof p.savesCount === "number" ? ` · ${p.savesCount} ${p.savesCount===1?"save":"saves"}` : ""}${shareCount(p.id)?` · ${shareCount(p.id)} shares`:""}</div>
       <div class="post-caption">${p.location ? `<div class="muted" style="font-size:12px;margin-bottom:2px">📍 ${esc(p.location)}</div>` : ""}<strong class="profile-link" data-profile="${esc(p.user?.username || "")}" aria-label="View @${esc(p.user?.username || "")} profile" role="button" tabindex="0">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
@@ -595,7 +594,7 @@ async function renderSettings() {
   } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
-  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); const ping = await api("/api/ping").catch(()=>null); if(ping?.pong) toast(`Server healthy · ping phase ${ping.phase||"?"}`); else toast("Server status refreshed."); });
+  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); const ping = await api("/api/ping").catch(()=>null); if(ping?.pong) toast(`Server healthy · phase ${ping.phase||"?"}${typeof ping.uptimeSec==="number"?` · up ${ping.uptimeSec}s`:""}`); else toast("Server status refreshed."); });
   root.querySelector("#reloadPageBtn")?.addEventListener("click", () => location.reload());
   if("serviceWorker" in navigator){ navigator.serviceWorker.getRegistration().then((r)=>{ const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; }).catch(()=>{}); }
   root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });

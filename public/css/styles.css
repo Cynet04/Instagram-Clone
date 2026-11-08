@@ -177,3 +177,12 @@ body.dark .hashtag { color: #e0f1ff; }
 .composer select { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--card); color: var(--text); }
 
 .state-card .mini-btn { margin-top: 10px; }
+
+.post-actions .icon-btn { font-size: 22px; line-height: 1; padding: 4px; border-radius: 8px; min-width: 34px; min-height: 34px; display:inline-flex; align-items:center; justify-content:center; }
+.post-actions .icon-btn:hover { background: var(--hover, rgba(0,0,0,.05)); }
+.post-actions .icon-btn:disabled { opacity: .45; cursor: not-allowed; }
+.post-actions .like-btn.liked { color: #ed4956; }
+.post-actions .save-btn.saved { color: var(--text); }
+.post-image-wrap { position: relative; }
+.heart-burst { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.6); font-size:72px; color:#fff; text-shadow:0 6px 24px rgba(0,0,0,.35); pointer-events:none; opacity:0; transition:opacity .12s ease, transform .28s ease; }
+.heart-burst.show { opacity:.95; transform:translate(-50%,-50%) scale(1); }
