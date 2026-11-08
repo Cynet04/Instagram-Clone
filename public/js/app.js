@@ -33,19 +33,28 @@ function timeAgo(ts) {
   return `${Math.floor(h / 24)}d`;
 }
 
-function setView(view) {
+function routeHash() {
+  return location.hash.replace(/^#\/?/, "");
+}
+
+function setView(view, opts = {}) {
   state.view = view;
+  if (!opts.fromHash) {
+    const next = view === "profile" && opts.username ? `#/profile/${encodeURIComponent(opts.username)}` : `#/${view}`;
+    if (location.hash !== next) history.replaceState(null, "", next);
+  }
   for (const v of views) el(`view-${v}`)?.classList.toggle("hidden", v !== view);
   el("stories").classList.toggle("hidden", view !== "feed");
   el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
   el("storyCreator")?.classList.add("hidden");
   el("feedSentinel")?.classList.toggle("hidden", view !== "feed");
+  if (opts.skipLoad) return;
   if (view === "feed") loadFeed();
   if (view === "explore") loadExplore();
   if (view === "notifications") loadNotifications();
   if (view === "saved") loadSaved();
   if (view === "messages") renderMessages();
-  if (view === "profile") loadProfile(state.me?.username);
+  if (view === "profile") loadProfile(opts.username || state.me?.username, opts.tab || "posts", { fromRoute: !!opts.fromHash });
 }
 
 function renderMe() {
@@ -252,12 +261,15 @@ async function refreshNotificationsBadge() {
   try { const { unread } = await api("/api/notifications"); updateBadge(unread); } catch { updateBadge(0); }
 }
 
-async function loadProfile(username, tab = "posts") {
+async function loadProfile(username, tab = "posts", opts = {}) {
   if (!username) {
+    if (location.hash.startsWith("#/profile/") && !opts.fromRoute) history.replaceState(null, "", "#/profile");
     el("view-profile").innerHTML = `<div class="card" style="padding:16px">Log in to view your profile.</div>`;
-    setView("profile");
+    setView("profile", { skipLoad: true, fromHash: opts.fromRoute });
     return;
   }
+  const hash = `#/profile/${encodeURIComponent(username)}`;
+  if (location.hash !== hash) history.replaceState(null, "", hash);
   const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
   let savedPosts = [];
   if (isMe && tab === "saved" && state.me) {
@@ -299,7 +311,7 @@ async function loadProfile(username, tab = "posts") {
     el("profileEditDialog").showModal();
   });
   el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
-  setView("profile");
+  setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username: user.username });
 }
 
 async function loadSearch(q) {
@@ -552,7 +564,17 @@ document.addEventListener("keydown", (e) => {
   if (dialog?.open) dialog.close();
 });
 
+async function handleRoute() {
+  const route = routeHash();
+  if (!route || route === "feed") return setView("feed", { fromHash: true });
+  if (route.startsWith("profile/")) return loadProfile(decodeURIComponent(route.slice("profile/".length)), "posts", { fromRoute: true });
+  if (route === "profile") return loadProfile(state.me?.username, "posts", { fromRoute: true });
+  if (views.includes(route)) return setView(route, { fromHash: true });
+  setView("feed", { fromHash: true });
+}
+window.addEventListener("hashchange", handleRoute);
+
 await loadMe();
 await loadStories();
 renderMessages();
-setView("feed");
+await handleRoute();
