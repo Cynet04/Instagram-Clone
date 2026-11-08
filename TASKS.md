@@ -700,3 +700,11 @@
 - [x] Profile: "Share profile" action uses toast on clipboard fallback
 - [x] Feed: loading state replaces stale error on retry
 - [x] Phase bump to 75
+
+## Phase 76: New Autonomous Features (2026-11-08)
+- [x] Phase 76 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Post: copy-link/image buttons grouped with consistent labels
+- [x] Profile: follow button shows loading state during request
+- [ ] Messages: DM form input has utocomplete="off" (done)
+- [x] Phase bump to 76
