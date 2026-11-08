@@ -3,6 +3,8 @@ const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, li
 const el = (id) => document.getElementById(id);
 const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search", "settings"];
 let feedObserver;
+const scrollByView = {};
+
 const APP_BUILD = { name: "Socially MVP", phase: "21", date: "2026-11-08" };
 function hiddenNotifIds(){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")); } catch { return new Set(); } }
 function hideNotifId(id){ try { const ids=[...hiddenNotifIds()]; if(!ids.includes(id)) ids.unshift(id); localStorage.setItem("ig_hidden_notifs", JSON.stringify(ids.slice(0,200))); } catch {} }
@@ -576,7 +578,7 @@ async function renderSettings() {
       </section>
       <section>
         <h4 style="margin:0 0 8px">Local data / diagnostics</h4>
-        <div class="card" style="padding:12px;margin-bottom:12px"><strong>@${esc(state.me.username)}</strong><div class="muted" style="font-size:13px">${esc(state.me.name||"")}${state.me.bio?` · ${esc(String(state.me.bio).slice(0,60))}`:""}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="exportDataBtn" type="button" class="mini-btn secondary">Export my data</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button><button id="clearSearchHistoryBtn" type="button" class="mini-btn secondary">Clear search history</button><button id="clearHiddenNotifsBtn" type="button" class="mini-btn secondary">Clear hidden notifications</button><button id="resetLocalIgBtn" type="button" class="mini-btn secondary">Reset local IG prefs</button></div>
+        <div class="card" style="padding:12px;margin-bottom:12px"><strong>@${esc(state.me.username)}</strong><div class="muted" style="font-size:13px">${esc(state.me.name||"")}${state.me.bio?` · ${esc(String(state.me.bio).slice(0,60))}`:""}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="copyBuildBtn" type="button" class="mini-btn secondary">Copy build info</button><button id="exportDataBtn" type="button" class="mini-btn secondary">Export my data</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button><button id="clearSearchHistoryBtn" type="button" class="mini-btn secondary">Clear search history</button><button id="clearHiddenNotifsBtn" type="button" class="mini-btn secondary">Clear hidden notifications</button><button id="resetLocalIgBtn" type="button" class="mini-btn secondary">Reset local IG prefs</button></div>
         <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme/recent searches stored in localStorage. Runtime data/uploads are local and not exported by this client.</div>
       </section>
       <section>
@@ -593,6 +595,7 @@ async function renderSettings() {
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
   root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); toast("Server status refreshed."); });
+  root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });
   root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
     const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
