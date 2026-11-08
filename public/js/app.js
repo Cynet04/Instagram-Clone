@@ -435,7 +435,7 @@ async function loadSearch(q) {
     const postsHtml = posts.length
       ? posts.map(postHtml).join("")
       : emptyState("No posts found", `No results for "${esc(q)}". Try a different keyword or hashtag.`);
-    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} Â· ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
+    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} · ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
     el("view-search").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
     el("view-search").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
       if (!state.me) return openAuth();
@@ -469,15 +469,16 @@ async function renderMessages() {
     el("view-messages").innerHTML = `<div class="card dm">
       <div class="dm-list">
         <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
-        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` Â· ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
+        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` · ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
-        <div class="dm-head">${active ? esc(active.username) : "Select a conversation"}</div>
+        <div class="dm-head">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>` : "Select a conversation"}</div>
         <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
         ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" /><button>Send</button></form>` : ``}
       </div>
     </div>`;
     el("view-messages").querySelectorAll("[data-dm]").forEach((n) => n.onclick = () => { state.dm.userId = n.dataset.dm; renderMessages(); });
+    bindProfileLinks(el("view-messages"));
     el("dmForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const input = e.currentTarget.querySelector("input[name=text]");
@@ -498,7 +499,7 @@ async function renderMessages() {
         const res = await api(`/api/messages/${state.dm.userId}`, { method: "POST", body: JSON.stringify({ text }) });
         optimistic.outerHTML = `<div class="dm-msg me"><div>${esc(res.message?.text || text)}</div><div class="dm-time">${timeAgo(res.message?.createdAt || Date.now())}</div></div>`;
         const item = el("view-messages").querySelector(`.dm-item[data-dm="${state.dm.userId}"] div[style*="color:var(--muted)"]`);
-        if (item) item.textContent = `${text} Â· ${timeAgo(Date.now())}`;
+        if (item) item.textContent = `${text} · ${timeAgo(Date.now())}`;
         if (body) body.scrollTop = body.scrollHeight;
       } catch (err) {
         optimistic.remove();
