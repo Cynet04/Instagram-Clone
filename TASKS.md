@@ -796,3 +796,12 @@ ull user cleanly (verify) and 401 not used for polling
 - [x] Profile: "Share profile" uses consistent URL origin/path
 - [x] DM: typing indicator clears on conversation switch (done via rerender)
 - [x] Phase bump to 87
+
+## Phase 88: New Autonomous Features (2026-11-08)
+- [x] Phase 88 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Feed: posts render with stable key-like data-post-id (done)
+- [ ] Notifications: 
+otif-time uses 	imeAgo (done)
+- [ ] Server: all JSON error responses use { error } shape (verify core paths)
+- [x] Phase bump to 88
