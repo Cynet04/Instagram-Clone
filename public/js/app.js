@@ -63,15 +63,30 @@ function renderMe() {
   `;
 }
 
-function renderSuggestions(users = []) {
-  const picks = users.filter((u) => u.username !== state.me?.username).slice(0, 5);
+async function renderSuggestions(users = []) {
+  const base = users.filter((u) => u.username !== state.me?.username);
+  let picks = base.slice(0, 5);
+  if (state.me && base.length) {
+    try {
+      const details = await Promise.all(base.slice(0, 8).map((u) => api(`/api/users/${encodeURIComponent(u.username)}`).then((d) => ({ ...u, isFollowing: d.isFollowing })).catch(() => ({ ...u, isFollowing: false }))));
+      picks = details.filter((u) => !u.isFollowing).slice(0, 5);
+      if (!picks.length) picks = details.slice(0, 5);
+    } catch {}
+  }
   el("suggestions").innerHTML = picks.map((u) => `
     <div class="suggestion">
       <img class="avatar" src="${avatar(u)}" alt="" />
-      <div><div><strong>${esc(u.username)}</strong></div><small class="muted">Suggested for you</small></div>
-      <button data-user="${esc(u.username)}">View</button>
+      <div style="flex:1"><div><strong>${esc(u.username)}</strong></div><small class="muted">Suggested for you</small></div>
+      <div style="display:flex;gap:8px">
+        <button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px">${u.isFollowing ? "Following" : "Follow"}</button>
+        <button data-user="${esc(u.username)}">View</button>
+      </div>
     </div>`).join("") || `<small class="muted">No suggestions yet.</small>`;
   el("suggestions").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
+  el("suggestions").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
+    if (!state.me) return openAuth();
+    try { await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" }); loadFeed(true); refreshNotificationsBadge(); } catch (e) { alert(e.message); }
+  });
 }
 
 function postHtml(p) {
@@ -152,7 +167,7 @@ async function loadFeed(reset = true) {
       state.feed.offset === 0 ? api("/api/search?q=a") : Promise.resolve({ users: [] })
     ]);
     el(statusId)?.remove();
-    if (state.feed.offset === 0) renderSuggestions(search.users || []);
+    if (state.feed.offset === 0) await renderSuggestions(search.users || []);
     const html = (feed.posts || []).map(postHtml).join("");
     const wrap = document.createElement("div");
     wrap.innerHTML = html;
