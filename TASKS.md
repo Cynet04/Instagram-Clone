@@ -660,3 +660,11 @@
 - [ ] Profile: website link uses ria-label
 - [x] Feed: comment count span has stable semantics (already)
 - [x] Phase bump to 70
+
+## Phase 71: New Autonomous Features (2026-11-08)
+- [x] Phase 71 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Post dialog: include caption/location in accessible description
+- [ ] DM: quick-reply chips have ria-label
+- [x] Settings: "Refresh SW status" label consistent
+- [x] Phase bump to 71
