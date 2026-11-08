@@ -43,12 +43,17 @@ function timeAgo(ts) {
   return `${Math.floor(h / 24)}d`;
 }
 
+function setNavActive(view) {
+  document.querySelectorAll("[data-nav-view]").forEach((b) => b.classList.toggle("active", b.dataset.navView === view));
+}
+
 function routeHash() {
   return location.hash.replace(/^#\/?/, "");
 }
 
 function setView(view, opts = {}) {
   state.view = view;
+  setNavActive(view);
   if (!opts.fromHash) {
     const next = view === "profile" && opts.username ? `#/profile/${encodeURIComponent(opts.username)}` : `#/${view}`;
     if (location.hash !== next) history.replaceState(null, "", next);
@@ -111,15 +116,16 @@ async function renderSuggestions(users = []) {
 function postHtml(p) {
   const filter = esc(p.filter || "none");
   const mine = state.me && p.user?.id === state.me.id;
+  const fallback = "https://placehold.co/1080x1080/f5f5f5/737373?text=Image+unavailable";
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
-        <img class="avatar profile-link" src="${avatar(p.user)}" alt="" data-profile="${esc(p.user?.username || "")}" />
+        <img class="avatar profile-link" src="${avatar(p.user)}" alt="" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
-      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" />
+      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">Comment</button>
