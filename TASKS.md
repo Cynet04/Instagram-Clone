@@ -282,8 +282,9 @@
 - [x] Settings: "Reset all local IG prefs" with confirm
 
 ## Phase 23: New Autonomous Features (2026-11-08)
-- [ ] Feed: show "End of feed" when hasMore is false
-- [ ] Post: copy caption text button
-- [ ] Profile: bio character/line safety (no overflow)
-- [ ] Messages: show "You:" prefix for own last message preview
-- [ ] Settings: show current logged-in user summary card
+- [x] Feed: show "End of feed" when hasMore is false
+- [x] Post: copy caption text button
+- [x] Profile: bio character/line safety (no overflow)
+- [x] Messages: show "You:" prefix for own last message preview
+- [x] Settings: show current logged-in user summary card
+- [x] Phase 23 autonomous batch complete (2026-11-08)
