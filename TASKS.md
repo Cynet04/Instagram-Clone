@@ -73,7 +73,8 @@
 - [x] Feed image open affordance (hover feedback + post detail title)
 - [x] Keyboard-accessible post open (grid/explore/feed images focusable via keyboard with Enter/Space)
 - [x] Search loading/empty-state polish (search shows loading state, clearer empty users/posts results, error state)
-- [ ] Additional autonomous features (e.g., profile post counts refresh polish, post share/copy link, notification/profile follow-state refinements)
+- [x] Post share/copy link + deep-link route (post Share copies `#/post/:id`; route opens post dialog)
+- [ ] Additional autonomous features (e.g., profile post counts refresh polish, notification/profile follow-state refinements, reusable toast/status polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -97,3 +98,4 @@
 - 2026-11-08: Feed image open affordance added (hover feedback and post-detail title on post images). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Keyboard-accessible post open added (feed/profile/explore post images are focusable with Enter/Space support and ARIA labels). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Search loading/empty-state polish added (search loading indicator, clearer users/posts empty results, and error handling). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Post share/copy link and deep-link route added (post Share copies `#/post/:id`; hash route opens post detail dialog). Client syntax and health verified. Next: additional autonomous features.
