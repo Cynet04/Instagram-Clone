@@ -481,11 +481,30 @@ async function renderMessages() {
     el("dmForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const input = e.currentTarget.querySelector("input[name=text]");
+      const btn = e.currentTarget.querySelector("button");
       const text = input.value.trim();
       if (!text || !state.dm.userId) return;
-      await api(`/api/messages/${state.dm.userId}`, { method: "POST", body: JSON.stringify({ text }) });
+      const prev = input.value;
       input.value = "";
-      renderMessages();
+      if (btn) { btn.disabled = true; btn.textContent = "Sending..."; }
+      const body = el("view-messages").querySelector(".dm-body");
+      const optimistic = document.createElement("div");
+      optimistic.className = "dm-msg me";
+      optimistic.style.opacity = "0.65";
+      optimistic.innerHTML = `<div>${esc(text)}</div><div class="dm-time">Sending...</div>`;
+      body?.appendChild(optimistic);
+      if (body) body.scrollTop = body.scrollHeight;
+      try {
+        const res = await api(`/api/messages/${state.dm.userId}`, { method: "POST", body: JSON.stringify({ text }) });
+        optimistic.outerHTML = `<div class="dm-msg me"><div>${esc(res.message?.text || text)}</div><div class="dm-time">${timeAgo(res.message?.createdAt || Date.now())}</div></div>`;
+        const item = el("view-messages").querySelector(`.dm-item[data-dm="${state.dm.userId}"] div[style*="color:var(--muted)"]`);
+        if (item) item.textContent = `${text} · ${timeAgo(Date.now())}`;
+        if (body) body.scrollTop = body.scrollHeight;
+      } catch (err) {
+        optimistic.remove();
+        input.value = prev;
+        toast(err.message, "error");
+      } finally { if (btn) { btn.disabled = false; btn.textContent = "Send"; } }
     });
     const body = el("view-messages").querySelector(".dm-body");
     if (body) body.scrollTop = body.scrollHeight;
