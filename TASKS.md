@@ -716,3 +716,11 @@
 - [ ] Notifications: follow button has ria-busy during request
 - [ ] Settings: password form has ria-describedby for status
 - [x] Phase bump to 77
+
+## Phase 78: New Autonomous Features (2026-11-08)
+- [x] Phase 78 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Feed: post sort select shows current value (done)
+- [ ] Search: # tag result opens explore (done)
+- [x] Profile: "Posts" stat opens posts tab (done)
+- [x] Phase bump to 78
