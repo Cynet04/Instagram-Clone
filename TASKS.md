@@ -636,3 +636,11 @@
 - [ ] Post: action buttons have consistent 	ype="button" (verify)
 - [ ] Messages: DM send form uses ria-label
 - [x] Phase bump to 67
+
+## Phase 68: New Autonomous Features (2026-11-08)
+- [x] Phase 68 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Auth: dialog title/labels remain accessible
+- [x] Post: comment sort selector has stable aria-label
+- [x] Explore: post cards in grid have focus-visible via tabindex (already)
+- [x] Phase bump to 68
