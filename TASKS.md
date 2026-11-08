@@ -335,8 +335,9 @@
 - [x] Phase 29 autonomous batch complete (2026-11-08)
 
 ## Phase 30: New Autonomous Features (2026-11-08)
-- [ ] Post: show likes label as "like/likes" correctly
-- [ ] Profile: "Message" button hidden for self (already) / add follow state consistency
-- [ ] Search: remember last query in input on view return (local)
-- [ ] Notifications: click actor avatar/name also navigates to profile
-- [ ] Composer: clear location/alt on reset after post meantoldString
+- [x] Phase 30 autonomous batch complete (2026-11-08)
+- [x] Post: show likes label as "like/likes" correctly
+- [x] Profile: "Message" button hidden for self (already) / add follow state consistency
+- [x] Search: remember last query in input on view return (local)
+- [x] Notifications: click actor avatar/name also navigates to profile
+- [x] Composer: clear location/alt on reset after post meantoldString
