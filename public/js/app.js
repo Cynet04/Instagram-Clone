@@ -108,7 +108,8 @@ function renderStory() {
   if (!s) return;
   el("storyImage").src = s.image;
   el("storyImage").alt = `Story by ${s.user?.username || "user"}`;
-  el("storyMeta").textContent = `${s.user?.username || "story"} � ${timeAgo(s.createdAt)}`;
+  el("storyMeta").innerHTML = `<span>${esc(s.user?.username || "story")} · ${timeAgo(s.createdAt)}</span><span style="display:inline-flex;gap:6px;margin-left:10px">${["❤️","🔥","👏","😂"].map((r)=>`<button type="button" class="mini-btn secondary story-react-btn" data-react="${r}" aria-label="React ${r}" style="padding:2px 8px">${r}</button>`).join("")}</span>`;
+  el("storyMeta").querySelectorAll(".story-react-btn").forEach((b)=>b.onclick=(e)=>{ e.stopPropagation(); toast(`${b.dataset.react} reaction sent to @${s.user?.username || "user"} (local MVP).`); });
   const prev = el("storyPrev"); const next = el("storyNext");
   if (prev) prev.disabled = state.storyIndex <= 0;
   if (next) next.disabled = false;
