@@ -272,3 +272,10 @@
 - [x] DM conversation list last message preview truncation polish
 - [x] Composer image URL load error inline message
 - [x] Search result avatars consistent sizing/fallback
+
+## Phase 22: New Autonomous Features (2026-11-08)
+- [ ] Post caption "edited" indicator when caption changed (client heuristic)
+- [ ] Profile: show total likes received across posts (computed)
+- [ ] DM list: unread dot indicator per conversation
+- [ ] Search: clear button (x) inside search input behavior
+- [ ] Settings: "Reset all local IG prefs" with confirm
