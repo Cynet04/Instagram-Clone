@@ -477,6 +477,17 @@ app.post("/api/messages/:userId", (req, res) => {
   res.json({ message: { ...msg, fromUser: safeUser(me) } });
 });
 
+app.delete("/api/messages/:userId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const other = db.users.find((u) => u.id === req.params.userId);
+  if (!other) return res.status(404).json({ error: "User not found." });
+  db.messages = (db.messages || []).filter((m) => !((m.from === me.id && m.to === other.id) || (m.from === other.id && m.to === me.id)));
+  saveDb(db);
+  res.json({ ok: true });
+});
+
 app.post("/api/stories", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);

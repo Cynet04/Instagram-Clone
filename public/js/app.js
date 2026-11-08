@@ -564,7 +564,7 @@ async function renderMessages() {
         ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` � ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
-        <div class="dm-head">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>` : "Select a conversation"}</div>
+        <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button>` : "Select a conversation"}</div>
         <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
         ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
       </div>
@@ -575,6 +575,11 @@ async function renderMessages() {
       n.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
     });
     bindProfileLinks(el("view-messages"));
+    el("clearDmBtn")?.addEventListener("click", async () => {
+      if (!state.dm.userId || !confirm("Clear this conversation?")) return;
+      try { await api(`/api/messages/${state.dm.userId}`, { method: "DELETE" }); toast("Conversation cleared."); renderMessages(); refreshDmBadge(); }
+      catch (e) { toast(e.message, "error"); }
+    });
     el("dmForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const input = e.currentTarget.querySelector("input[name=text]");
