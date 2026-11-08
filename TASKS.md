@@ -492,3 +492,11 @@
 - [x] Profile: website label text shows "Website" prefix
 - [x] Messages: DM list marks active conversation with aria-current
 - [x] Phase bump to 49
+
+## Phase 50: New Autonomous Features (2026-11-08)
+- [x] Phase 50 autonomous batch complete (2026-11-08)
+- [x] Post: like button disabled state for logged-out users handled by auth prompt
+- [x] Search: clear last query when search closed/navigated away
+- [x] Settings: show health phase from API after check
+- [x] Profile: avatar fallback in header uses consistent style
+- [x] Phase bump to 50
