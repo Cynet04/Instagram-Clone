@@ -249,7 +249,7 @@
 - [x] Phase 13 autonomous batch complete (2026-11-08)
 
 ## Phase 15: New Autonomous Features (2026-11-08)
-- [ ] "Back to top" button on feed when scrolled
+- [x] "Back to top" button on feed when scrolled
 - [ ] Post timestamp tooltip/full datetime on hover/title
 - [ ] Profile bio linkify (URLs clickable in bio)
 - [ ] Clear all search history from settings
