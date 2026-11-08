@@ -329,8 +329,14 @@
 - [x] Global: improve document title on profile view
 
 ## Phase 29: New Autonomous Features (2026-11-08)
-- [ ] Comments: show "Edited" only heuristic persisted (already local) — add comment count badge near form
-- [ ] Feed: show loading text for "load more" sentinel state
-- [ ] Profile: disable follow/message actions when viewing own profile edge cases (already handled)
-- [ ] Saved view: add "Back to profile" hint
-- [ ] Settings: show notifications unread count
+- [x] Settings: show notifications unread count
+- [x] Feed: show loading text for "load more" sentinel state
+- [x] Comments: show comment count badge near form
+- [x] Phase 29 autonomous batch complete (2026-11-08)
+
+## Phase 30: New Autonomous Features (2026-11-08)
+- [ ] Post: show likes label as "like/likes" correctly
+- [ ] Profile: "Message" button hidden for self (already) / add follow state consistency
+- [ ] Search: remember last query in input on view return (local)
+- [ ] Notifications: click actor avatar/name also navigates to profile
+- [ ] Composer: clear location/alt on reset after post meantoldString
