@@ -88,10 +88,10 @@ function renderMe() {
   const authBtn = el("authBtn");
   if (!state.me) {
     box.innerHTML = `<div class="meta"><strong>Welcome</strong><small>Log in to post, like, and comment.</small></div>`;
-    authBtn.textContent = "Log in";
+    if (authBtn) authBtn.querySelector(".nav-label") ? authBtn.querySelector(".nav-label").textContent = "Log in" : authBtn.textContent = "Log in";
     return;
   }
-  authBtn.textContent = "Log out";
+  if (authBtn) authBtn.querySelector(".nav-label") ? authBtn.querySelector(".nav-label").textContent = "Log out" : authBtn.textContent = "Log out";
   box.innerHTML = `
     <img class="avatar" src="${avatar(state.me)}" alt="" />
     <div class="meta"><strong>${esc(state.me.username)}</strong><small>${esc(state.me.name || "")}</small></div>

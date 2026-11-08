@@ -156,6 +156,14 @@ body.dark .hashtag { color: #e0f1ff; }
 .error { color: #c00; min-height: 1.2em; margin: 0; font-size: 13px; }
 
 @media (max-width: 900px) { .side-col { display: none; } .layout { grid-template-columns: 1fr; } .search { display: none; } }
+@media (max-width: 700px) {
+  .nav-inner { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+  .brand { font-size: 24px; }
+  .nav-actions { width: 100%; overflow-x: auto; gap: 4px; padding-bottom: 2px; }
+  .nav-actions button { white-space: nowrap; font-size: 13px; padding: 6px 8px; }
+  .layout { margin: 12px auto; padding: 0 8px; }
+  .profile-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
 
 .composer-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
 .post-preview-wrap { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--input); }
