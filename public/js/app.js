@@ -895,6 +895,7 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
 
 async function refreshHealth() {
   const target = el("healthText");
+  const time = el("healthTime");
   if (!target) return;
   try {
     const res = await fetch("/api/health", { credentials: "same-origin" });
@@ -902,9 +903,11 @@ async function refreshHealth() {
     const ok = res.ok && data.ok;
     target.textContent = ok ? "Server connected" : "Server issue";
     target.style.color = ok ? "" : "#c00";
+    if (time) time.textContent = ok ? `Checked ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : "";
   } catch {
     target.textContent = "Server offline";
     target.style.color = "#c00";
+    if (time) time.textContent = "";
   }
 }
 
