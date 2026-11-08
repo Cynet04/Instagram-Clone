@@ -387,27 +387,43 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   }
 }
 
+function recentSearches() { try { return JSON.parse(localStorage.getItem("ig_recent_searches") || "[]").filter((x) => typeof x === "string"); } catch { return []; } }
+function saveRecentSearch(q) {
+  const v = String(q || "").trim().slice(0, 80); if (!v) return;
+  const next = [v, ...recentSearches().filter((x) => x.toLowerCase() !== v.toLowerCase())].slice(0, 8);
+  localStorage.setItem("ig_recent_searches", JSON.stringify(next));
+}
+
 async function loadSearch(q) {
-  if (!String(q || "").trim()) { setView("explore"); return; }
-  setDocumentTitle(`Search: ${q}`);
-  history.replaceState(null, "", `#/search/${encodeURIComponent(q)}`);
-  el("view-search").innerHTML = loadingState("Searching...");
+  const query = (q || "").trim();
+  const recent = recentSearches();
+  if (!query) {
+    setDocumentTitle("Search • Instagram Clone");
+    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="margin:0">Search</h3>${recent.length ? `<button id="clearRecentSearches" class="mini-btn secondary" type="button">Clear recent</button>` : ""}</div>${recent.length ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">${recent.map((r) => `<button class="mini-btn secondary" type="button" data-recent-search="${esc(r)}">${esc(r)}</button>`).join("")}</div>` : `<div style="margin-top:12px">${emptyState("Search Instagram Clone", "Find people and posts. Recent searches will appear here.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:0;padding:8px 0">')}</div>`}</div>`;
+    el("view-search").querySelector("#clearRecentSearches")?.addEventListener("click", () => { localStorage.removeItem("ig_recent_searches"); toast("Recent searches cleared."); loadSearch(""); });
+    el("view-search").querySelectorAll("[data-recent-search]").forEach((b) => b.addEventListener("click", () => { el("searchInput").value = b.dataset.recentSearch; loadSearch(b.dataset.recentSearch); }));
+    return setView("search", { skipLoad: true });
+  }
+  saveRecentSearch(query);
+  history.replaceState(null, "", `#/search/${encodeURIComponent(query)}`);
+  setDocumentTitle(`Search: ${query} • Instagram Clone`);
+  el("view-search").innerHTML = loadingState(`Searching for "${esc(query)}"...`);
   try {
-    const { users = [], posts = [] } = await api(`/api/search?q=${encodeURIComponent(q)}`);
-    const usersHtml = users.length
-      ? users.map((u) => `<div class="suggestion"><img class="avatar profile-link" src="${avatar(u)}" alt="" data-profile="${esc(u.username)}" /><div style="flex:1"><strong class="profile-link" data-profile="${esc(u.username)}">${esc(u.username)}</strong><small class="muted" style="display:block">${esc(u.name || "")}</small></div>${state.me && !u.isMe ? `<button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px" aria-label="${u.isFollowing ? "Unfollow" : "Follow"} ${esc(u.username)}">${u.isFollowing ? "Following" : "Follow"}</button>` : ""}<button data-user="${esc(u.username)}" class="mini-btn secondary" style="padding:4px 8px;font-size:12px" aria-label="View profile ${esc(u.username)}">View</button></div>`).join("")
-      : `<div style="padding:8px 0;color:var(--muted)">No users found.</div>`;
-    const postsHtml = posts.length
-      ? posts.map(postHtml).join("")
-      : emptyState("No posts found", `No results for "${esc(q)}". Try a different keyword or hashtag.`);
-    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} � ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
+    const { users = [], posts = [] } = await api(`/api/search?q=${encodeURIComponent(query)}`);
+    const usersHtml = users.map((u) => `<div class="notif" style="align-items:center"><img class="avatar" src="${avatar(u)}" alt="" style="width:36px;height:36px" /><div style="flex:1"><strong>@${esc(u.username)}</strong><div style="color:var(--muted);font-size:13px">${esc(u.name || "")}</div></div>${u.isMe ? `<button class="mini-btn secondary" type="button" data-user="${esc(u.username)}">View</button>` : `<button class="mini-btn ${u.isFollowing ? "secondary" : ""}" type="button" data-follow-user="${esc(u.username)}" aria-label="${u.isFollowing ? "Unfollow" : "Follow"} ${esc(u.username)}" aria-pressed="${u.isFollowing ? "true" : "false"}">${u.isFollowing ? "Following" : "Follow"}</button><button class="mini-btn secondary" type="button" data-user="${esc(u.username)}">View</button>`}</div>`).join("") || `<div style="padding:4px 0">${emptyState("No users found", `No accounts matched "${esc(query)}".`).replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:0;padding:8px 0">')}</div>`;
+    const postsHtml = posts.length ? `<div class="explore-grid card" style="padding:4px;border:0">${posts.map((p) => `<img src="${esc(p.image)}" class="filter-${esc(p.filter || "none")}" data-post-id="${esc(p.id)}" alt="Post by ${esc(p.user?.username || "user")}" loading="lazy" decoding="async" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" />`).join("")}</div>` : emptyState("No posts found", `No posts matched "${esc(query)}".`);
+    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} · ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
     el("view-search").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
     el("view-search").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
       if (!state.me) return openAuth();
       const prev = b.textContent;
       b.disabled = true;
+      const next = prev === "Follow";
+      b.textContent = next ? "Following" : "Follow";
+      b.classList.toggle("secondary", next);
+      b.setAttribute("aria-label", `${next ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
       try {
-        const res = await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
+        const res = await api(`/api/users/${b.dataset.followUser}/follow`, { method: "POST", body: "{}" });
         b.textContent = res.following ? "Following" : "Follow";
         b.classList.toggle("secondary", !!res.following);
         b.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
@@ -428,7 +444,6 @@ async function openDmWith(userId) {
   setView("messages");
 }
 
-async 
 async function renderSettings() {
   const root = el("view-settings");
   if (!root) return;
