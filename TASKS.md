@@ -40,7 +40,7 @@
 ## Phase 9+: Continuous Improvements
 - [x] Dark mode toggle (persisted in localStorage)
 - [x] Bookmarks/saved posts (API + saved view)
-- [x] Notifications (like/comment/follow events, list, unread badge, mark-read)
+- [x] Notifications (like/comment/follow/comment-like events, list, unread badge, mark-read)
 - [x] Infinite scroll / pagination (feed offset/limit + intersection observer)
 - [x] CSS image filters (selectable on upload, rendered in feed/explore/profile)
 - [x] Real-time-ish message persistence UI (conversations, thread view, send)
@@ -49,7 +49,8 @@
 - [x] Profile edit (bio/name/avatar URL, persisted via `/api/me/profile`)
 - [x] Post delete (owner-only delete, local upload cleanup, notification/save cleanup)
 - [x] Hashtag links/search (caption hashtag parsing + clickable search)
-- [ ] Comment likes
+- [x] Comment likes (per-comment like API, UI counters, notifications)
+- [ ] Profile tab for saved posts
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -63,4 +64,5 @@
 - 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified.
 - 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified.
 - 2026-11-08: Post delete added for owners with saved/notification cleanup and local upload file removal. Server restarted and health verified.
-- 2026-11-08: Hashtag links/search added (caption parsing, clickable tags, hashtag-aware search API). Server restarted and health/search verified. Next: comment likes.
+- 2026-11-08: Hashtag links/search added (caption parsing, clickable tags, hashtag-aware search API). Server restarted and health/search verified.
+- 2026-11-08: Comment likes added (comment like endpoint, counters in feed/saved/search payloads, UI buttons, and comment-like notifications). Server restarted and health verified. Next: profile saved tab.
