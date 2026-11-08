@@ -221,6 +221,6 @@
 ## Phase 10: New Autonomous Features (2026-11-08)
 - [ ] Notification preferences toggles (localStorage; mute likes/comments/follows/comment likes)
 - [ ] Post pin/unpin on own profile (MVP local/API)
-- [ ] Story reply/quick reaction UI (MVP local state/toast)
-- [ ] DM typing indicator simulation (local UI polish)
+- [x] Story reply/quick reaction UI (MVP local state/toast)
+- [x] DM typing indicator simulation (local UI polish)
 - [x] Account data export (download local-visible JSON snapshot via `/api/me/export`)

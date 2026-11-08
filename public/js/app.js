@@ -594,7 +594,7 @@ async function renderMessages() {
       <div class="dm-chat">
         <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button>` : "Select a conversation"}</div>
         <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
-        ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
+        ${active ? `<div id="dmTyping" class="form-status" aria-live="polite" style="padding:0 14px"></div><form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
       </div>
     </div>`;
     el("view-messages").querySelectorAll("[data-dm]").forEach((n) => {
@@ -608,6 +608,9 @@ async function renderMessages() {
       try { await api(`/api/messages/${state.dm.userId}`, { method: "DELETE" }); toast("Conversation cleared."); renderMessages(); refreshDmBadge(); }
       catch (e) { toast(e.message, "error"); }
     });
+    const dmInput = el("dmForm")?.querySelector("input[name=text]");
+    let typingTimer;
+    dmInput?.addEventListener("input", () => { const t = el("dmTyping"); if (!t) return; t.textContent = dmInput.value.trim() ? `${active?.username || "User"} may be typing...` : ""; clearTimeout(typingTimer); typingTimer = setTimeout(()=>{ if(t) t.textContent=""; }, 1200); });
     el("dmForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const input = e.currentTarget.querySelector("input[name=text]");
@@ -634,6 +637,7 @@ async function renderMessages() {
         optimistic.remove();
         input.value = prev;
         toast(err.message, "error");
+        if (el("dmTyping")) el("dmTyping").textContent = "";
       } finally { if (btn) { btn.disabled = false; btn.textContent = "Send"; } }
     });
     const body = el("view-messages").querySelector(".dm-body");
