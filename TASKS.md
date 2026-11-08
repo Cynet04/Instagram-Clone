@@ -779,3 +779,12 @@
 - [ ] Post: Copy post ID available in actions (done)
 - [x] Profile: avatar dialog close button has label (done)
 - [x] Phase bump to 85
+
+## Phase 86: New Autonomous Features (2026-11-08)
+- [x] Phase 86 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Server: /api/me returns 
+ull user cleanly (verify) and 401 not used for polling
+- [ ] Client: updateBadge no-op when element missing
+- [ ] Feed: enderFeedPosts tolerates null/empty safely
+- [x] Phase bump to 86

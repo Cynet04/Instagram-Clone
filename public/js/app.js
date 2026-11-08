@@ -136,7 +136,7 @@ el("storyNext")?.addEventListener("click", () => { if (state.storyIndex < state.
 el("storyClose")?.addEventListener("click", () => closeDialog(el("storyDialog")));
 el("storyDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 
-function renderFeedPosts(posts = []) {
+function renderFeedPosts(posts = []) { posts = Array.isArray(posts)?posts:[];
   const root = el("view-feed"); if (!root) return;
   root.innerHTML = (posts.length ? posts.map(postHtml).join("") : emptyState("No posts yet", "When people share photos, they'll appear here."));
   bindPostActions(root);
