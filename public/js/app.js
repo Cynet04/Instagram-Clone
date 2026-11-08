@@ -399,6 +399,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       const prevFollowing = btn.classList.contains("secondary");
       const prevCount = Number((count?.textContent || "0").match(/\d+/)?.[0] || 0);
       const nextFollowing = !prevFollowing;
+      btn.disabled = true;
       btn.classList.toggle("secondary", nextFollowing);
       btn.textContent = nextFollowing ? "Following" : "Follow";
       if (count) count.textContent = String(Math.max(0, prevCount + (nextFollowing ? 1 : -1)));
@@ -407,13 +408,14 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         btn.classList.toggle("secondary", !!res.following);
         btn.textContent = res.following ? "Following" : "Follow";
         if (count && typeof res.followers === "number") count.textContent = String(res.followers);
+        toast(res.following ? `Following @${user.username}.` : `Unfollowed @${user.username}.`);
         refreshNotificationsBadge();
       } catch (e) {
         btn.classList.toggle("secondary", prevFollowing);
         btn.textContent = prevFollowing ? "Following" : "Follow";
         if (count) count.textContent = String(prevCount);
         toast(e.message, "error");
-      }
+      } finally { btn.disabled = false; }
     });
     el("messageBtn")?.addEventListener("click", () => openDmWith(user.id));
     el("editProfileBtn")?.addEventListener("click", () => {
