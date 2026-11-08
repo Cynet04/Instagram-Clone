@@ -977,14 +977,14 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 ## Phase 110: New Autonomous Features (2026-11-08)
 - [x] Phase 110 autonomous batch complete (2026-11-08)
 - [x] Baseline green (server restarted to phase 109, TASKS reconciled)
-- [ ] Server: /api/ping includes uptimeSec
-- [ ] Client: settings shows /api/ping result on "Check server" (best-effort)
-- [ ] Post: "View post details" dialog copy-link button has 	itle
+- [x] Server: /api/ping includes uptimeSec
+- [x] Client: settings shows /api/ping result on "Check server" (best-effort)
+- [x] Post: "View post details" dialog copy-link button has title (verify)
 - [x] Phase bump to 110
 
 ## Phase 111: New Autonomous Features (2026-11-08)
 - [x] Baseline green (phase 110, /api/ping restored)
-- [ ] Server: /api/version and /api/ping use consistent phase from healthPayload/shared const
-- [ ] Client: toast on "Check server" shows uptime when present
-- [ ] Profile: stats use post/posts plural for total
-- [ ] Phase bump to 111
+- [x] Server: /api/version and /api/ping use consistent phase from healthPayload/shared const
+- [x] Client: toast on "Check server" shows uptime when present
+- [x] Profile: stats use post/posts plural for total (verify)
+- [x] Phase bump to 111; home feed actions use heart/comment/share icons, double-tap like burst, consistent APP_PHASE
