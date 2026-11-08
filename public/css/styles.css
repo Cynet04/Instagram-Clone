@@ -125,6 +125,9 @@ body.dark .hashtag { color: #e0f1ff; }
 .mini-btn.secondary { background: var(--input); color: var(--text); border: 1px solid var(--line); }
 .profile-head { padding: 20px; display: flex; gap: 24px; align-items: center; }
 .profile-head .avatar { width: 96px; height: 96px; }
+.profile-tabs { display: flex; border-top: 1px solid var(--line); }
+.profile-tabs button { flex: 1; border: 0; background: none; padding: 12px; color: var(--muted); font-weight: 600; }
+.profile-tabs button.active { color: var(--text); border-top: 1px solid var(--text); margin-top: -1px; }
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
 .grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #eee; }
 .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }

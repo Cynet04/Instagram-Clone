@@ -50,7 +50,8 @@
 - [x] Post delete (owner-only delete, local upload cleanup, notification/save cleanup)
 - [x] Hashtag links/search (caption hashtag parsing + clickable search)
 - [x] Comment likes (per-comment like API, UI counters, notifications)
-- [ ] Profile tab for saved posts
+- [x] Profile saved tab (owner profile tabs: Posts/Saved)
+- [ ] Story creation
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -65,4 +66,5 @@
 - 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified.
 - 2026-11-08: Post delete added for owners with saved/notification cleanup and local upload file removal. Server restarted and health verified.
 - 2026-11-08: Hashtag links/search added (caption parsing, clickable tags, hashtag-aware search API). Server restarted and health/search verified.
-- 2026-11-08: Comment likes added (comment like endpoint, counters in feed/saved/search payloads, UI buttons, and comment-like notifications). Server restarted and health verified. Next: profile saved tab.
+- 2026-11-08: Comment likes added (comment like endpoint, counters in feed/saved/search payloads, UI buttons, and comment-like notifications). Server restarted and health verified.
+- 2026-11-08: Profile saved tab added for owners (Posts/Saved tabs using saved API). Client syntax and server health verified. Next: story creation.

@@ -219,13 +219,18 @@ async function refreshNotificationsBadge() {
   try { const { unread } = await api("/api/notifications"); updateBadge(unread); } catch { updateBadge(0); }
 }
 
-async function loadProfile(username) {
+async function loadProfile(username, tab = "posts") {
   if (!username) {
     el("view-profile").innerHTML = `<div class="card" style="padding:16px">Log in to view your profile.</div>`;
     setView("profile");
     return;
   }
   const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
+  let savedPosts = [];
+  if (isMe && tab === "saved" && state.me) {
+    try { savedPosts = (await api("/api/saved")).posts || []; } catch {}
+  }
+  const gridPosts = tab === "saved" ? savedPosts : posts;
   el("view-profile").innerHTML = `
     <div class="card">
       <div class="profile-head">
@@ -241,12 +246,13 @@ async function loadProfile(username) {
           <div>${esc(user.bio || "")}</div>
         </div>
       </div>
+      ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
     </div>
-    <div class="card" style="padding:4px"><div class="grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No posts</div>`}</div></div>`;
+    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
   el("followBtn")?.addEventListener("click", async () => {
     try {
       await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
-      loadProfile(user.username);
+      loadProfile(user.username, tab);
       refreshNotificationsBadge();
     } catch (e) { alert(e.message); }
   });
@@ -258,6 +264,7 @@ async function loadProfile(username) {
     el("profileEditError").textContent = "";
     el("profileEditDialog").showModal();
   });
+  el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
   setView("profile");
 }
 
