@@ -370,7 +370,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <h2 style="margin:0">${esc(user.username)}</h2>
-              ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
+              ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button><button id="messageBtn" class="mini-btn secondary">Message</button>` : ""}
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link">Share</button>
             </div>
@@ -405,6 +405,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         toast(e.message, "error");
       }
     });
+    el("messageBtn")?.addEventListener("click", () => openDmWith(user.id));
     el("editProfileBtn")?.addEventListener("click", () => {
       const f = el("profileEditForm");
       f.name.value = state.me?.name || "";
@@ -454,6 +455,12 @@ async function loadSearch(q) {
     bindPostActions(el("view-search"));
     setView("search", { skipLoad: true });
   } catch (e) { el("view-search").innerHTML = errorState(e.message); setView("search", { skipLoad: true }); }
+}
+
+async function openDmWith(userId) {
+  if (!state.me) return openAuth();
+  state.dm.userId = userId;
+  setView("messages");
 }
 
 async function renderMessages() {
