@@ -1038,7 +1038,7 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
   if (avatar && !/^https?:\/\//i.test(avatar) && !avatar.startsWith("/uploads/")) {
     el("profileEditError").textContent = "Avatar must be an http(s) URL or /uploads/ path."; return;
   }
-  payload.avatar = avatar;
+  payload.avatar = avatar; payload.website = website;
   try {
     const { user } = await api("/api/me/profile", { method: "POST", body: JSON.stringify(payload) });
     state.me = user;
