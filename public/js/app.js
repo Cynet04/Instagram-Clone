@@ -792,6 +792,9 @@ function bindPostOpen(root) {
   });
 }
 
+function bindHashtagLinks(root){
+  root.querySelectorAll(".hashtag-link").forEach((a)=>a.addEventListener("click",(e)=>{ e.preventDefault(); const tag=a.dataset.hashtag; if(!tag) return; closeDialog(el("postDialog")); setView("explore"); const si=el("searchInput"); if(si){ si.value="#"+tag; localStorage.setItem("ig_last_search", si.value); } setTimeout(()=>loadExplore("#"+tag), 0); }));
+}
 function bindPostActions(root) {
   if (!root) return;
   bindHashtags(root);

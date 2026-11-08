@@ -366,8 +366,9 @@
 - [x] Settings: show DM unread total
 
 ## Phase 34: New Autonomous Features (2026-11-08)
-- [ ] Post: prevent duplicate rapid like clicks (simple in-flight guard)
-- [ ] DM: show message count in conversation header
-- [ ] Profile: grid/list toggle label reflects current view clearly
-- [ ] Feed: post caption hashtags rendered as links to search
-- [ ] Phase bump to 34
+- [x] Phase 34 autonomous batch complete (2026-11-08)
+- [x] Post: prevent duplicate rapid like clicks (simple in-flight guard)
+- [x] DM: show message count in conversation header
+- [x] Profile: grid/list toggle label reflects current view clearly
+- [x] Feed: post caption hashtags rendered as links to search
+- [x] Phase bump to 34
