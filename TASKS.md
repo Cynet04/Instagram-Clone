@@ -121,7 +121,11 @@
 - [x] Profile counts dialog/list (followers/following basic list)
 - [x] Settings: app info/version and data notes
 - [x] Post/report moderation list in settings (MVP local view)
-- [ ] Additional autonomous features (5): share sheet metadata polish, keyboard shortcuts help, profile/avatar quick preview, DM unread indicator, settings export-local-data note/action checks
+- [x] Keyboard shortcuts help dialog (`/`, `g+key`, `?`, Esc closes)
+- [ ] Share sheet metadata polish (include username/caption context consistently)
+- [ ] Profile/avatar quick preview
+- [ ] DM unread indicator
+- [ ] Settings export-local-data note/action checks
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
