@@ -112,6 +112,7 @@
 - [x] Post report MVP (non-owner Report action; `POST /api/posts/:id/report` with dedupe in `reports`)
 - [x] PWA smoke + basic install shell (manifest, icon, service worker for static assets only; smoke tests)
 - [x] Post share image-link fallback refinement (share includes image URL/text where appropriate; clipboard fallback remains)
+- [x] Settings route/auth-state UX (settings view refreshes on auth changes; title/route behavior consistent)
 - [ ] Additional autonomous features (e.g., small UX refinements, perf polish)
 
 ## Progress Log
