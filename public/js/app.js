@@ -334,6 +334,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
             <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><button type="button" class="link-btn" id="showFollowersBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong id="followersCount">${followers}</strong> followers</button><button type="button" class="link-btn" id="showFollowingBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong>${following}</strong> following</button></div>
             <div><strong>${esc(user.name || "")}</strong></div>
             <div>${esc(user.bio || "")}</div>
+            ${user.website ? `<div><a href="${esc(user.website)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none">${esc(user.website.replace(/^https?:\/\//,""))}</a></div>` : ""}
           </div>
         </div>
         ${isMe ? `<div class="profile-tabs" role="tablist" aria-label="Profile sections"><button type="button" role="tab" aria-selected="${tab === "posts" ? "true" : "false"}" data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button type="button" role="tab" aria-selected="${tab === "saved" ? "true" : "false"}" data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}

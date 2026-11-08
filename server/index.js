@@ -383,9 +383,11 @@ app.post("/api/me/profile", (req, res) => {
   if (!me) return res.status(404).json({ error: "User not found." });
   const name = String(req.body.name ?? me.name ?? "").trim().slice(0, 80);
   const bio = String(req.body.bio ?? me.bio ?? "").trim().slice(0, 150);
+  const website = String(req.body.website ?? me.website ?? "").trim().slice(0, 200);
   const avatar = String(req.body.avatar ?? me.avatar ?? "").trim().slice(0, 500);
   me.name = name || me.username;
   me.bio = bio;
+  if (!website || /^https?:\/\//i.test(website)) me.website = website;
   if (!avatar || /^https?:\/\//i.test(avatar) || avatar.startsWith("/uploads/")) me.avatar = avatar;
   saveDb(db);
   res.json({ user: safeUser(me) });
