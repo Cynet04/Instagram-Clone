@@ -79,6 +79,7 @@
 - [x] Lightweight mobile nav polish (scrollable/wrapped nav, responsive spacing, nav labels preserve auth/theme state)
 - [x] Notification read-state refinements (API supports per-notification IDs/unread count; UI marks opened notification read and syncs badge)
 - [x] Post creation optimistic/fast feedback (prepends created post to feed without full reload, resets caption count, brand returns home and closes post dialog)
+- [x] Post action binding robustness (supports binding a single `.post` root for optimistic inserts/dialogs)
 - [ ] Additional autonomous features (e.g., search/profile loading refinements, footer/status polish, minor status/route polish)
 
 ## Progress Log
@@ -109,6 +110,7 @@
 - 2026-11-08: Lightweight mobile nav polish added (scrollable nav/actions on small screens, responsive spacing/profile layout, auth label rendering preserved). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification read-state refinements added (`/api/notifications/read` supports per-notification IDs and returns unread; UI marks opened notifications read, syncs badge, uses toast errors). Server/client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post creation fast feedback added (created post prepended to feed without full reload, caption count reset, brand returns home/closes post dialog). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Post action binding robustness added (`bindPostActions` supports single-post roots for optimistic inserts/dialog flows). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor a11y/composer polish added (`aria-current` nav active state, `aria-busy` loading cards, caption character count, post-share toast). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.

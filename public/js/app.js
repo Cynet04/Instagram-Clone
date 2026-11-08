@@ -571,10 +571,12 @@ function bindPostOpen(root) {
 }
 
 function bindPostActions(root) {
+  if (!root) return;
   bindHashtags(root);
   bindProfileLinks(root);
   bindPostOpen(root);
-  root.querySelectorAll(".post").forEach((postEl) => {
+  const posts = root.classList?.contains("post") ? [root] : Array.from(root.querySelectorAll(".post"));
+  posts.forEach((postEl) => {
     postEl.querySelector(".comment-focus-btn")?.addEventListener("click", () => {
       if (!state.me) return openAuth();
       postEl.querySelector('.comment-form input[name="text"]')?.focus();
