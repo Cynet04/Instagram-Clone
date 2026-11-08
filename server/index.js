@@ -20,24 +20,29 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 function seed() {
   const now = Date.now();
   const demoPass = bcrypt.hashSync("password123", 10);
-  return {
-    users: [
-      { id: "u_demo", username: "demo", name: "Demo User", password: demoPass, bio: "Building an Instagram clone.", avatar: "", saved: [], following: ["u_alex"] },
-      { id: "u_alex", username: "alex", name: "Alex Rivera", password: demoPass, bio: "Coffee, code, sunsets.", avatar: "", saved: [], following: ["u_demo"] },
-      { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "", saved: [], following: [] }
-    ],
-    posts: [
-      { id: nanoid(10), userId: "u_alex", image: "https://picsum.photos/seed/ig1/1080/1080", caption: "Morning light in the city. #sunrise", createdAt: now - 3600_000, likes: ["u_demo"], comments: [{ id: nanoid(8), userId: "u_demo", text: "Great shot!", createdAt: now - 3000_000, likes: [] }] },
-      { id: nanoid(10), userId: "u_sam", image: "https://picsum.photos/seed/ig2/1080/1350", caption: "Weekend escape.", createdAt: now - 7200_000, likes: [], comments: [] },
-      { id: nanoid(10), userId: "u_demo", image: "https://picsum.photos/seed/ig3/1080/1080", caption: "Phase 1 complete: core UI scaffold. #buildinpublic", createdAt: now - 9000_000, likes: ["u_alex"], comments: [] }
-    ],
-    stories: [
-      { id: nanoid(8), userId: "u_alex", image: "https://picsum.photos/seed/story1/540/960", createdAt: now - 1800_000 },
-      { id: nanoid(8), userId: "u_sam", image: "https://picsum.photos/seed/story2/540/960", createdAt: now - 5400_000 }
-    ],
-    messages: [],
-    notifications: []
-  };
+  const mkU = (id, username, name, bio) => ({ id, username, name, password: demoPass, bio, avatar: "https://i.pravatar.cc/150?u="+username, saved: [], following: [], blocked: [] });
+  const users = [
+    mkU("u_demo","demo","Demo User","Building an Instagram clone."),
+    mkU("u_alex","alex","Alex Rivera","Coffee, code, sunsets."),
+    mkU("u_sam","sam","Sam Lee","Travel snapshots."),
+    mkU("u_alice","alice","Alice Chen","Street photography & design."),
+    mkU("u_bob","bob","Bob Martinez","Fitness, food, and frontend."),
+    mkU("u_charlie","charlie","Charlie Kim","Hiking trails and city nights."),
+    mkU("u_dana","dana","Dana Patel","Books, brunch, and beaches."),
+    mkU("u_evan","evan","Evan Brooks","Music producer. #studio"),
+    mkU("u_fiona","fiona","Fiona Walsh","Plant mom and weekend baker."),
+    mkU("u_george","george","George Ito","Cycling, coffee, candid shots.")
+  ];
+  const imgs = ["https://picsum.photos/seed/a1/600/600","https://picsum.photos/seed/b2/600/600","https://picsum.photos/seed/c3/600/600","https://picsum.photos/seed/d4/600/600","https://picsum.photos/seed/e5/600/600","https://picsum.photos/seed/f6/600/600","https://picsum.photos/seed/g7/600/600","https://picsum.photos/seed/h8/600/600","https://picsum.photos/seed/i9/600/600","https://picsum.photos/seed/j10/600/600","https://picsum.photos/seed/k11/600/600","https://picsum.photos/seed/l12/600/600","https://picsum.photos/seed/m13/600/600","https://picsum.photos/seed/n14/600/600","https://picsum.photos/seed/o15/600/600"];
+  const caps = ["Golden hour downtown. #sunset","Weekend hike with the crew.","Coffee first, everything else later.","New recipe turned out perfect!","Studio session vibes. #music","Beach day reset.","City lights after rain.","Fresh blooms on the balcony.","Morning ride through the park.","Street art I found today.","Brunch goals achieved.","Late night coding session. #buildinpublic","Mountain air and quiet trails.","Trying out a new camera angle.","Good food, better company."];
+  const posts = imgs.map((image,i)=>({
+    id: nanoid(10), userId: users[i%users.length].id, image, caption: caps[i], altText: "Photo: "+caps[i].slice(0,40), location: i%3===0?"Local spot":"", filter:"none",
+    createdAt: now - (i+1)*3600_000,
+    likes: i%2===0?[users[(i+1)%users.length].id]:[],
+    comments: i%3===0?[{ id:nanoid(8), userId: users[(i+2)%users.length].id, text:"Love this!", createdAt: now - i*3600_000, likes:[] }]:[]
+  }));
+  const stories = users.slice(0,8).map((u,i)=>({ id:nanoid(8), userId:u.id, image:"https://picsum.photos/seed/story"+(i+1)+"/540/960", createdAt: now - (i*30+10)*60_000 }));
+  return { users, posts, stories, messages: [], notifications: [], reports: [] };
 }
 
 function loadDb() {

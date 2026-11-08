@@ -5,7 +5,63 @@ const views = ["feed", "explore", "notifications", "saved", "messages", "profile
 let feedObserver;
 const scrollByView = {};
 
-const APP_BUILD = { name: "Socially MVP", phase: "34", date: "2026-11-08" };
+const APP_BUILD = { name: "Socially MVP", phase: "111", date: "2026-11-08" };
+
+let currentProfileUsername = "";
+let currentProfileTab = "posts";
+function setDocumentTitle(text){ const unread = state.me ? Number(el("notifBadge")?.textContent || 0) : 0; const prefix = unread > 0 ? "(" + unread + ") " : ""; document.title = prefix + (text ? text + " - Instagram Clone" : "Instagram Clone"); }
+function routeHash(){ return location.hash.replace(/^#\/?/, ""); }
+function setNavActive(view){ document.querySelectorAll("[data-nav-view]").forEach((b)=>{ const active = b.dataset.navView === view; b.classList.toggle("active", active); if(active) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); }); }
+function isTypingTarget(t){ return !!t && (t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="SELECT"||t.isContentEditable); }
+function pinnedPostIds(username){ try { return JSON.parse(localStorage.getItem("ig_pinned_posts_"+username)||"[]"); } catch { return []; } }
+function setPinnedPostIds(username, ids){ localStorage.setItem("ig_pinned_posts_"+username, JSON.stringify((ids||[]).slice(0,3))); }
+function archivedPostIds(username){ try { return JSON.parse(localStorage.getItem("ig_archived_"+username)||"[]"); } catch { return []; } }
+function setArchivedPostIds(username, ids){ localStorage.setItem("ig_archived_"+username, JSON.stringify(ids||[])); }
+function getProfileNote(meId, userId){ try { return (JSON.parse(localStorage.getItem("ig_profile_notes_"+meId)||"{}")[userId]||""); } catch { return ""; } }
+function setProfileNote(meId, userId, text){ try { const m=JSON.parse(localStorage.getItem("ig_profile_notes_"+meId)||"{}"); m[userId]=String(text||"").slice(0,500); localStorage.setItem("ig_profile_notes_"+meId, JSON.stringify(m)); } catch {} }
+function pinnedCommentIds(postId){ try { return JSON.parse(localStorage.getItem("ig_pinned_comments_"+postId)||"[]"); } catch { return []; } }
+function setPinnedCommentIds(postId, ids){ localStorage.setItem("ig_pinned_comments_"+postId, JSON.stringify((ids||[]).slice(0,3))); }
+function isHiddenNotif(id){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")).has(id); } catch { return false; } }
+function getNotifFilter(){ return localStorage.getItem("ig_notif_filter")||"all"; }
+function setNotifFilter(v){ localStorage.setItem("ig_notif_filter", v||"all"); }
+function dmMuted(){ try { return new Set(JSON.parse(localStorage.getItem("ig_dm_muted")||"[]")); } catch { return new Set(); } }
+function setDmMuted(set){ localStorage.setItem("ig_dm_muted", JSON.stringify([...(set||new Set())].slice(0,200))); }
+function formatCaption(text){ text=text||""; const safe=esc(text); const linked=safe.replace(/(https?:\/\/[^\s<]+)/g,function(m){ return "<a href=\""+m+"\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:var(--blue)\">"+m.replace(/^https?:\/\//,"")+"</a>"; }); return linked.replace(/(^|[\s(])#([\p{L}\p{N}_]+)/gu,function(m,pre,tag){ return pre+"<a href=\"#\" class=\"hashtag hashtag-link\" data-hashtag=\""+esc(tag)+"\">#"+esc(tag)+"</a>"; }); }
+function setView(view, opts){
+  opts=opts||{}; if(!views.includes(view)) view="feed";
+  state.view=view; setNavActive(view);
+  const titles={feed:"Feed",explore:"Explore",notifications:"Notifications",saved:"Saved",messages:"Messages",profile:"Profile",search:"Search",settings:"Settings"};
+  if(opts.username) currentProfileUsername=opts.username;
+  if(!opts.skipTitle) setDocumentTitle(view==="profile" && (opts.username||currentProfileUsername) ? "@"+(opts.username||currentProfileUsername) : (titles[view]||""));
+  if(!opts.fromHash){ var next = view==="profile" && opts.username ? "#/profile/"+encodeURIComponent(opts.username)+(opts.tab==="saved"?"/saved":"") : view==="search" && opts.q ? "#/search/"+encodeURIComponent(opts.q) : "#/"+view; if(location.hash!==next) history.replaceState(null,"",next); }
+  for(var vi=0;vi<views.length;vi++){ var v=views[vi]; if(el("view-"+v)) el("view-"+v).classList.toggle("hidden", v!==view); }
+  if(el("stories")) el("stories").classList.toggle("hidden", view!=="feed");
+  if(el("storyCreator")) el("storyCreator").classList.add("hidden");
+  var composer=el("composer"); var composerHidden = view!=="feed" || !state.me; if(composer) composer.classList.toggle("hidden", composerHidden);
+  if(el("newPostBtn")) el("newPostBtn").setAttribute("aria-expanded", composerHidden ? "false" : String(composer && !composer.classList.contains("hidden")));
+  if(el("feedSentinel")) el("feedSentinel").classList.toggle("hidden", view!=="feed");
+  var savedNav=document.querySelector('[data-nav-view="saved"]'); if(savedNav) savedNav.classList.toggle("hidden", !state.me);
+  if(opts.skipLoad) return;
+  if(view==="feed") loadFeed(true);
+  if(view==="explore") loadExplore((el("searchInput")&&el("searchInput").value)||"");
+  if(view==="notifications") loadNotifications();
+  if(view==="saved") loadSaved();
+  if(view==="messages") renderMessages();
+  if(view==="profile") loadProfile(opts.username||(state.me&&state.me.username), opts.tab||"posts", {fromRoute:!!opts.fromHash});
+  if(view==="settings") renderSettings();
+  if(view==="search") loadSearch(opts.q || (el("searchInput")&&el("searchInput").value) || "");
+}
+async function renderSuggestions(users){
+  users=users||[]; var base=users.filter(function(u){return u.username!==(state.me&&state.me.username);});
+  var picks=base.slice(0,5);
+  if(state.me && base.length){ try { var details=await Promise.all(base.slice(0,8).map(function(u){ return api("/api/users/"+encodeURIComponent(u.username)).then(function(d){ return Object.assign({},u,{isFollowing:!!d.isFollowing}); }).catch(function(){ return Object.assign({},u,{isFollowing:false}); }); })); picks=details.filter(function(u){return !u.isFollowing;}).slice(0,5); if(!picks.length) picks=details.slice(0,5); } catch(e){} }
+  var root=el("suggestions"); if(!root) return;
+  root.innerHTML = picks.map(function(u){ return '<div class="suggestion"><img class="avatar" src="'+avatar(u)+'" alt="" data-profile="'+esc(u.username)+'" /><div style="flex:1"><div class="profile-link" data-profile="'+esc(u.username)+'"><strong>'+esc(u.username)+'</strong></div><small class="muted">Suggested for you</small></div><div style="display:flex;gap:8px"><button data-follow-user="'+esc(u.username)+'" class="mini-btn '+(u.isFollowing?"secondary":"")+'" style="padding:4px 8px;font-size:12px" aria-label="'+(u.isFollowing?"Unfollow":"Follow")+" "+esc(u.username)+'">'+(u.isFollowing?"Following":"Follow")+'</button><button data-user="'+esc(u.username)+'" class="mini-btn secondary" style="padding:4px 8px;font-size:12px">View</button></div></div>'; }).join("") || '<div class="muted" style="font-size:13px">No suggestions right now.</div>';
+  bindProfileLinks(root);
+  root.querySelectorAll("button[data-user]").forEach(function(b){ b.onclick=function(){ loadProfile(b.dataset.user); }; });
+  root.querySelectorAll("button[data-follow-user]").forEach(function(b){ b.onclick=async function(){ if(!state.me) return openAuth(); var prev=b.textContent, next=prev==="Follow"; b.disabled=true; b.textContent=next?"Following":"Follow"; b.classList.toggle("secondary",next); try { var res=await api("/api/users/"+encodeURIComponent(b.dataset.followUser)+"/follow",{method:"POST",body:"{}"}); b.textContent=res.following?"Following":"Follow"; b.classList.toggle("secondary",!!res.following); toast(res.following?"Following.":"Unfollowed."); } catch(e){ b.textContent=prev; b.classList.toggle("secondary",prev!=="Follow"); toast(e.message,"error"); } finally{ b.disabled=false; } }; });
+}
+
 function hiddenNotifIds(){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")); } catch { return new Set(); } }
 function hideNotifId(id){ try { const ids=[...hiddenNotifIds()]; if(!ids.includes(id)) ids.unshift(id); localStorage.setItem("ig_hidden_notifs", JSON.stringify(ids.slice(0,200))); } catch {} }
 function shareCount(postId){ try { return Number(JSON.parse(localStorage.getItem("ig_share_counts")||"{}")[postId]||0); } catch { return 0; } }
@@ -452,12 +508,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     const btn = el("shareProfileBtn");
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
     try {
-      const shareData = { title: `Instagram Clone � @${postEl.querySelector(".post-user")?.textContent || "post"}`, text: (postEl.querySelector(".caption-text")?.textContent || "").trim().slice(0, 160) || "Check out this post", url };
-        if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-        await navigator.share({ title: `@${user.username} on Instagram Clone`, text: `Check out @${user.username}`, url });
-        toast("Profile shared.");
-        return;
-      }
+      const shareData = { title: "@"+user.username+" on Instagram Clone", text: "Check out @"+user.username, url }; if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) { await navigator.share(shareData); toast("Profile shared."); return; }
       await navigator.clipboard?.writeText(url);
       toast("Profile link copied.");
       if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); }
@@ -1070,7 +1121,7 @@ function renderMe() {
   const btn = el("authBtn");
   if (btn) {
     const label = btn.querySelector(".nav-label") || btn;
-    label.textContent = state.me ? "Log out" : "Log in";
+    label.textContent = state.me ? "Log out (@" + state.me.username + ")" : "Log in";
     btn.setAttribute("aria-label", state.me ? "Log out" : "Log in");
     btn.title = state.me ? "Log out" : "Log in";
   }
