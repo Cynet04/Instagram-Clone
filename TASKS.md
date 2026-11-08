@@ -245,4 +245,5 @@
 - [x] Comment sort toggle (newest/top/oldest, client-side)
 - [ ] Quick profile hover card info in post header (local UI enhancement)
 - [ ] "Seen" indicator for own DM messages (client-side/local state)
-- [ ] Search history quick chips on explore page
+- [x] Search history quick chips on explore page
+- [x] Phase 13 autonomous batch complete (2026-11-08)

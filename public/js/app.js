@@ -202,7 +202,10 @@ async function loadExplore(q = "") {
   try {
     const data = query ? await api(`/api/search?q=${encodeURIComponent(query)}`) : await api(`/api/feed?offset=0&limit=30`);
     const posts = data.posts || [];
+    const recent = recentSearches();
+    const chips = !query && recent.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${recent.slice(0,6).map((r)=>`<button type="button" class="mini-btn secondary" data-explore-chip="${esc(r)}">${esc(r)}</button>`).join("")}</div>` : "";
     el("view-explore").innerHTML = `<div class="card" style="padding:14px">
+      ${chips}
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px">
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
         ${query ? `<button id="clearExplore" class="mini-btn secondary" type="button" aria-label="Clear explore search">Clear</button>` : ""}
@@ -214,6 +217,7 @@ async function loadExplore(q = "") {
     el("exploreLoginBtn")?.addEventListener("click", openAuth);
     el("exploreEmptyLoginBtn")?.addEventListener("click", openAuth);
     el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
+    el("view-explore").querySelectorAll("[data-explore-chip]").forEach((b)=>b.addEventListener("click",()=>{ el("searchInput").value=b.dataset.exploreChip; loadExplore(b.dataset.exploreChip); }));
   } catch (e) { el("view-explore").innerHTML = errorState(e.message, "explore"); }
 }
 
