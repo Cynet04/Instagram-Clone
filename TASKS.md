@@ -350,8 +350,9 @@
 - [ ] Server: include phase in /api/health as 31
 
 ## Phase 32: New Autonomous Features (2026-11-08)
-- [ ] Post: "Copy link" button label shows "Copied" briefly via toast only (already) — add aria-live for actions
-- [ ] Explore: tag search hint text
-- [ ] Profile: show "Edit profile" only for self (already) — add avatar alt text quality
-- [ ] Messages: Enter-to-send note in placeholder not needed; keep accessible
+- [x] Phase 32 autonomous batch complete (2026-11-08)
+- [ ] Post: "Copy link" button label shows "Copied" briefly via toast only (already) ï¿½ add aria-live for actions
+- [x] Explore/search: tag search hint text
+- [ ] Profile: show "Edit profile" only for self (already) ï¿½ add avatar alt text quality
+- [x] Messages: Enter-to-send note in placeholder not needed; keep accessible
 - [ ] Health: UI shows phase from /api/health when available
