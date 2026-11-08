@@ -454,8 +454,9 @@
 - [x] Phase bump to 44
 
 ## Phase 45: New Autonomous Features (2026-11-08)
-- [ ] Post: report button has confirm text already — add aria-label clarity
-- [ ] Messages: show "Muted" badge in conversation list
-- [ ] Search: show @me hint in placeholder (already supports) — add aria description
-- [ ] Profile: list view shows post date
-- [ ] Phase bump to 45
+- [x] Phase 45 autonomous batch complete (2026-11-08)
+- [ ] Post: report button has confirm text already ï¿½ add aria-label clarity
+- [x] Messages: show "Muted" badge in conversation list
+- [ ] Search: show @me hint in placeholder (already supports) ï¿½ add aria description
+- [x] Profile: list view shows post date
+- [x] Phase bump to 45
