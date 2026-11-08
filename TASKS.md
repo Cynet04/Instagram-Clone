@@ -965,3 +965,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [x] Client: comment like button title reflects state
 - [ ] Post: Open action already titled; ensure explore grid open uses same label
 - [x] Phase bump to 108
+
+## Phase 109: New Autonomous Features (2026-11-08)
+- [x] Phase 109 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 108)
+- [ ] Server: add GET /api/ping lightweight endpoint
+- [x] Client: settings includes "Open /api/ping" link
+- [ ] Client: copyPostDialogLink has title (polish)
+- [x] Phase bump to 109
