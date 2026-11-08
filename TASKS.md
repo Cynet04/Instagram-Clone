@@ -813,3 +813,11 @@ otif-time uses 	imeAgo (done)
 - [x] Comments: report/delete button labels are specific
 - [x] DM: send form button keeps accessible label
 - [x] Phase bump to 89
+
+## Phase 90: New Autonomous Features (2026-11-08)
+- [x] Phase 90 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] UI: document.title resets on non-profile views
+- [x] Feed: empty/error states remain keyboard reachable
+- [ ] Post: openPostDialog called safely from grid (done)
+- [x] Phase bump to 90
