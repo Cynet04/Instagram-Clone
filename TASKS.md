@@ -877,3 +877,11 @@ otif-time uses 	imeAgo (done)
 - [x] Client: optimistic like path avoids stale badge race (best-effort)
 - [ ] Docs: PROGRESS.md not updated this run � summarize next commit
 - [x] Phase bump to 97
+
+## Phase 98: New Autonomous Features (2026-11-08)
+- [x] Phase 98 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Client: show "Retry" on messages load error
+- [x] Profile: load error shows retry action
+- [x] Notifications: error state passes retry action (done)
+- [x] Phase bump to 98
