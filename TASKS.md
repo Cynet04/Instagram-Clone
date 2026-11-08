@@ -462,8 +462,16 @@
 - [x] Phase bump to 45
 
 ## Phase 46: New Autonomous Features (2026-11-08)
-- [ ] Post: comment delete button shows for owner (already) — confirm label
-- [ ] Explore: show post count in section
-- [ ] Settings: show shortcuts count
-- [ ] Feed: "New activity" hint clears on refresh (done)
-- [ ] Phase bump to 46
+- [x] Phase 46 autonomous batch complete (2026-11-08)
+- [ ] Post: comment delete button shows for owner (already) ï¿½ confirm label
+- [x] Explore: show post count in section
+- [x] Settings: show shortcuts count
+- [x] Feed: "New activity" hint clears on refresh (done)
+- [x] Phase bump to 46
+
+## Phase 47: New Autonomous Features (2026-11-08)
+- [ ] Post: add "Copy image URL" action
+- [ ] Feed: announce refresh completion via toast on manual refresh
+- [ ] Profile: show "This is you" badge on own profile
+- [ ] Notifications: mark-read optimistic button state survives rerender (already handled)
+- [ ] Phase bump to 47
