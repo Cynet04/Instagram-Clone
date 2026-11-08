@@ -76,7 +76,8 @@ function postHtml(p) {
       </div>
       <div class="post-likes">${p.likesCount} likes${mine && typeof p.savesCount === "number" ? ` · ${p.savesCount} saves` : ""}</div>
       <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
-      <div class="comments">${(p.comments || []).map((c) => {
+      ${(p.comments||[]).length>1?`<div style="margin:0 14px 6px"><label class="muted" style="font-size:12px">Sort comments <select class="comment-sort" data-post-id="${esc(p.id)}" style="margin-left:6px;background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:2px 6px"><option value="top">Top</option><option value="newest">Newest</option><option value="oldest">Oldest</option></select></label></div>`:""}
+      <div class="comments" data-comment-sort="top">${[...(p.comments || [])].sort((a,b)=> (b.likesCount||0)-(a.likesCount||0) || (b.createdAt||0)-(a.createdAt||0)).map((c) => {
         const canDelete = state.me && (c.user?.id === state.me.id || mine);
         return `
         <div class="comment" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}">
