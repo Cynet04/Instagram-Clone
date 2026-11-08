@@ -128,6 +128,22 @@ el("storyNext")?.addEventListener("click", () => { if (state.storyIndex < state.
 el("storyClose")?.addEventListener("click", () => closeDialog(el("storyDialog")));
 el("storyDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 
+function renderFeedPosts(posts = []) {
+  const root = el("view-feed"); if (!root) return;
+  root.innerHTML = (posts.length ? posts.map(postHtml).join("") : emptyState("No posts yet", "When people share photos, they'll appear here."));
+  bindPostActions(root);
+  if (!state.feed.hasMore && posts.length) root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
+}
+function applyFeedSort() {
+  const sort = state.feed.sort || "newest";
+  const posts = [...(state.feed.posts || [])].sort((a,b)=> sort==="liked" ? ((b.likesCount||0)-(a.likesCount||0)) || ((b.createdAt||0)-(a.createdAt||0)) : ((b.createdAt||0)-(a.createdAt||0)));
+  const header = `<div class="card" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Feed</h3><label class="muted" style="font-size:13px;display:flex;align-items:center;gap:8px">Sort <select id="feedSort" aria-label="Sort feed"><option value="newest" ${state.feed.sort==="newest"?"selected":""}>Newest</option><option value="liked" ${state.feed.sort==="liked"?"selected":""}>Most liked</option></select></label></div>`;
+  const root = el("view-feed"); if (!root) return;
+  root.innerHTML = header + (posts.length ? posts.map(postHtml).join("") : emptyState("No posts yet", "When people share photos, they'll appear here.").replace('<div class="card state-card">','<div class="state-card" style="margin:16px">'));
+  bindPostActions(root);
+  if (!state.feed.hasMore && posts.length) root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
+  el("feedSort")?.addEventListener("change", (e)=>{ state.feed.sort = e.target.value; applyFeedSort(); });
+}
 async function loadFeed(reset = true) {
   if (state.feed.loading) return;
   if (reset) {
