@@ -692,3 +692,11 @@
 - [ ] DM: message timestamps use consistent 	imeAgo
 - [x] Profile: "Edit profile" button visible only for self (already)
 - [x] Phase bump to 74
+
+## Phase 75: New Autonomous Features (2026-11-08)
+- [x] Phase 75 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: "More/Less" caption toggle has ria-expanded
+- [x] Profile: "Share profile" action uses toast on clipboard fallback
+- [x] Feed: loading state replaces stale error on retry
+- [x] Phase bump to 75

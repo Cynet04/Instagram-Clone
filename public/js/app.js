@@ -969,8 +969,8 @@ function bindPostActions(root) {
         const span = btn.closest(".caption-text"); if (!span) return;
         const full = span.dataset.fullCaption || "";
         const expanded = btn.textContent === "less";
-        if (expanded) { span.innerHTML = formatCaption(full.slice(0,120)) + '... <button type="button" class="caption-toggle" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">more</button>'; }
-        else { span.innerHTML = formatCaption(full) + ' <button type="button" class="caption-toggle" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">less</button>'; }
+        if (expanded) { span.innerHTML = formatCaption(full.slice(0,120)) + '... <button type="button" class="caption-toggle" aria-expanded="false" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">more</button>'; }
+        else { span.innerHTML = formatCaption(full) + ' <button type="button" class="caption-toggle" aria-expanded="true" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">less</button>'; }
         span.querySelector(".caption-toggle")?.addEventListener("click", arguments.callee);
       });
     });
@@ -995,8 +995,8 @@ function bindPostActions(root) {
         const span = btn.closest(".caption-text"); if (!span) return;
         const full = span.dataset.fullCaption || "";
         const expanded = btn.textContent === "less";
-        if (expanded) { span.innerHTML = formatCaption(full.slice(0,120)) + '... <button type="button" class="caption-toggle" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">more</button>'; }
-        else { span.innerHTML = formatCaption(full) + ' <button type="button" class="caption-toggle" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">less</button>'; }
+        if (expanded) { span.innerHTML = formatCaption(full.slice(0,120)) + '... <button type="button" class="caption-toggle" aria-expanded="false" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">more</button>'; }
+        else { span.innerHTML = formatCaption(full) + ' <button type="button" class="caption-toggle" aria-expanded="true" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0;font:inherit">less</button>'; }
         span.querySelector(".caption-toggle")?.addEventListener("click", arguments.callee);
       });
     });
