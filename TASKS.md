@@ -263,3 +263,10 @@
 - [x] Settings: show app storage info (localStorage keys count)
 - [x] Feed empty state CTA for logged-in users with no follows
 - [x] Phase 16 autonomous batch complete (2026-11-08)
+
+## Phase 17: New Autonomous Features (2026-11-08)
+- [ ] Post share count (local/client interaction feedback)
+- [ ] Profile "Joined" placeholder/date if available
+- [ ] DM conversation list last message preview truncation polish
+- [ ] Composer image URL load error inline message
+- [ ] Search result avatars consistent sizing/fallback
