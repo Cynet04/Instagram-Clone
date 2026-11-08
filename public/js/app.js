@@ -57,7 +57,7 @@ function timeAgo(ts) {
 function setDocumentTitle(text) {
   const unread = state.me ? Number(el("notifBadge")?.textContent || 0) : 0;
   const prefix = unread > 0 ? `(${unread}) ` : "";
-  document.title = prefix + (text ? `${text} • Instagram Clone` : "Instagram Clone");
+  document.title = prefix + (text ? `${text} ï¿½ Instagram Clone` : "Instagram Clone");
 }
 
 function setNavActive(view) {
@@ -83,7 +83,10 @@ function setView(view, opts = {}) {
   }
   for (const v of views) el(`view-${v}`)?.classList.toggle("hidden", v !== view);
   el("stories").classList.toggle("hidden", view !== "feed");
-  el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
+  const composer = el("composer");
+  const composerHidden = view !== "feed" || !state.me;
+  composer.classList.toggle("hidden", composerHidden);
+  el("newPostBtn")?.setAttribute("aria-expanded", composerHidden ? "false" : String(!composer.classList.contains("hidden")));
   el("storyCreator")?.classList.add("hidden");
   el("feedSentinel")?.classList.toggle("hidden", view !== "feed");
   if (opts.skipLoad) return;
@@ -199,7 +202,7 @@ function renderStory() {
   if (!s) return;
   el("storyImage").src = s.image;
   el("storyImage").alt = `Story by ${s.user?.username || "user"}`;
-  el("storyMeta").textContent = `${s.user?.username || "story"} • ${timeAgo(s.createdAt)}`;
+  el("storyMeta").textContent = `${s.user?.username || "story"} ï¿½ ${timeAgo(s.createdAt)}`;
   const prev = el("storyPrev"); const next = el("storyNext");
   if (prev) prev.disabled = state.storyIndex <= 0;
   if (next) next.disabled = false;
@@ -371,7 +374,7 @@ function updateBadge(n = 0) {
   if (!b) return;
   b.textContent = String(n);
   b.classList.toggle("hidden", !state.me || n <= 0);
-  setDocumentTitle(document.title.replace(/^\(\d+\)\s*/, "").replace(/\s•\sInstagram Clone$/, "").replace(/^Instagram Clone$/, "") || "");
+  setDocumentTitle(document.title.replace(/^\(\d+\)\s*/, "").replace(/\sï¿½\sInstagram Clone$/, "").replace(/^Instagram Clone$/, "") || "");
 }
 
 async function refreshNotificationsBadge() {
@@ -389,7 +392,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   }
   const hash = tab === "saved" ? `#/profile/${encodeURIComponent(username)}/saved` : `#/profile/${encodeURIComponent(username)}`;
   if (location.hash !== hash) history.replaceState(null, "", hash);
-  setDocumentTitle(tab === "saved" ? `@${username} • Saved` : `@${username}`);
+  setDocumentTitle(tab === "saved" ? `@${username} ï¿½ Saved` : `@${username}`);
   el("view-profile").innerHTML = loadingState("Loading profile...");
   setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username, skipTitle: true });
   try {
@@ -491,7 +494,7 @@ async function loadSearch(q) {
     const postsHtml = posts.length
       ? posts.map(postHtml).join("")
       : emptyState("No posts found", `No results for "${esc(q)}". Try a different keyword or hashtag.`);
-    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} · ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
+    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} ï¿½ ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
     el("view-search").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
     el("view-search").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
       if (!state.me) return openAuth();
@@ -532,7 +535,7 @@ async function renderMessages() {
     el("view-messages").innerHTML = `<div class="card dm">
       <div class="dm-list">
         <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
-        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` · ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
+        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` ï¿½ ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
         <div class="dm-head">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>` : "Select a conversation"}</div>
@@ -566,7 +569,7 @@ async function renderMessages() {
         const res = await api(`/api/messages/${state.dm.userId}`, { method: "POST", body: JSON.stringify({ text }) });
         optimistic.outerHTML = `<div class="dm-msg me"><div>${esc(res.message?.text || text)}</div><div class="dm-time">${timeAgo(res.message?.createdAt || Date.now())}</div></div>`;
         const item = el("view-messages").querySelector(`.dm-item[data-dm="${state.dm.userId}"] div[style*="color:var(--muted)"]`);
-        if (item) item.textContent = `${text} · ${timeAgo(Date.now())}`;
+        if (item) item.textContent = `${text} ï¿½ ${timeAgo(Date.now())}`;
         if (body) body.scrollTop = body.scrollHeight;
       } catch (err) {
         optimistic.remove();
@@ -860,7 +863,7 @@ el("authForm").addEventListener("submit", async (e) => {
 
 document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
 document.querySelector(".brand")?.addEventListener("click", () => { closeDialog(el("postDialog")); setView("feed"); });
-el("newPostBtn").onclick = () => { if (!state.me) return openAuth(); el("composer").classList.toggle("hidden"); };
+el("newPostBtn").onclick = () => { if (!state.me) return openAuth(); const c = el("composer"); c.classList.toggle("hidden"); el("newPostBtn").setAttribute("aria-expanded", String(!c.classList.contains("hidden"))); if (!c.classList.contains("hidden")) c.querySelector('input[name="image"]')?.focus?.(); };
 function updatePostPreview() {
   const form = el("postForm"); if (!form) return;
   const file = form.querySelector('input[name="image"]')?.files?.[0];
