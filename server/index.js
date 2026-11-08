@@ -186,7 +186,8 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   if (!image) return res.status(400).json({ error: "Image file or image URL required." });
   if (!req.file && !(/^https?:\/\//i.test(image) || image.startsWith("/uploads/"))) return res.status(400).json({ error: "Image URL must start with http(s) or /uploads/." });
   const filter = String(req.body.filter || "none").slice(0, 40);
-  const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), filter, createdAt: Date.now(), likes: [], comments: [] };
+  const altText = String(req.body.altText || "").trim().slice(0, 300);
+  const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), altText, filter, createdAt: Date.now(), likes: [], comments: [] };
   db.posts.unshift(post);
   saveDb(db);
   res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false, comments: [] } });
@@ -200,6 +201,7 @@ app.patch("/api/posts/:id", (req, res) => {
   if (!post) return res.status(404).json({ error: "Post not found." });
   if (post.userId !== me.id) return res.status(403).json({ error: "You can only edit your own posts." });
   post.caption = String(req.body.caption ?? post.caption ?? "").trim().slice(0, 2200);
+  if (req.body.altText !== undefined) post.altText = String(req.body.altText || "").trim().slice(0, 300);
   saveDb(db);
   res.json({ post: mapPost(post, db, me) });
 });
