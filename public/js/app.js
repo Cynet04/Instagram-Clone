@@ -919,6 +919,14 @@ function bindPostActions(root) {
         catch (e) { toast(e.message, "error"); }
       });
     });
+    postEl.querySelectorAll(".comment-pin-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const postId = postEl.dataset.id; const id = btn.dataset.commentId; const ids = pinnedCommentIds(postId);
+        const next = ids.includes(id) ? ids.filter((x)=>x!==id) : [id, ...ids].slice(0,3);
+        setPinnedCommentIds(postId, next); toast(ids.includes(id) ? "Comment unpinned." : "Comment pinned.");
+        if (state.view === "profile") loadProfile(state.me?.username); else loadFeed(true);
+      });
+    });
     postEl.querySelectorAll(".comment-report-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!state.me) return openAuth();
