@@ -524,3 +524,11 @@
 - [x] Settings: "Copy diagnostics" includes app build (done)
 - [ ] Search dropdown: ria-label on results container
 - [x] Phase bump to 53
+
+## Phase 54: New Autonomous Features (2026-11-08)
+- [x] Phase 54 autonomous batch complete (2026-11-08)
+- [ ] Post: prevent saving while logged out (auth prompt) � ensure UI feedback
+- [x] Feed: "Share" action copies link fallback already; unify toast
+- [x] Profile: show "Posts/Saved" as navigation tabs with aria-controls context
+- [x] Settings: show repo/local app name consistently
+- [x] Phase bump to 54

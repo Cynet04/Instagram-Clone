@@ -896,6 +896,7 @@ function bindPostActions(root) {
       }
     });
     postEl.querySelector(".save-btn")?.addEventListener("click", async () => {
+      if (!state.me) { openAuth(); toast("Log in to save posts."); return; }
       if (!state.me) return openAuth();
       const btn = postEl.querySelector(".save-btn");
       const prevSaved = btn.classList.contains("saved");
