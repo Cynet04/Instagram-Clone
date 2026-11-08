@@ -74,7 +74,7 @@ function postHtml(p) {
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
-        <button class="copy-caption-btn" type="button" aria-label="Copy caption">Copy caption</button>
+        <button class="copy-caption-btn" type="button" aria-label="Copy post caption">Copy caption</button>
         <button class="copy-image-btn" type="button" aria-label="Copy image link">Copy image</button>
         <button class="open-image-btn" type="button" aria-label="Open image in new tab">Open image</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
@@ -655,7 +655,7 @@ async function renderMessages() {
     el("view-messages").innerHTML = `<div class="card dm">
       <div class="dm-list">
         <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
-        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` � ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
+        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" ${c.user.id === state.dm.userId ? "aria-current=\"true\"" : ""} aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` � ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
         <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<div><button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>${activityStatusEnabled() ? `<div class="muted" style="font-size:12px;font-weight:400">Active now</div>` : ``}${isDmMuted(active.id) ? `<div class="muted" style="font-size:12px;font-weight:400">Muted</div>` : ``}</div><div style="display:flex;gap:6px"><button id="muteDmBtn" type="button" class="mini-btn secondary">${isDmMuted(active.id)?"Unmute":"Mute"}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button></div>` : "Select a conversation"}</div>

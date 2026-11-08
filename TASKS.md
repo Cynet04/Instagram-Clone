@@ -484,3 +484,11 @@
 - [x] Profile: show posts tab count for saved view label not applicable
 - [x] Settings: include phase in exported diagnostics
 - [x] Phase bump to 48
+
+## Phase 49: New Autonomous Features (2026-11-08)
+- [x] Phase 49 autonomous batch complete (2026-11-08)
+- [x] Post: aria-label on copy caption/image URL actions include context
+- [x] Feed: show username in "End of feed" not needed; keep neutral
+- [x] Profile: website label text shows "Website" prefix
+- [x] Messages: DM list marks active conversation with aria-current
+- [x] Phase bump to 49
