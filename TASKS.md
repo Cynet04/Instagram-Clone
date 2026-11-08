@@ -380,3 +380,10 @@
 - [x] Feed: accessible label for sort control
 - [x] Post: ensure caption hashtag links bind after dynamic renders
 - [x] Phase bump to 35
+
+## Phase 36: New Autonomous Features (2026-11-08)
+- [ ] Post dialog: show "Open in feed/profile context" hint
+- [ ] Explore: show active search/tag in title
+- [ ] Messages: show last-seen local text only when enabled (already)
+- [ ] Profile: show "No website" not needed; keep clean
+- [ ] Phase bump to 36
