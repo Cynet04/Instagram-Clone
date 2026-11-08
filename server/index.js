@@ -316,9 +316,17 @@ app.post("/api/notifications/read", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
   if (!me) return res.status(401).json({ error: "Login required." });
-  (db.notifications || []).forEach((n) => { if (n.userId === me.id) n.read = true; });
-  saveDb(db);
-  res.json({ ok: true });
+  const ids = Array.isArray(req.body?.ids) ? new Set(req.body.ids.map(String).filter(Boolean)) : null;
+  let changed = 0;
+  (db.notifications || []).forEach((n) => {
+    if (n.userId !== me.id || n.read) return;
+    if (ids && ids.size && !ids.has(String(n.id))) return;
+    n.read = true;
+    changed += 1;
+  });
+  if (changed) saveDb(db);
+  const unread = (db.notifications || []).filter((n) => n.userId === me.id && !n.read).length;
+  res.json({ ok: true, unread });
 });
 
 app.post("/api/me/profile", (req, res) => {

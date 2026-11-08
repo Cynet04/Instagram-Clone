@@ -281,15 +281,16 @@ async function loadNotifications() {
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
         const postId = n.post?.id || "";
         const profile = n.actor?.username || "";
-        return `<button type="button" class="notif notif-link ${n.read ? "" : "unread"}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span></button>`;
+        return `<button type="button" class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span></button>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
-    el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
-    el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile]").forEach((btn) => {
+    el("markReadBtn")?.addEventListener("click", async () => { const res = await api("/api/notifications/read", { method: "POST", body: "{}" }); updateBadge(res.unread ?? 0); loadNotifications(); });
+    el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile],[data-notif-id]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (btn.classList.contains("unread")) {
+        const notifId = btn.dataset.notifId;
+        if (btn.classList.contains("unread") && notifId) {
           btn.classList.remove("unread");
           updateBadge(Math.max(0, Number(el("notifBadge")?.textContent || 0) - 1));
-          api("/api/notifications/read", { method: "POST", body: JSON.stringify({ ids: [] }) }).catch(() => {});
+          api("/api/notifications/read", { method: "POST", body: JSON.stringify({ ids: [notifId] }) }).then((r) => updateBadge(r.unread ?? Number(el("notifBadge")?.textContent || 0))).catch(() => {});
         }
         const postId = btn.dataset.notifPost;
         const profile = btn.dataset.notifProfile;
@@ -302,7 +303,7 @@ async function loadNotifications() {
           } else if (profile) {
             loadProfile(profile);
           }
-        } catch (e) { alert(e.message); }
+        } catch (e) { toast(e.message, "error"); }
       });
     });
   } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
