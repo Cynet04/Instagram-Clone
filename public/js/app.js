@@ -471,7 +471,7 @@ async function loadSearch(q) {
   try {
     const { users = [], posts = [] } = await api(`/api/search?q=${encodeURIComponent(q)}`);
     const usersHtml = users.length
-      ? users.map((u) => `<div class="suggestion"><img class="avatar profile-link" src="${avatar(u)}" alt="" data-profile="${esc(u.username)}" /><div style="flex:1"><strong class="profile-link" data-profile="${esc(u.username)}">${esc(u.username)}</strong><small class="muted" style="display:block">${esc(u.name || "")}</small></div>${state.me && !u.isMe ? `<button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px">${u.isFollowing ? "Following" : "Follow"}</button>` : ""}<button data-user="${esc(u.username)}" class="mini-btn secondary" style="padding:4px 8px;font-size:12px">View</button></div>`).join("")
+      ? users.map((u) => `<div class="suggestion"><img class="avatar profile-link" src="${avatar(u)}" alt="" data-profile="${esc(u.username)}" /><div style="flex:1"><strong class="profile-link" data-profile="${esc(u.username)}">${esc(u.username)}</strong><small class="muted" style="display:block">${esc(u.name || "")}</small></div>${state.me && !u.isMe ? `<button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px" aria-label="${u.isFollowing ? "Unfollow" : "Follow"} ${esc(u.username)}">${u.isFollowing ? "Following" : "Follow"}</button>` : ""}<button data-user="${esc(u.username)}" class="mini-btn secondary" style="padding:4px 8px;font-size:12px" aria-label="View profile ${esc(u.username)}">View</button></div>`).join("")
       : `<div style="padding:8px 0;color:var(--muted)">No users found.</div>`;
     const postsHtml = posts.length
       ? posts.map(postHtml).join("")
@@ -486,9 +486,10 @@ async function loadSearch(q) {
         const res = await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
         b.textContent = res.following ? "Following" : "Follow";
         b.classList.toggle("secondary", !!res.following);
+        b.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
         toast(res.following ? "Following user." : "Unfollowed.");
         refreshNotificationsBadge();
-      } catch (e) { b.textContent = prev; toast(e.message, "error"); }
+      } catch (e) { b.textContent = prev; b.setAttribute("aria-label", `${prev === "Following" ? "Unfollow" : "Follow"} ${b.dataset.followUser}`); toast(e.message, "error"); }
       finally { b.disabled = false; }
     });
     bindProfileLinks(el("view-search"));

@@ -100,6 +100,7 @@
 - [x] Small accessibility polish (comment form inputs get `aria-label` for screen readers)
 - [x] Notification/explore action polish (mark-read shows toast/handles errors; clear/mark-read buttons have accessible labels)
 - [x] Small accessibility/status refinements (profile action labels, feed status/live-region roles, follow rollback aria sync)
+- [x] Search input/action refinements (`type="search"` + autocomplete off; search follow/view buttons have explicit aria labels)
 - [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility/perf polish)
 
 ## Progress Log
@@ -151,6 +152,7 @@
 - 2026-11-08: Small accessibility polish added (comment form inputs have `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification/explore action polish added (mark-read toast/error handling; accessible labels for clear/mark-read actions). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small accessibility/status refinements added (profile action aria labels, feed status live-region/alert roles, follow rollback label sync). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Search input/action refinements added (`type="search"` + autocomplete off; search follow/view buttons include explicit aria labels/state sync). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
