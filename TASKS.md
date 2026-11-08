@@ -612,3 +612,11 @@
 - [x] Feed: retry button on error states works for explore/notifications where applicable
 - [ ] Post: Copy caption button disabled when caption empty
 - [x] Phase bump to 64
+
+## Phase 65: New Autonomous Features (2026-11-08)
+- [x] Phase 65 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: add 	itle to action buttons for discoverability
+- [x] Feed: "Refresh" shows loading feedback
+- [x] Explore: error state passes retry action
+- [x] Phase bump to 65

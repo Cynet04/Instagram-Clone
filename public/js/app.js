@@ -146,7 +146,7 @@ function applyFeedSort() {
   const sort = state.feed.sort || "newest";
   const archived = state.me ? new Set(archivedPostIds(state.me.username)) : new Set();
   const posts = [...(state.feed.posts || [])].filter((p)=>!archived.has(p.id)).sort((a,b)=> sort==="liked" ? ((b.likesCount||0)-(a.likesCount||0)) || ((b.createdAt||0)-(a.createdAt||0)) : ((b.createdAt||0)-(a.createdAt||0)));
-  const header = `<div class="card" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:10px"><h3 style="margin:0">Feed</h3><button id="feedRefreshBtn" type="button" class="mini-btn secondary" aria-label="Refresh feed">Refresh</button></div><label class="muted" style="font-size:13px;display:flex;align-items:center;gap:8px">Sort posts <select id="feedSort" aria-label="Sort feed posts" aria-label="Sort feed"><option value="newest" ${state.feed.sort==="newest"?"selected":""}>Newest</option><option value="liked" ${state.feed.sort==="liked"?"selected":""}>Most liked</option></select></label></div>`;
+  const header = `<div class="card" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:10px"><h3 style="margin:0">Feed</h3><button id="feedRefreshBtn" type="button" class="mini-btn secondary" aria-label="Refresh feed" title="Refresh feed">Refresh</button></div><label class="muted" style="font-size:13px;display:flex;align-items:center;gap:8px">Sort posts <select id="feedSort" aria-label="Sort feed posts" aria-label="Sort feed"><option value="newest" ${state.feed.sort==="newest"?"selected":""}>Newest</option><option value="liked" ${state.feed.sort==="liked"?"selected":""}>Most liked</option></select></label></div>`;
   const root = el("view-feed"); if (!root) return;
   root.innerHTML = header + (posts.length ? posts.map(postHtml).join("") : emptyState("No posts yet", "When people share photos, they'll appear here.").replace('<div class="card state-card">','<div class="state-card" style="margin:16px">'));
   bindPostActions(root);
@@ -186,7 +186,7 @@ async function loadFeed(reset = true) {
     if (!state.feed.hasMore && el("view-feed").children.length) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
   } catch (e) {
     el(statusId)?.remove();
-    if (!el("view-feed").children.length || reset) el("view-feed").innerHTML = errorState(e.message);
+    if (!el("view-feed").children.length || reset) el("view-feed").innerHTML = errorState(e.message, "explore");
     else el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="alert">${esc(e.message)}</div>`);
   } finally {
     state.feed.loading = false;
