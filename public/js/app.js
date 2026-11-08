@@ -924,6 +924,10 @@ function bindPostActions(root) {
         }
       });
     });
+        postEl.querySelectorAll(".comment-copy-btn").forEach((btn)=>btn.addEventListener("click", async ()=>{
+      const text = btn.closest(".comment")?.querySelector("span")?.innerText || "";
+      try { await navigator.clipboard?.writeText?.(text.replace(/^Pinned\s*/,"").trim()); toast("Comment copied."); } catch { toast("Could not copy comment."); }
+    }));
     postEl.querySelectorAll(".comment-edit-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!state.me) return openAuth();
@@ -1020,7 +1024,7 @@ function bindPostActions(root) {
       input.value = "";
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
-        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
+        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-copy-btn" type="button" aria-label="Copy comment">Copy</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
         bindPostActions(postEl);
         refreshNotificationsBadge(); refreshDmBadge();
       } catch (err) { optimistic.remove(); input.value = text; toast(err.message, "error"); }

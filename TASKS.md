@@ -257,8 +257,9 @@
 - [x] Phase 15 autonomous batch complete (2026-11-08)
 
 ## Phase 16: New Autonomous Features (2026-11-08)
-- [ ] Post location field (create/edit/display, MVP)
-- [ ] "Copy comment text" action
-- [ ] Profile follower/following count refresh on follow actions
-- [ ] Settings: show app storage info (localStorage keys count)
-- [ ] Feed empty state CTA for logged-in users with no follows
+- [x] Post location field (create/edit/display, MVP)
+- [x] "Copy comment text" action
+- [x] Profile follower/following count refresh on follow actions
+- [x] Settings: show app storage info (localStorage keys count)
+- [x] Feed empty state CTA for logged-in users with no follows
+- [x] Phase 16 autonomous batch complete (2026-11-08)
