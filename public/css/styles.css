@@ -20,8 +20,9 @@ body.dark {
   --input: #262626;
   --nav: #000;
 }
-* { box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
-*::-webkit-scrollbar { width: 0; height: 0; display: none; }
+* { box-sizing: border-box; scrollbar-width: none !important; -ms-overflow-style: none !important; }
+*::-webkit-scrollbar, *::-webkit-scrollbar-track, *::-webkit-scrollbar-thumb, *::-webkit-scrollbar-corner { width: 0 !important; height: 0 !important; display: none !important; background: transparent !important; }
+html, body, .dm-body, .dm-list, .stories, .nav-actions, .post-dialog .card, #listDialogBody, dialog { scrollbar-width: none !important; -ms-overflow-style: none !important; overflow: -moz-scrollbars-none; }
 html, body { overflow-x: hidden; }
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); transition: background .2s ease, color .2s ease; min-height: 100vh; display: flex; flex-direction: column; }
 main.layout { flex: 1; width: 100%; }
@@ -227,3 +228,6 @@ body.dark .post-menu { box-shadow:0 8px 24px rgba(0,0,0,.45); }
 
 .app-bottom-name { text-align:center; padding: 18px 12px 22px; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
 body.dark .app-bottom-name { color: #737373; }
+
+.feed-brand { font-family: \"Segoe Script\", \"Brush Script MT\", cursive; font-size: 28px; text-align: center; padding: 4px 0 14px; color: var(--text); }
+@media (max-width: 700px) { .feed-brand { display: block; } }
