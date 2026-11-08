@@ -288,3 +288,10 @@
 - [x] Notification badge clears optimistically when opening notifications
 - [x] Composer drag-and-drop image file support (MVP)
 - [x] Phase 19 autonomous batch complete (2026-11-08)
+
+## Phase 20: New Autonomous Features (2026-11-08)
+- [ ] Feed post count indicator near top
+- [ ] "Mark all read" optimistic UI in notifications
+- [ ] Profile link in DM header opens profile view
+- [ ] Search: Enter key opens first result
+- [ ] Settings: button to clear hidden notifications (local)
