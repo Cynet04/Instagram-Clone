@@ -672,6 +672,7 @@ function bindPostActions(root) {
         try {
           await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}`, { method: "DELETE" });
           node?.remove();
+          toast("Comment deleted.");
         } catch (e) { if (node) node.style.opacity = ""; toast(e.message, "error"); }
       });
     });
