@@ -36,6 +36,21 @@ function errorState(message, retry = "") {
   return `<div class="card state-card state-error"><div class="state-title">Something went wrong</div><div class="state-detail">${esc(message)}</div>${retry ? `<button type="button" class="mini-btn" data-retry-action="${esc(retry)}" style="margin-top:10px">Try again</button>` : ""}</div>`;
 }
 
+function timeAgo(ts) {
+  const s = Math.max(0, Math.floor((Date.now() - (Number(ts) || 0)) / 1000));
+  if (s < 60) return "now";
+  const m = Math.floor(s / 60); if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60); if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24); if (d < 7) return `${d}d`;
+  const w = Math.floor(d / 7); if (w < 5) return `${w}w`;
+  return new Date(Number(ts) || Date.now()).toLocaleDateString([], { month: "short", day: "numeric" });
+}
+function avatar(user) {
+  const src = user?.avatar || "";
+  if (src) return esc(src);
+  const name = encodeURIComponent(user?.username || "user");
+  return `https://placehold.co/192x192/f5f5f5/737373?text=${name}`;
+}
 function postHtml(p) {
   const filter = esc(p.filter || "none");
   const mine = state.me && p.user?.id === state.me.id;
@@ -903,13 +918,13 @@ document.addEventListener("click", (e) => {
   if (action.startsWith("profile:")) return loadProfile(action.slice(8));
   if (action.startsWith("search:")) return loadSearch(action.slice(7));
 });
-document.addEventListener("keydown", (e) => {
+ddocument.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (e.target?.id === "searchInput" && e.target.value) return;
   ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
 });
 
-ocument.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", (e) => {
   const story = el("storyDialog");
   if (!story?.open) return;
   if (e.key === "ArrowLeft") { e.preventDefault(); if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } }
