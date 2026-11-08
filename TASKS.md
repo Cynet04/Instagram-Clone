@@ -500,3 +500,10 @@
 - [x] Settings: show health phase from API after check
 - [x] Profile: avatar fallback in header uses consistent style
 - [x] Phase bump to 50
+
+## Phase 51: New Autonomous Features (2026-11-08)
+- [ ] Feed: show post location in feed cards consistently (already present)
+- [ ] Comments: preserve comment input focus not required; keep UX stable
+- [ ] Profile: show "No posts" empty state uses consistent copy
+- [ ] Notifications: ensure hide-read filter persists across reloads (already)
+- [ ] Phase bump to 51
