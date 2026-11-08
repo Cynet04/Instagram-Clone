@@ -83,4 +83,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Share/copy profile links added (profile Share button copies hash deep link with clipboard fallback). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Notification deep links/open context added (clickable notifications open related post dialog or actor profile). Client syntax and health verified. Next: additional autonomous features.

@@ -267,9 +267,27 @@ async function loadNotifications() {
       (notifications.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
-        return `<div class="notif ${n.read ? "" : "unread"}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><div><strong>${actor}</strong> ${msg}<div style="color:var(--muted);font-size:12px">${timeAgo(n.createdAt)}</div></div></div>`;
+        const postId = n.post?.id || "";
+        const profile = n.actor?.username || "";
+        return `<button type="button" class="notif notif-link ${n.read ? "" : "unread"}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span></button>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
+    el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const postId = btn.dataset.notifPost;
+        const profile = btn.dataset.notifProfile;
+        try {
+          if (postId) {
+            const { post } = await api(`/api/posts/${postId}`);
+            el("postDialogBody").innerHTML = postHtml(post);
+            bindPostActions(el("postDialogBody"));
+            el("postDialog").showModal();
+          } else if (profile) {
+            loadProfile(profile);
+          }
+        } catch (e) { alert(e.message); }
+      });
+    });
   } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
 }
 
