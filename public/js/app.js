@@ -377,7 +377,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     const btn = el("shareProfileBtn");
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
     try {
-      if (navigator.share) {
+      const shareData = { title: `Instagram Clone � @${postEl.querySelector(".post-user")?.textContent || "post"}`, text: (postEl.querySelector(".caption-text")?.textContent || "").trim().slice(0, 160) || "Check out this post", url };
+        if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
         await navigator.share({ title: `@${user.username} on Instagram Clone`, text: `Check out @${user.username}`, url });
         toast("Profile shared.");
         return;
@@ -681,7 +682,7 @@ function bindPostActions(root) {
       const btn = postEl.querySelector(".share-post-btn");
       try {
         if (navigator.share) {
-          await navigator.share({ title: "Instagram Clone post", url });
+          await navigator.share(shareData);
           toast("Post shared.");
           return;
         }
