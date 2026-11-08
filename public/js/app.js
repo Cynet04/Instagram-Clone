@@ -1023,3 +1023,5 @@ await loadMe();
 await loadStories();
 renderMessages();
 await handleRoute();
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});

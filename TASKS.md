@@ -110,6 +110,7 @@
 - [x] Client robustness fix (added missing `timeAgo`/`avatar` helpers; fixed stray story keydown listener typo)
 - [x] Account settings MVP (Settings view + theme/password/logout controls; `POST /api/me/password` with bcrypt verification)
 - [x] Post report MVP (non-owner Report action; `POST /api/posts/:id/report` with dedupe in `reports`)
+- [x] PWA smoke + basic install shell (manifest, icon, service worker for static assets only; smoke tests)
 - [ ] Additional autonomous features (e.g., share refinements, small UX refinements, perf polish)
 
 ## Progress Log
