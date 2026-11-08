@@ -617,6 +617,8 @@ function showDialog(dialog) {
     if (id) history.replaceState(null, "", `#/post/${encodeURIComponent(id)}`);
   }
   if (!dialog.open) dialog.showModal();
+  if (dialog.id === "authDialog") dialog.querySelector('input[name="username"]')?.focus?.();
+  if (dialog.id === "profileEditDialog") dialog.querySelector('input[name="name"]')?.focus?.();
 }
 function closeDialog(dialog) {
   if (!dialog?.open) return;
