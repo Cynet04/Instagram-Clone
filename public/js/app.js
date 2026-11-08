@@ -70,12 +70,14 @@ function renderSuggestions(users = []) {
 
 function postHtml(p) {
   const filter = esc(p.filter || "none");
+  const mine = state.me && p.user?.id === state.me.id;
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
         <img class="avatar" src="${avatar(p.user)}" alt="" />
         <span class="post-user">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
+        ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" />
       <div class="post-actions">
@@ -297,6 +299,13 @@ async function renderMessages() {
 
 function bindPostActions(root) {
   root.querySelectorAll(".post").forEach((postEl) => {
+    postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
+      if (!state.me || !confirm("Delete this post?")) return;
+      try {
+        await api(`/api/posts/${postEl.dataset.id}`, { method: "DELETE" });
+        if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
+      } catch (e) { alert(e.message); }
+    });
     postEl.querySelector(".like-btn")?.addEventListener("click", async () => {
       if (!state.me) return openAuth();
       try {

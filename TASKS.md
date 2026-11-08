@@ -47,7 +47,8 @@
 - [x] Story viewer modal (clickable stories, prev/next/close)
 - [x] Follow/unfollow (API + profile counts + follow notifications)
 - [x] Profile edit (bio/name/avatar URL, persisted via `/api/me/profile`)
-- [ ] Post delete (owner)
+- [x] Post delete (owner-only delete, local upload cleanup, notification/save cleanup)
+- [ ] Hashtag links/search
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -59,4 +60,5 @@
 - 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified.
 - 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified.
 - 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified.
-- 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified. Next: post delete.
+- 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified.
+- 2026-11-08: Post delete added for owners with saved/notification cleanup and local upload file removal. Server restarted and health verified. Next: hashtag links/search.

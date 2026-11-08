@@ -82,6 +82,7 @@ button { cursor: pointer; }
 .post-head .avatar { width: 34px; height: 34px; border-width: 1px; }
 .post-user { font-weight: 600; font-size: 14px; }
 .post-time { color: var(--muted); font-size: 12px; margin-left: auto; }
+.delete-post-btn { margin-left: 8px; border: 0; background: none; color: var(--red); font-size: 12px; font-weight: 600; padding: 0; }
 .post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; }
 .filter-none { filter: none; }
 .filter-clarendon { filter: contrast(1.2) saturate(1.35); }

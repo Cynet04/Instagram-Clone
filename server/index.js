@@ -166,6 +166,24 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false } });
 });
 
+app.delete("/api/posts/:id", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const idx = db.posts.findIndex((p) => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: "Post not found." });
+  if (db.posts[idx].userId !== me.id) return res.status(403).json({ error: "You can only delete your own posts." });
+  const [removed] = db.posts.splice(idx, 1);
+  db.users.forEach((u) => { if (Array.isArray(u.saved)) u.saved = u.saved.filter((id) => id !== removed.id); });
+  db.notifications = (db.notifications || []).filter((n) => n.postId !== removed.id);
+  if (removed.image && removed.image.startsWith("/uploads/")) {
+    const fp = path.join(root, removed.image.replace(/^\//, ""));
+    fs.rm(fp, { force: true }, () => {});
+  }
+  saveDb(db);
+  res.json({ ok: true });
+});
+
 app.post("/api/posts/:id/like", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
