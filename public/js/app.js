@@ -76,7 +76,7 @@ function postHtml(p) {
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
         <button class="copy-caption-btn" type="button" aria-label="Copy post caption" ${p.caption?"":"disabled"}>Copy caption</button>
         <button class="copy-image-btn" type="button" aria-label="Copy image link">Copy image</button>
-        <button class="open-image-btn" type="button" aria-label="Open image in new tab">Open image</button>
+        <button class="open-image-btn" type="button" aria-label="Open image in new tab" title="Open image in new tab">Open image</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
         ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>

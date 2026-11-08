@@ -845,3 +845,11 @@ otif-time uses 	imeAgo (done)
 - [x] Composer: filter select has label (already)
 - [x] Story: dialog close restores focus flow (done)
 - [x] Phase bump to 93
+
+## Phase 94: New Autonomous Features (2026-11-08)
+- [x] Phase 94 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Server: add Cache-Control: no-store for /api/health (diagnostic freshness)
+- [ ] Client: post action "Open image" has 	itle
+- [ ] Profile: total likes/comments stat uses ria-label
+- [x] Phase bump to 94
