@@ -104,7 +104,9 @@ button { cursor: pointer; }
 .hashtag { color: #00376b; text-decoration: none; }
 body.dark .hashtag { color: #e0f1ff; }
 .comments { padding: 8px 14px; color: var(--text); font-size: 14px; }
-.comment { margin: 4px 0; }
+.comment { margin: 4px 0; display: flex; justify-content: space-between; gap: 8px; align-items: start; }
+.comment-like-btn { border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 600; padding: 0; white-space: nowrap; }
+.comment-like-btn.liked { color: var(--red); }
 .comment-form { display: flex; border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 14px; gap: 8px; }
 .comment-form input { flex: 1; border: 0; outline: 0; background: transparent; color: var(--text); }
 .comment-form button { border: 0; background: none; color: var(--blue); font-weight: 600; }

@@ -27,9 +27,9 @@ function seed() {
       { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "", saved: [], following: [] }
     ],
     posts: [
-      { id: nanoid(10), userId: "u_alex", image: "https://picsum.photos/seed/ig1/1080/1080", caption: "Morning light in the city.", createdAt: now - 3600_000, likes: ["u_demo"], comments: [{ id: nanoid(8), userId: "u_demo", text: "Great shot!", createdAt: now - 3000_000 }] },
+      { id: nanoid(10), userId: "u_alex", image: "https://picsum.photos/seed/ig1/1080/1080", caption: "Morning light in the city. #sunrise", createdAt: now - 3600_000, likes: ["u_demo"], comments: [{ id: nanoid(8), userId: "u_demo", text: "Great shot!", createdAt: now - 3000_000, likes: [] }] },
       { id: nanoid(10), userId: "u_sam", image: "https://picsum.photos/seed/ig2/1080/1350", caption: "Weekend escape.", createdAt: now - 7200_000, likes: [], comments: [] },
-      { id: nanoid(10), userId: "u_demo", image: "https://picsum.photos/seed/ig3/1080/1080", caption: "Phase 1 complete: core UI scaffold.", createdAt: now - 9000_000, likes: ["u_alex"], comments: [] }
+      { id: nanoid(10), userId: "u_demo", image: "https://picsum.photos/seed/ig3/1080/1080", caption: "Phase 1 complete: core UI scaffold. #buildinpublic", createdAt: now - 9000_000, likes: ["u_alex"], comments: [] }
     ],
     stories: [
       { id: nanoid(8), userId: "u_alex", image: "https://picsum.photos/seed/story1/540/960", createdAt: now - 1800_000 },
@@ -48,7 +48,11 @@ function loadDb() {
   }
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
   db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [], following: Array.isArray(u.following) ? u.following : [] }));
-  db.posts = (db.posts || []).map((p) => ({ ...p, filter: p.filter || "none" }));
+  db.posts = (db.posts || []).map((p) => ({
+    ...p,
+    filter: p.filter || "none",
+    comments: (p.comments || []).map((c) => ({ ...c, likes: Array.isArray(c.likes) ? c.likes : [] }))
+  }));
   db.stories = db.stories || [];
   db.messages = db.messages || [];
   db.notifications = db.notifications || [];
@@ -75,6 +79,17 @@ function safeUser(u) {
   if (!u) return null;
   const { password, ...rest } = u;
   return rest;
+}
+
+function mapComment(db, c, me) {
+  const likes = Array.isArray(c.likes) ? c.likes : [];
+  return {
+    ...c,
+    likes,
+    likesCount: likes.length,
+    likedByMe: me ? likes.includes(me.id) : false,
+    user: safeUser(db.users.find((u) => u.id === c.userId))
+  };
 }
 
 const storage = multer.diskStorage({
@@ -147,7 +162,7 @@ app.get("/api/feed", (req, res) => {
       likesCount: p.likes.length,
       likedByMe: me ? p.likes.includes(me.id) : false,
       savedByMe: me ? saved.has(p.id) : false,
-      comments: p.comments.map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
+      comments: p.comments.map((c) => mapComment(db, c, me))
     };
   });
   res.json({ posts, offset, limit, total: all.length, hasMore: offset + slice.length < all.length });
@@ -222,7 +237,7 @@ app.get("/api/saved", (req, res) => {
     likesCount: p.likes.length,
     likedByMe: p.likes.includes(me.id),
     savedByMe: true,
-    comments: p.comments.map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
+    comments: (p.comments || []).map((c) => mapComment(db, c, me))
   }));
   res.json({ posts });
 });
@@ -235,11 +250,26 @@ app.post("/api/posts/:id/comments", (req, res) => {
   if (!post) return res.status(404).json({ error: "Post not found." });
   const text = String(req.body.text || "").trim();
   if (!text) return res.status(400).json({ error: "Comment required." });
-  const comment = { id: nanoid(8), userId: me.id, text: text.slice(0, 500), createdAt: Date.now() };
+  const comment = { id: nanoid(8), userId: me.id, text: text.slice(0, 500), createdAt: Date.now(), likes: [] };
   post.comments.push(comment);
   addNotification(db, { userId: post.userId, actorId: me.id, type: "comment", postId: post.id, text: comment.text });
   saveDb(db);
-  res.json({ comment: { ...comment, user: safeUser(me) } });
+  res.json({ comment: mapComment(db, comment, me) });
+});
+
+app.post("/api/posts/:id/comments/:commentId/like", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  const comment = (post.comments || []).find((c) => c.id === req.params.commentId);
+  if (!comment) return res.status(404).json({ error: "Comment not found." });
+  comment.likes = Array.isArray(comment.likes) ? comment.likes : [];
+  const i = comment.likes.indexOf(me.id);
+  if (i >= 0) comment.likes.splice(i, 1); else { comment.likes.push(me.id); addNotification(db, { userId: comment.userId, actorId: me.id, type: "comment_like", postId: post.id, text: comment.text }); }
+  saveDb(db);
+  res.json({ liked: comment.likes.includes(me.id), likesCount: comment.likes.length });
 });
 
 app.get("/api/notifications", (req, res) => {
@@ -377,7 +407,7 @@ app.get("/api/search", (req, res) => {
     likesCount: p.likes.length,
     likedByMe: me ? p.likes.includes(me.id) : false,
     savedByMe: me ? saved.has(p.id) : false,
-    comments: (p.comments || []).map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
+    comments: (p.comments || []).map((c) => mapComment(db, c, me))
   }));
   res.json({ users, posts, q: qRaw });
 });

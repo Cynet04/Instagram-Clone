@@ -92,7 +92,11 @@ function postHtml(p) {
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
       <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
-      <div class="comments">${(p.comments || []).map((c) => `<div class="comment"><strong>${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</div>`).join("")}</div>
+      <div class="comments">${(p.comments || []).map((c) => `
+        <div class="comment" data-comment-id="${c.id}">
+          <span><strong>${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
+          <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="Like comment">Like ${c.likesCount || 0}</button>
+        </div>`).join("")}</div>
       <form class="comment-form">
         <input name="text" placeholder="Add a comment..." maxlength="500" ${state.me ? "" : "disabled"} />
         <button ${state.me ? "" : "disabled"}>Post</button>
@@ -196,7 +200,7 @@ async function loadNotifications() {
     el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
       (notifications.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
-        const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "follow" ? "started following you" : "interacted with you";
+        const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
         return `<div class="notif ${n.read ? "" : "unread"}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><div><strong>${actor}</strong> ${msg}<div style="color:var(--muted);font-size:12px">${timeAgo(n.createdAt)}</div></div></div>`;
       }).join("") || `<div style="padding:16px">No notifications yet.</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
@@ -340,6 +344,17 @@ function bindPostActions(root) {
         btn.textContent = res.saved ? "Saved" : "Save";
         if (state.view === "saved" && !res.saved) loadSaved();
       } catch (e) { alert(e.message); }
+    });
+    postEl.querySelectorAll(".comment-like-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!state.me) return openAuth();
+        const commentId = btn.closest(".comment")?.dataset.commentId;
+        try {
+          const res = await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}/like`, { method: "POST", body: "{}" });
+          btn.classList.toggle("liked", res.liked);
+          btn.textContent = `Like ${res.likesCount}`;
+        } catch (e) { alert(e.message); }
+      });
     });
     postEl.querySelector(".comment-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
