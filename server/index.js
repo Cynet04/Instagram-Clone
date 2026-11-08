@@ -470,6 +470,9 @@ app.post("/api/stories", (req, res) => {
 
 app.get("/api/stories", (req, res) => {
   const db = loadDb();
+  const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+  db.stories = (db.stories || []).filter((s) => Number(s.createdAt || 0) >= cutoff);
+  saveDb(db);
   const stories = [...db.stories].sort((a, b) => b.createdAt - a.createdAt).map((s) => ({ ...s, user: safeUser(db.users.find((u) => u.id === s.userId)) }));
   res.json({ stories });
 });

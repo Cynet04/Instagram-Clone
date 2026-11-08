@@ -191,6 +191,8 @@ async function loadExplore(q = "") {
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
     </div>`;
     bindPostOpen(el("view-explore"));
+    el("exploreLoginBtn")?.addEventListener("click", openAuth);
+    el("exploreEmptyLoginBtn")?.addEventListener("click", openAuth);
     el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
   } catch (e) { el("view-explore").innerHTML = errorState(e.message, "explore"); }
 }
