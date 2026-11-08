@@ -187,7 +187,7 @@ function postHtml(p) {
 async function loadStories() {
   const { stories } = await api("/api/stories");
   state.stories = stories || [];
-  const add = state.me ? `<button class="story story-add" type="button" id="addStoryBtn"><span class="story-plus">+</span><span>Your story</span></button>` : "";
+  const add = state.me ? `<button class="story story-add" type="button" id="addStoryBtn" aria-label="Add to your story"><span class="story-plus">+</span><span>Your story</span></button>` : "";
   el("stories").innerHTML = add + state.stories.map((s, i) => `
     <button class="story" type="button" data-story-index="${i}" aria-label="View story by ${esc(s.user?.username || "user")}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || (add ? "" : emptyState("No stories yet", "Stories from people you follow will appear here.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-width:180px;padding:10px">'));
   el("stories").querySelectorAll("[data-story-index]").forEach((b) => b.onclick = () => openStory(Number(b.dataset.storyIndex)));
@@ -210,6 +210,7 @@ function openStory(index = 0) {
   state.storyIndex = Math.max(0, Math.min(index, state.stories.length - 1));
   renderStory();
   showDialog(el("storyDialog"));
+  (el("storyNext") || el("storyClose"))?.focus?.();
 }
 
 el("storyPrev")?.addEventListener("click", () => { if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } });
