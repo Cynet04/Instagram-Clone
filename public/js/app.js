@@ -485,11 +485,16 @@ let lastFocus = null;
 function showDialog(dialog) {
   if (!dialog) return;
   lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (dialog.id === "postDialog") {
+    const id = el("postDialogBody")?.querySelector("[data-id]")?.dataset.id;
+    if (id) history.replaceState(null, "", `#/post/${encodeURIComponent(id)}`);
+  }
   if (!dialog.open) dialog.showModal();
 }
 function closeDialog(dialog) {
   if (!dialog?.open) return;
   dialog.close();
+  if (dialog.id === "postDialog" && location.hash.startsWith("#/post/")) history.replaceState(null, "", "#/feed");
   if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
   lastFocus = null;
 }
@@ -523,6 +528,7 @@ function bindPostActions(root) {
     });
     postEl.querySelector(".share-post-btn")?.addEventListener("click", async () => {
       const url = `${location.origin}${location.pathname}#/post/${encodeURIComponent(postEl.dataset.id)}`;
+    if (location.hash !== `#/post/${encodeURIComponent(postEl.dataset.id)}`) history.replaceState(null, "", url);
       const btn = postEl.querySelector(".share-post-btn");
       try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } toast("Post link copied."); }
       catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
@@ -648,7 +654,7 @@ async function loadMe() {
 }
 
 el("authBtn").onclick = async () => {
-  if (state.me) { await api("/api/auth/logout", { method: "POST", body: "{}" }); state.me = null; renderMe(); setView("feed"); }
+  if (state.me) { await api("/api/auth/logout", { method: "POST", body: "{}" }); state.me = null; renderMe(); setView("feed"); toast("Logged out."); }
   else openAuth("login");
 };
 el("authToggle").onclick = () => openAuth(state.authMode === "login" ? "signup" : "login");
@@ -665,7 +671,7 @@ el("authForm").addEventListener("submit", async (e) => {
   try {
     const path = state.authMode === "login" ? "/api/auth/login" : "/api/auth/signup";
     const { user } = await api(path, { method: "POST", body: JSON.stringify(payload) });
-    state.me = user; renderMe(); closeDialog(el("authDialog")); setView("feed");
+    state.me = user; renderMe(); closeDialog(el("authDialog")); toast(state.authMode === "login" ? "Logged in." : "Account created."); setView("feed");
   } catch (err) { el("authError").textContent = err.message; }
 });
 
@@ -725,13 +731,14 @@ el("storyForm")?.addEventListener("submit", async (e) => {
   const fd = new FormData(e.currentTarget);
   const payload = Object.fromEntries(fd.entries());
   const image = String(payload.image || "").trim();
-  if (!/^https?:\/\//i.test(image)) { alert("Story image must be a valid http(s) URL."); return; }
+  if (!/^https?:\/\//i.test(image)) { toast("Story image must be a valid http(s) URL.", "error"); return; }
   payload.image = image;
   try {
     await api("/api/stories", { method: "POST", body: JSON.stringify(payload) });
     e.currentTarget.reset();
     el("storyCreator").classList.add("hidden");
     await loadStories();
+    toast("Story shared.");
   } catch (err) { toast(err.message, "error"); }
 });
 el("profileEditForm")?.addEventListener("submit", async (e) => {
