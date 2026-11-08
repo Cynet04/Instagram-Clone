@@ -606,10 +606,12 @@ function bindProfileLinks(root) {
 }
 
 let lastFocus = null;
+let prePostHash = null;
 function showDialog(dialog) {
   if (!dialog) return;
   lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   if (dialog.id === "postDialog") {
+    prePostHash = location.hash || "#/feed";
     const id = el("postDialogBody")?.querySelector("[data-id]")?.dataset.id;
     if (id) history.replaceState(null, "", `#/post/${encodeURIComponent(id)}`);
   }
@@ -618,7 +620,11 @@ function showDialog(dialog) {
 function closeDialog(dialog) {
   if (!dialog?.open) return;
   dialog.close();
-  if (dialog.id === "postDialog" && location.hash.startsWith("#/post/")) history.replaceState(null, "", "#/feed");
+  if (dialog.id === "postDialog" && location.hash.startsWith("#/post/")) {
+    const target = prePostHash && !prePostHash.startsWith("#/post/") ? prePostHash : (state.view === "profile" ? `#/profile` : `#/${state.view || "feed"}`);
+    history.replaceState(null, "", target);
+  }
+  prePostHash = null;
   if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
   lastFocus = null;
 }

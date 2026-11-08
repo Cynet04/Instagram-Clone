@@ -165,6 +165,7 @@
 - 2026-11-08: Dialog/form accessibility polish added (story/auth/profile dialog inputs include explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification follow action labels added (follow/unfollow controls in notifications expose and sync explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Sidebar suggestion action labels/state added (suggestion follow/view aria labels; follow action syncs label/state and shows toast). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Small route refinements added (closing post dialog restores previous route/hash context instead of always forcing feed). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
