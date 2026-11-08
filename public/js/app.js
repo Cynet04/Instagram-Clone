@@ -24,6 +24,9 @@ function setPinnedCommentIds(postId, ids){ localStorage.setItem("ig_pinned_comme
 function isHiddenNotif(id){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")).has(id); } catch { return false; } }
 function getNotifFilter(){ return localStorage.getItem("ig_notif_filter")||"all"; }
 function setNotifFilter(v){ localStorage.setItem("ig_notif_filter", v||"all"); }
+function mutedDmUsers(){ return [...dmMuted()]; }
+function setMutedDmUsers(arr){ setDmMuted(new Set(arr||[])); }
+function isDmMuted(id){ return dmMuted().has(id); }
 function dmMuted(){ try { return new Set(JSON.parse(localStorage.getItem("ig_dm_muted")||"[]")); } catch { return new Set(); } }
 function setDmMuted(set){ localStorage.setItem("ig_dm_muted", JSON.stringify([...(set||new Set())].slice(0,200))); }
 function formatCaption(text){ text=text||""; const safe=esc(text); const linked=safe.replace(/(https?:\/\/[^\s<]+)/g,function(m){ return "<a href=\""+m+"\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:var(--blue)\">"+m.replace(/^https?:\/\//,"")+"</a>"; }); return linked.replace(/(^|[\s(])#([\p{L}\p{N}_]+)/gu,function(m,pre,tag){ return pre+"<a href=\"#\" class=\"hashtag hashtag-link\" data-hashtag=\""+esc(tag)+"\">#"+esc(tag)+"</a>"; }); }
@@ -207,37 +210,39 @@ function applyFeedSort() {
 async function loadFeed(reset = true) {
   if (state.feed.loading) return;
   if (reset) {
-    state.feed.offset = 0;
-    state.feed.hasMore = true;
-    el("view-feed").innerHTML = loadingState("Loading feed...");
+    state.feed.offset = 0; state.feed.hasMore = true; state.feed.posts = [];
+    const root = el("view-feed"); if (root) root.innerHTML = loadingState("Loading feed...");
   }
   if (!state.feed.hasMore) return;
   state.feed.loading = true;
   const statusId = "feedStatus";
   el(statusId)?.remove();
-  if (!reset) el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status" role="status" aria-live="polite">Loading more posts...</div>`);
+  if (!reset) el("view-feed")?.insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status" role="status" aria-live="polite">Loading more posts...</div>`);
   try {
     const [feed, search] = await Promise.all([
       api(`/api/feed?offset=${state.feed.offset}&limit=${state.feed.limit}`),
       state.feed.offset === 0 ? api("/api/search?q=a") : Promise.resolve({ users: [] })
     ]);
     el(statusId)?.remove();
-    if (reset) el("view-feed").innerHTML = "";
+    const root = el("view-feed"); if (!root) return;
+    if (reset) root.innerHTML = "";
     if (state.feed.offset === 0) await renderSuggestions(search.users || []);
-    const html = (feed.posts || []).map(postHtml).join("");
+    const posts = Array.isArray(feed.posts) ? feed.posts : [];
+    state.feed.posts = reset ? posts : [...(state.feed.posts||[]), ...posts];
     const wrap = document.createElement("div");
-    wrap.innerHTML = html;
+    wrap.innerHTML = posts.map(postHtml).join("");
     bindPostActions(wrap);
-    while (wrap.firstChild) el("view-feed").appendChild(wrap.firstChild);
-    state.feed.offset += (feed.posts || []).length;
+    while (wrap.firstChild) root.appendChild(wrap.firstChild);
+    state.feed.offset += posts.length;
     state.feed.hasMore = !!feed.hasMore;
-    if (!el("view-feed").children.length) el("view-feed").innerHTML = emptyState("No posts yet", "When people share photos, they'll appear here.");
-    el("feedSentinel").classList.toggle("hidden", state.view !== "feed");
-    if (!state.feed.hasMore && el("view-feed").children.length) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
+    if (!root.children.length) root.innerHTML = emptyState("No posts yet", "Follow people or create a post to see your feed.");
+    el("feedSentinel")?.classList.toggle("hidden", state.view !== "feed");
+    if (!state.feed.hasMore && root.children.length) root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
   } catch (e) {
     el(statusId)?.remove();
-    if (!el("view-feed").children.length || reset) el("view-feed").innerHTML = errorState(e.message, "explore");
-    else el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="alert">${esc(e.message)}</div>`);
+    const root = el("view-feed");
+    if (!root?.children.length || reset) { if(root) root.innerHTML = errorState(e.message, "feed"); }
+    else root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="alert">${esc(e.message)}</div>`);
   } finally {
     state.feed.loading = false;
   }
@@ -619,13 +624,10 @@ async function renderSettings() {
         <label class="settings-row"><span>Show activity status</span><input type="checkbox" id="activityStatusPref" ${activityStatusEnabled()?"checked":""} /></label>
       </section>
     </div>`;
-  root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
+  root.querySelector("#settingsThemeCheck")?.addEventListener("change", (e)=>{ localStorage.setItem("ig_theme", e.target.checked?"dark":"light"); applyTheme(); toast(e.target.checked?"Dark mode on.":"Light mode on."); });
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
-  root.querySelector("#activityStatusPref")?.addEventListener("change", (e)=>{ setActivityStatusEnabled(e.target.checked); toast(e.target.checked?"Activity status enabled (local).":"Activity status hidden (local)."); renderMessages(); });
-  root.querySelector("#notifSoundPref")?.addEventListener("change", (e)=>{ setNotifSoundPref(e.target.checked); toast(e.target.checked?"Notification feedback enabled.":"Notification feedback disabled."); });
-  root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));
-  root.querySelector("#showShortcutsBtn")?.addEventListener("click", () => showDialog(el("shortcutsDialog")));
-  root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
+  bindProfileLinks(root);
+root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
@@ -655,7 +657,8 @@ async function renderMessages() {
     for (const c of contacts || []) if (!list.some((x) => x.user?.id === c.id)) list.push({ user: c, last: null });
     if (!state.dm.userId && list[0]?.user?.id) state.dm.userId = list[0].user.id;
     const active = list.find((x) => x.user?.id === state.dm.userId)?.user || null;
-    const thread = active ? await api(`/api/messages/${active.id}`) : { messages: [] };
+    const mutedActive = active ? isDmMuted(active.id) : false;
+    const thread = active && !mutedActive ? await api(`/api/messages/${active.id}`) : { messages: [] };
     el("view-messages").innerHTML = `<div class="card dm">
       <div class="dm-list">
         <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
@@ -1078,6 +1081,15 @@ function renderMe() {
     btn.setAttribute("aria-label", state.me ? "Log out" : "Log in");
     btn.title = state.me ? "Log out" : "Log in";
   }
+  const meCard = el("meCard");
+  if (meCard) {
+    meCard.innerHTML = state.me
+      ? `<img class="avatar profile-link" src="${avatar(state.me)}" alt="" data-profile="${esc(state.me.username)}" style="cursor:pointer" /><div class="meta" style="flex:1;min-width:0"><div class="profile-link" data-profile="${esc(state.me.username)}"><strong>${esc(state.me.username)}</strong></div><small>${esc(state.me.name || "")}</small></div><button type="button" class="follow-link" data-switch-view="profile">Profile</button>`
+      : `<div style="flex:1"><strong>Welcome</strong><div class="muted" style="font-size:13px">Log in to share photos and follow people.</div></div><button type="button" class="follow-link" id="meCardLogin">Log in</button>`;
+    bindProfileLinks(meCard);
+    meCard.querySelector("#meCardLogin")?.addEventListener("click", ()=>openAuth());
+    meCard.querySelector("[data-switch-view]")?.addEventListener("click", ()=>setView("profile"));
+  }
   document.querySelectorAll('[data-nav-view="profile"]').forEach((b)=>{ b.disabled = false; });
 }
 
@@ -1235,17 +1247,14 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
 async function refreshHealth() {
   const target = el("healthText");
   const time = el("healthTime");
-  if (!target) return;
   try {
     const res = await fetch("/api/health", { credentials: "same-origin" });
     const data = await res.json().catch(() => ({}));
     const ok = res.ok && data.ok;
-    target.textContent = ok ? "Server connected" : "Server issue";
-    target.style.color = ok ? "" : "#c00";
+    if (target) { target.textContent = ok ? "Server connected" : "Server issue"; target.style.color = ok ? "" : "#c00"; }
     if (time) time.textContent = ok ? `Checked ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : "";
   } catch {
-    target.textContent = "Server offline";
-    target.style.color = "#c00";
+    if (target) { target.textContent = "Server offline"; target.style.color = "#c00"; }
     if (time) time.textContent = "";
   }
 }
