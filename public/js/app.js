@@ -595,6 +595,7 @@ async function renderSettings() {
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
   root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); toast("Server status refreshed."); });
+  if("serviceWorker" in navigator){ navigator.serviceWorker.getRegistration().then((r)=>{ const s=el("swStatus"); if(s) s.textContent=`Service worker: ${r?"registered":"not registered"}`; }).catch(()=>{}); }
   root.querySelector("#copyBuildBtn")?.addEventListener("click", async () => { try { await navigator.clipboard?.writeText(JSON.stringify(APP_BUILD)); toast("Build info copied."); } catch { toast("Could not copy build info."); } });
   root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
     const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);

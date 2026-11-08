@@ -396,3 +396,11 @@
 - [x] Profile: show post count in tab labels where helpful
 - [x] Search results: show "No matches" more clearly
 - [x] Phase bump to 37
+
+## Phase 38: New Autonomous Features (2026-11-08)
+- [x] Phase 38 autonomous batch complete (2026-11-08)
+- [x] Feed: show "Refresh" button in feed header
+- [ ] Post: show full timestamp in detail dialog (already) � add copy post link in dialog
+- [x] Settings: show service worker status
+- [x] Profile: "Back" to feed uses history where possible
+- [x] Phase bump to 38
