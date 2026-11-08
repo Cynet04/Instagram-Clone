@@ -122,10 +122,20 @@
 - [x] Settings: app info/version and data notes
 - [x] Post/report moderation list in settings (MVP local view)
 - [x] Keyboard shortcuts help dialog (`/`, `g+key`, `?`, Esc closes)
-- [ ] Share sheet metadata polish (include username/caption context consistently)
-- [ ] Profile/avatar quick preview
-- [ ] DM unread indicator
-- [ ] Settings export-local-data note/action checks
+- [x] Share sheet metadata polish (Web Share metadata/context where supported)
+- [x] Profile/avatar quick preview (avatar opens profile/photo preview dialog)
+- [x] DM unread indicator (nav/messages show unread DM count)
+- [x] Settings diagnostics/local prefs helpers (check server, copy diagnostics, clear local prefs)
+- [x] Owner caption edit (API `PATCH /api/posts/:id` + UI prompt)
+- [x] Empty explore polish for logged-out/first-run users
+- [x] Story expiry (24h filter)
+- [x] Profile website field support (MVP-safe)
+- [x] Post search by own username quick filter (`@me` resolves to current user)
+- [ ] Block user MVP (hide blocked users content in UI/API filters)
+- [ ] Comment report action (MVP local)
+- [ ] Keyboard shortcut: focus new post
+- [ ] DM conversation clear (local MVP)
+- [ ] Notification type filter tabs
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
