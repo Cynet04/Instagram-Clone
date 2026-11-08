@@ -211,7 +211,7 @@ async function loadFeed(reset = true) {
   if (state.feed.loading) return;
   if (reset) {
     state.feed.offset = 0; state.feed.hasMore = true; state.feed.posts = [];
-    const root = el("view-feed"); if (root) root.innerHTML = loadingState("Loading feed...");
+    const root = el("view-feed"); if (root) root.innerHTML = '<div class="feed-brand">Instagram</div>' + loadingState("Loading feed...");
   }
   if (!state.feed.hasMore) return;
   state.feed.loading = true;
@@ -225,7 +225,7 @@ async function loadFeed(reset = true) {
     ]);
     el(statusId)?.remove();
     const root = el("view-feed"); if (!root) return;
-    if (reset) root.innerHTML = "";
+    if (reset) root.innerHTML = '<div class="feed-brand">Instagram</div>';
     if (state.feed.offset === 0) await renderSuggestions(search.users || []);
     const posts = Array.isArray(feed.posts) ? feed.posts : [];
     state.feed.posts = reset ? posts : [...(state.feed.posts||[]), ...posts];
@@ -235,13 +235,13 @@ async function loadFeed(reset = true) {
     while (wrap.firstChild) root.appendChild(wrap.firstChild);
     state.feed.offset += posts.length;
     state.feed.hasMore = !!feed.hasMore;
-    if (!root.children.length) root.innerHTML = emptyState("No posts yet", "Follow people or create a post to see your feed.");
+    if (!root.querySelector(".post,.state-card")) root.innerHTML = '<div class="feed-brand">Instagram</div>' + emptyState("No posts yet", "Follow people or create a post to see your feed.");
     el("feedSentinel")?.classList.toggle("hidden", state.view !== "feed");
     if (!state.feed.hasMore && root.children.length) root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
   } catch (e) {
     el(statusId)?.remove();
     const root = el("view-feed");
-    if (!root?.children.length || reset) { if(root) root.innerHTML = errorState(e.message, "feed"); }
+    if (!root?.children.length || reset) { if(root) root.innerHTML = '<div class="feed-brand">Instagram</div>' + errorState(e.message, "feed"); }
     else root.insertAdjacentHTML("beforeend", `<div class="feed-status" role="alert">${esc(e.message)}</div>`);
   } finally {
     state.feed.loading = false;
