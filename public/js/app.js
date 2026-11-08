@@ -197,7 +197,7 @@ async function loadExplore(q = "") {
   } catch (e) { el("view-explore").innerHTML = errorState(e.message, "explore"); }
 }
 
-async function loadSaved() {
+async function loadSaved(el("savedSearch")?.value || "") {
   if (!state.me) { el("view-saved").innerHTML = emptyState("Log in to view saved posts", "Your saved posts will appear here."); return; }
   el("view-saved").innerHTML = loadingState("Loading saved posts...");
   try {
@@ -747,7 +747,7 @@ function bindPostActions(root) {
       try {
         await api(`/api/posts/${postEl.dataset.id}`, { method: "DELETE" });
         toast("Post deleted.");
-        if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
+        if (state.view === "saved") loadSaved(el("savedSearch")?.value || ""); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
       } catch (e) { toast(e.message, "error"); }
     });
     postEl.querySelector(".like-btn")?.addEventListener("click", async () => {
@@ -795,7 +795,7 @@ function bindPostActions(root) {
         btn.setAttribute("aria-pressed", String(res.saved));
         btn.setAttribute("aria-label", res.saved ? "Remove from saved" : "Save");
         postEl.style.opacity = "";
-        if (state.view === "saved" && !res.saved) loadSaved();
+        if (state.view === "saved" && !res.saved) loadSaved(el("savedSearch")?.value || "");
       } catch (e) {
         btn.classList.toggle("saved", prevSaved);
         btn.textContent = prevSaved ? "Saved" : "Save";
@@ -1095,7 +1095,7 @@ document.addEventListener("click", (e) => {
   if (action.startsWith("profile:")) return loadProfile(action.slice(8));
   if (action.startsWith("search:")) return loadSearch(action.slice(7));
 });
-ddocument.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (e.target?.id === "searchInput" && e.target.value) return;
   ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
