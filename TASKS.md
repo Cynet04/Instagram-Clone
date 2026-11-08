@@ -420,3 +420,10 @@
 - [x] Profile: show blocked-users count not exposed; keep simple
 - [x] Settings: add "Refresh SW registration" button
 - [x] Phase bump to 40
+
+## Phase 41: New Autonomous Features (2026-11-08)
+- [ ] Feed: show "No posts match sort" is N/A (server order) — add sort hint text
+- [ ] Search: autofocus not forced; keep accessible
+- [ ] Notifications: show empty badge aria-label clarity
+- [ ] Profile: show follower/following buttons as counts only (already)
+- [ ] Phase bump to 41
