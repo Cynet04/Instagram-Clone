@@ -739,3 +739,11 @@
 - [x] Explore: grid item buttons/images announce "Open post details"
 - [x] Profile: "Message" button visible only when appropriate (already)
 - [x] Phase bump to 80
+
+## Phase 81: New Autonomous Features (2026-11-08)
+- [x] Phase 81 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: comment input gets ria-describedby for count
+- [x] Feed: "End of feed" marker appears once (done)
+- [x] Settings: reset confirms destructive action (done)
+- [x] Phase bump to 81
