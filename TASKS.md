@@ -382,8 +382,9 @@
 - [x] Phase bump to 35
 
 ## Phase 36: New Autonomous Features (2026-11-08)
-- [ ] Post dialog: show "Open in feed/profile context" hint
-- [ ] Explore: show active search/tag in title
-- [ ] Messages: show last-seen local text only when enabled (already)
-- [ ] Profile: show "No website" not needed; keep clean
-- [ ] Phase bump to 36
+- [x] Phase 36 autonomous batch complete (2026-11-08)
+- [x] Post dialog: show "Open in feed/profile context" hint
+- [x] Explore: show active search/tag in title
+- [x] Messages: show last-seen local text only when enabled (already)
+- [x] Profile: show "No website" not needed; keep clean
+- [x] Phase bump to 36
