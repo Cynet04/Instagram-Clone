@@ -392,7 +392,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
             <div>${esc(user.bio || "")}</div>
           </div>
         </div>
-        ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
+        ${isMe ? `<div class="profile-tabs" role="tablist" aria-label="Profile sections"><button type="button" role="tab" aria-selected="${tab === "posts" ? "true" : "false"}" data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button type="button" role="tab" aria-selected="${tab === "saved" ? "true" : "false"}" data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
       </div>
       <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="grid-column:1/-1;padding:8px">${emptyState(tab === "saved" ? "No saved posts" : "No posts yet", tab === "saved" ? "Posts you save will appear here." : isMe ? "Share your first photo to get started." : "This user hasn't posted yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:180px">')}</div>`}</div></div>`;
     bindPostOpen(el("view-profile"));

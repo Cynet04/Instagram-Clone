@@ -94,7 +94,8 @@
 - [x] Small perf/title polish (notification unread count reflected in document title; images use `decoding="async"`)
 - [x] Profile tab deep links (owner Posts/Saved tabs sync `#/profile/:username` and `#/profile/:username/saved`; route restores tab)
 - [x] Small accessibility/perf polish (post avatar/username profile links are keyboard-focusable with Enter/Space activation)
-- [ ] Additional autonomous features (e.g., small route refinements, share/profile refinements, accessibility polish)
+- [x] Profile/share/accessibility refinements (owner Posts/Saved tabs use `tablist/tab/aria-selected`)
+- [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -139,6 +140,7 @@
 - 2026-11-08: Small perf/title polish added (unread notification count reflected in document title; lazy images use `decoding="async"`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Profile tab deep links added (Posts/Saved tabs sync profile hash routes and restore selected tab from URL). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small accessibility/perf polish added (post avatar/username profile links keyboard-focusable with Enter/Space activation). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Profile/share/accessibility refinements added (owner profile Posts/Saved tabs expose `tablist/tab/aria-selected`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
