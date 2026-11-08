@@ -91,7 +91,8 @@
 - [x] Keyboard accessibility refinements (keyboard-openable notifications and DM conversation items with ARIA labels/roles)
 - [x] Minor accessibility/route refinements (theme toggle exposes `aria-pressed` + toast; global Escape respects search-input clear behavior)
 - [x] Post/profile share refinements (Web Share API when available for posts and profiles, clipboard/prompt fallback)
-- [ ] Additional autonomous features (e.g., footer/status polish, small route/perf refinements, minor accessibility refinements)
+- [x] Small perf/title polish (notification unread count reflected in document title; images use `decoding="async"`)
+- [ ] Additional autonomous features (e.g., profile tab deep links, small route refinements, accessibility/perf polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -133,6 +134,7 @@
 - 2026-11-08: Keyboard accessibility refinements added (notifications and DM conversation items are keyboard-activatable with Enter/Space and ARIA labels). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor accessibility/route refinements added (theme toggle `aria-pressed` + toast; global Escape skips search-input clear handling). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post/profile share refinements added (Web Share API for post/profile sharing with clipboard/prompt fallback). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Small perf/title polish added (unread notification count reflected in document title; lazy images use `decoding="async"`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.

@@ -55,7 +55,9 @@ function timeAgo(ts) {
 }
 
 function setDocumentTitle(text) {
-  document.title = text ? `${text} • Instagram Clone` : "Instagram Clone";
+  const unread = state.me ? Number(el("notifBadge")?.textContent || 0) : 0;
+  const prefix = unread > 0 ? `(${unread}) ` : "";
+  document.title = prefix + (text ? `${text} • Instagram Clone` : "Instagram Clone");
 }
 
 function setNavActive(view) {
@@ -146,7 +148,7 @@ function postHtml(p) {
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
-      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
+      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
@@ -261,7 +263,7 @@ async function loadExplore(q = "") {
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
         ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
       </div>
-      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
+      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
     </div>`;
     bindPostOpen(el("view-explore"));
@@ -346,6 +348,7 @@ function updateBadge(n = 0) {
   if (!b) return;
   b.textContent = String(n);
   b.classList.toggle("hidden", !state.me || n <= 0);
+  setDocumentTitle(document.title.replace(/^\(\d+\)\s*/, "").replace(/\s•\sInstagram Clone$/, "").replace(/^Instagram Clone$/, "") || "");
 }
 
 async function refreshNotificationsBadge() {
@@ -391,7 +394,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         </div>
         ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
       </div>
-      <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="grid-column:1/-1;padding:8px">${emptyState(tab === "saved" ? "No saved posts" : "No posts yet", tab === "saved" ? "Posts you save will appear here." : isMe ? "Share your first photo to get started." : "This user hasn't posted yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:180px">')}</div>`}</div></div>`;
+      <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="grid-column:1/-1;padding:8px">${emptyState(tab === "saved" ? "No saved posts" : "No posts yet", tab === "saved" ? "Posts you save will appear here." : isMe ? "Share your first photo to get started." : "This user hasn't posted yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:180px">')}</div>`}</div></div>`;
     bindPostOpen(el("view-profile"));
     el("followBtn")?.addEventListener("click", async () => {
       const btn = el("followBtn");
