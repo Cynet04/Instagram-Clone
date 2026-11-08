@@ -837,3 +837,11 @@ otif-time uses 	imeAgo (done)
 - [x] Messages: DM item avatar not present; keep compact
 - [x] Profile: "Joined" uses locale date (done)
 - [x] Phase bump to 92
+
+## Phase 93: New Autonomous Features (2026-11-08)
+- [x] Phase 93 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Notifications: hide-read checkbox keeps state (done)
+- [x] Composer: filter select has label (already)
+- [x] Story: dialog close restores focus flow (done)
+- [x] Phase bump to 93
