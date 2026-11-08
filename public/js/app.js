@@ -332,6 +332,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>
               <button id="copyUsernameBtn" class="mini-btn secondary" type="button" aria-label="Copy username">Copy @</button>
+              <button id="copyProfileCardBtn" class="mini-btn secondary" type="button" aria-label="Copy profile card">Copy card</button>
             </div>
             <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><button type="button" class="link-btn" id="showFollowersBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong id="followersCount">${followers}</strong> followers</button><button type="button" class="link-btn" id="showFollowingBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong>${following}</strong> following</button></div>
             <div><strong>${esc(user.name || "")}</strong></div>
@@ -404,6 +405,11 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     });
   el("copyUsernameBtn")?.addEventListener("click", async () => {
     try { await navigator.clipboard?.writeText(`@${user.username}`); toast("Username copied."); } catch { prompt("Username:", `@${user.username}`); }
+  });
+  el("copyProfileCardBtn")?.addEventListener("click", async () => {
+    const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
+    const text = [`@${user.username}`, user.name||"", user.bio||"", user.website||"", `${posts.length} posts · ${followers} followers · ${following} following`, url].filter(Boolean).join("\n");
+    try { await navigator.clipboard?.writeText(text); toast("Profile card copied."); } catch { prompt("Profile card:", text); }
   });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const btn = el("shareProfileBtn");

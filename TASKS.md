@@ -227,7 +227,7 @@
 
 ## Phase 11: New Autonomous Features (2026-11-08)
 - [ ] Post bookmark collections label (local MVP)
-- [ ] Profile QR/share text helper (copy profile card text)
+- [x] Profile QR/share text helper (copy profile card text)
 - [ ] Feed sort toggle (newest/most liked, client-side)
 - [x] Message delete (own message, API + UI)
 - [ ] Activity status indicator (local setting)
