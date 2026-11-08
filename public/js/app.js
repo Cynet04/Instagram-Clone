@@ -192,7 +192,10 @@ function renderStory() {
   if (!s) return;
   el("storyImage").src = s.image;
   el("storyImage").alt = `Story by ${s.user?.username || "user"}`;
-  el("storyMeta").textContent = `${s.user?.username || "story"} â€¢ ${timeAgo(s.createdAt)}`;
+  el("storyMeta").textContent = `${s.user?.username || "story"} • ${timeAgo(s.createdAt)}`;
+  const prev = el("storyPrev"); const next = el("storyNext");
+  if (prev) prev.disabled = state.storyIndex <= 0;
+  if (next) next.disabled = false;
 }
 
 function openStory(index = 0) {
