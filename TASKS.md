@@ -250,7 +250,7 @@
 
 ## Phase 15: New Autonomous Features (2026-11-08)
 - [x] "Back to top" button on feed when scrolled
-- [ ] Post timestamp tooltip/full datetime on hover/title
-- [ ] Profile bio linkify (URLs clickable in bio)
+- [x] Post timestamp tooltip/full datetime on hover/title
+- [x] Profile bio linkify (URLs clickable in bio)
 - [ ] Clear all search history from settings
 - [ ] DM quick reply chips for new conversation
