@@ -109,6 +109,7 @@
 - [x] Error recovery polish (shared error states include contextual Try again actions)
 - [x] Client robustness fix (added missing `timeAgo`/`avatar` helpers; fixed stray story keydown listener typo)
 - [x] Account settings MVP (Settings view + theme/password/logout controls; `POST /api/me/password` with bcrypt verification)
+- [x] Post report MVP (non-owner Report action; `POST /api/posts/:id/report` with dedupe in `reports`)
 - [ ] Additional autonomous features (e.g., share refinements, small UX refinements, perf polish)
 
 ## Progress Log

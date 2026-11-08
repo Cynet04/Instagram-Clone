@@ -68,6 +68,7 @@ function postHtml(p) {
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
+        ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>

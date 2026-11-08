@@ -56,6 +56,7 @@ function loadDb() {
   db.stories = db.stories || [];
   db.messages = db.messages || [];
   db.notifications = db.notifications || [];
+  db.reports = Array.isArray(db.reports) ? db.reports : [];
   return db;
 }
 
@@ -207,6 +208,23 @@ app.delete("/api/posts/:id", (req, res) => {
     fs.rm(fp, { force: true }, () => {});
   }
   saveDb(db);
+  res.json({ ok: true });
+});
+
+app.post("/api/posts/:id/report", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  if (post.userId === me.id) return res.status(400).json({ error: "You cannot report your own post." });
+  const reason = String(req.body.reason || "inappropriate").trim().slice(0, 120) || "inappropriate";
+  db.reports = Array.isArray(db.reports) ? db.reports : [];
+  if (!db.reports.some((r) => r.type === "post" && r.targetId === post.id && r.reporterId === me.id)) {
+    db.reports.unshift({ id: nanoid(10), type: "post", targetId: post.id, reporterId: me.id, reason, createdAt: Date.now(), status: "open" });
+    db.reports = db.reports.slice(0, 500);
+    saveDb(db);
+  }
   res.json({ ok: true });
 });
 
