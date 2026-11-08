@@ -107,3 +107,4 @@
 - 2026-11-08: Profile loading/error polish added (profile loading indicator, clearer login/empty/error states, avatar fallback, and toast on follow failure). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Lightweight mobile nav polish added (scrollable nav/actions on small screens, responsive spacing/profile layout, auth label rendering preserved). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification read-state refinements added (`/api/notifications/read` supports per-notification IDs and returns unread; UI marks opened notifications read, syncs badge, uses toast errors). Server/client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.

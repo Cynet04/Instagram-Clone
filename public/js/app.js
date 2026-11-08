@@ -743,6 +743,18 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
   } catch (err) { el("profileEditError").textContent = err.message; }
 });
 
+async function refreshHealth() {
+  const target = el("healthText");
+  if (!target) return;
+  try {
+    const res = await fetch("/api/health", { credentials: "same-origin" });
+    const data = await res.json().catch(() => ({}));
+    target.textContent = res.ok && data.ok ? "Server connected" : "Server issue";
+  } catch {
+    target.textContent = "Server offline";
+  }
+}
+
 function applyTheme() {
   const dark = localStorage.getItem("ig_theme") === "dark";
   document.body.classList.toggle("dark", dark);
@@ -758,6 +770,8 @@ el("postDialogClose")?.addEventListener("click", () => closeDialog(el("postDialo
 el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 applyTheme();
 setupFeedObserver();
+refreshHealth();
+setInterval(refreshHealth, 30000);
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
