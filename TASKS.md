@@ -901,3 +901,10 @@ otif-time uses 	imeAgo (done)
 - [ ] Client: diagnostics include online and browser language
 - [x] Post dialog: add "Copy post ID" button alongside copy link
 - [x] Phase bump to 100
+
+## Phase 101: New Autonomous Features (2026-11-08)
+- [x] Baseline green (health/version phase 100)
+- [ ] API: add GET /api/version to public surface docs check (endpoint exists)
+- [ ] Client: show /api/version link in settings
+- [ ] Post: report button hidden for own posts (already)
+- [ ] Phase bump to 101
