@@ -933,3 +933,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Profile: Block button has 	itle when present
 - [ ] Notifications: follow button in notifications has ria-label
 - [x] Phase bump to 104
+
+## Phase 105: New Autonomous Features (2026-11-08)
+- [x] Phase 105 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 104)
+- [ ] Post: Edit/Delete titles on owner actions
+- [ ] Profile: Copy card and Share buttons have titles
+- [ ] Feed: Save button title reflects state
+- [x] Phase bump to 105

@@ -68,7 +68,7 @@ function postHtml(p) {
         <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post">Delete</button>` : ""}
+        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post" title="Delete this post">Delete</button>` : ""}
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by @${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
@@ -366,7 +366,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>
               <button id="copyUsernameBtn" class="mini-btn secondary" type="button" aria-label="Copy username" title="Copy username">Copy @</button>
-              <button id="copyProfileCardBtn" class="mini-btn secondary" type="button" aria-label="Copy profile card">Copy card</button>
+              <button id="copyProfileCardBtn" class="mini-btn secondary" type="button" aria-label="Copy profile card" title="Copy profile card">Copy card</button>
             </div>
             <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><button type="button" class="link-btn" id="showFollowersBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong id="followersCount">${followers}</strong> followers</button><button type="button" class="link-btn" id="showFollowingBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong>${following}</strong> following</button></div>
             <div><strong>${esc(user.name || "")}</strong></div>
