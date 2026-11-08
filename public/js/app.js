@@ -5,7 +5,7 @@ const views = ["feed", "explore", "notifications", "saved", "messages", "profile
 let feedObserver;
 const scrollByView = {};
 
-const APP_BUILD = { name: "Socially MVP", phase: "32", date: "2026-11-08" };
+const APP_BUILD = { name: "Socially MVP", phase: "33", date: "2026-11-08" };
 function hiddenNotifIds(){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")); } catch { return new Set(); } }
 function hideNotifId(id){ try { const ids=[...hiddenNotifIds()]; if(!ids.includes(id)) ids.unshift(id); localStorage.setItem("ig_hidden_notifs", JSON.stringify(ids.slice(0,200))); } catch {} }
 function shareCount(postId){ try { return Number(JSON.parse(localStorage.getItem("ig_share_counts")||"{}")[postId]||0); } catch { return 0; } }
@@ -247,7 +247,7 @@ async function loadNotifications() {
     const hidden = hiddenNotifIds();
     const visible = notifications.filter((n)=>!hidden.has(n.id));
     el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end"><label class="muted" style="font-size:12px;display:flex;align-items:center;gap:4px"><input type="checkbox" id="hideReadNotifs" ${localStorage.getItem("ig_hide_read_notifs")==="true"?"checked":""}/> Hide read</label><button id="clearNotifBtn" type="button" aria-label="Clear notifications" style="border:0;background:none;color:var(--muted);font-weight:600">Clear</button><button id="markReadBtn" type="button" aria-label="Mark all notifications as read" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div></div>` +
-      (visible.map((n) => {
+      (visible.length ? visible.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
         const postId = n.post?.id || "";
@@ -256,7 +256,7 @@ async function loadNotifications() {
           ? `<button type="button" class="mini-btn ${n.actor?.isFollowing ? "secondary" : ""}" data-follow-user="${esc(profile)}" style="margin-left:auto;padding:4px 8px;font-size:12px" aria-label="${n.actor?.isFollowing ? "Unfollow" : "Follow"} ${esc(profile)}">${n.actor?.isFollowing ? "Following" : "Follow"}</button>`
           : "";
         return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}" tabindex="0" role="button" aria-label="${esc(actor)} ${esc(msg.replace(/<[^>]+>/g, ""))}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}<button type="button" class="notif-hide-btn mini-btn secondary" data-hide-notif="${esc(n.id||"")}" aria-label="Hide notification" style="padding:2px 6px;font-size:11px">Hide</button></div>`;
-      }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
+      }).join("") : `<div style="padding:16px">${emptyState("All caught up", "No visible notifications with current filters.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => {
       updateBadge(0); el("view-notifications").querySelectorAll(".notif.unread").forEach((n)=>n.classList.remove("unread"));
       try {

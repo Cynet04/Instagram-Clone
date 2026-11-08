@@ -356,3 +356,11 @@
 - [ ] Profile: show "Edit profile" only for self (already) � add avatar alt text quality
 - [x] Messages: Enter-to-send note in placeholder not needed; keep accessible
 - [ ] Health: UI shows phase from /api/health when available
+
+## Phase 33: New Autonomous Features (2026-11-08)
+- [x] Phase 33 autonomous batch complete (2026-11-08)
+- [x] Feed: aria label for post article includes username
+- [x] Notifications: show "All caught up" when visible list empty
+- [x] Profile: total comments received stat (computed)
+- [x] Search: hashtag chips link to explore search (existing chips)
+- [x] Settings: show DM unread total
