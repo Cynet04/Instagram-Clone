@@ -117,9 +117,9 @@
 - [x] Double-tap like on feed post image (image double-click likes post without changing open behavior)
 - [x] Copy image link action (post action copies image URL with clipboard/prompt fallback and toast)
 - [x] Open image in new tab action (post action opens image URL in a new tab)
-- [ ] Recent searches (localStorage) with clear action
-- [ ] Profile counts dialog/list (followers/following basic list)
-- [ ] Settings: app info/version and data notes
+- [x] Recent searches (localStorage) with clear action
+- [x] Profile counts dialog/list (followers/following basic list)
+- [x] Settings: app info/version and data notes
 - [ ] Post/report moderation list in settings (MVP local view)
 
 ## Progress Log

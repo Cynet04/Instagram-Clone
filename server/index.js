@@ -451,10 +451,12 @@ app.get("/api/users/:username", (req, res) => {
   const user = db.users.find((u) => u.username.toLowerCase() === req.params.username.toLowerCase());
   if (!user) return res.status(404).json({ error: "User not found." });
   const posts = db.posts.filter((p) => p.userId === user.id).sort((a, b) => b.createdAt - a.createdAt).map((p) => ({ ...p, filter: p.filter || "none" }));
-  const followers = db.users.filter((u) => (u.following || []).includes(user.id)).length;
-  const following = (user.following || []).length;
+  const followersList = db.users.filter((u) => (u.following || []).includes(user.id));
+  const followingList = (user.following || []).map((id) => db.users.find((u) => u.id === id)).filter(Boolean);
+  const followers = followersList.length;
+  const following = followingList.length;
   const isFollowing = me ? (me.following || []).includes(user.id) : false;
-  res.json({ user: safeUser(user), posts, followers, following, isFollowing, isMe: !!me && me.id === user.id });
+  res.json({ user: safeUser(user), posts, followers, following, followersList: followersList.map(safeUser), followingList: followingList.map(safeUser), isFollowing, isMe: !!me && me.id === user.id });
 });
 
 app.post("/api/users/:username/follow", (req, res) => {

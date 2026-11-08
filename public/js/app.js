@@ -302,7 +302,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   el("view-profile").innerHTML = loadingState("Loading profile...");
   setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username, skipTitle: true });
   try {
-    const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
+    const { user, posts, followers = 0, following = 0, followersList = [], followingList = [], isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
     let savedPosts = [];
     if (isMe && tab === "saved" && state.me) {
       try { savedPosts = (await api("/api/saved")).posts || []; } catch {}
@@ -319,7 +319,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>
             </div>
-            <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
+            <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><button type="button" class="link-btn" id="showFollowersBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong id="followersCount">${followers}</strong> followers</button><button type="button" class="link-btn" id="showFollowingBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong>${following}</strong> following</button></div>
             <div><strong>${esc(user.name || "")}</strong></div>
             <div>${esc(user.bio || "")}</div>
           </div>
@@ -328,6 +328,16 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       </div>
       <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="grid-column:1/-1;padding:8px">${emptyState(tab === "saved" ? "No saved posts" : "No posts yet", tab === "saved" ? "Posts you save will appear here." : isMe ? "Share your first photo to get started." : "This user hasn't posted yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:180px">')}</div>`}</div></div>`;
     bindPostOpen(el("view-profile"));
+    const openList = (title, users = []) => {
+      el("listDialogTitle").textContent = title;
+      el("listDialogBody").innerHTML = users.length ? users.map((u) => `<div class="notif" style="align-items:center"><img class="avatar" src="${avatar(u)}" alt="" style="width:34px;height:34px" /><div style="flex:1"><strong>@${esc(u.username)}</strong><div style="color:var(--muted);font-size:13px">${esc(u.name || "")}</div></div><button type="button" class="mini-btn secondary" data-profile="${esc(u.username)}">View</button></div>`).join("") : `<div style="padding:8px 0">${emptyState("No users", "Nothing to show yet.").replace('<div class="card state-card">','<div class="state-card" style="border:0;min-height:0;padding:8px 0">')}</div>`;
+      bindProfileLinks(el("listDialogBody"));
+      el("listDialogBody").querySelectorAll("[data-profile]").forEach((b) => b.addEventListener("click", () => closeDialog(el("listDialog"))));
+      showDialog(el("listDialog"));
+      el("listDialogClose")?.focus?.();
+    };
+    el("showFollowersBtn")?.addEventListener("click", () => openList("Followers", followersList));
+    el("showFollowingBtn")?.addEventListener("click", () => openList("Following", followingList));
     el("followBtn")?.addEventListener("click", async () => {
       const btn = el("followBtn");
       const count = el("followersCount");
@@ -474,6 +484,10 @@ async function renderSettings() {
       <section>
         <h4 style="margin:0 0 8px">Account</h4>
         <button id="settingsLogoutBtn" type="button" class="mini-btn secondary">Log out</button>
+      </section>
+      <section>
+        <h4 style="margin:0 0 8px">App info</h4>
+        <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme stored in localStorage. Runtime data/uploads are local. Not the Supabase/React spec stack.</div>
       </section>
     </div>`;
   bindProfileLinks(root);
@@ -987,6 +1001,8 @@ el("themeBtn")?.addEventListener("click", () => {
 });
 el("postDialogClose")?.addEventListener("click", () => closeDialog(el("postDialog")));
 el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
+el("listDialogClose")?.addEventListener("click", () => closeDialog(el("listDialog")));
+el("listDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 applyTheme();
 setupFeedObserver();
 refreshHealth();

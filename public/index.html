@@ -132,6 +132,11 @@
       <button id="postDialogClose" type="button" class="story-close" aria-label="Close post">x</button>
     </dialog>
 
+    <dialog id="listDialog" aria-label="Users list">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 id="listDialogTitle" style="margin:0">Users</h3><button id="listDialogClose" type="button" class="mini-btn secondary" aria-label="Close">Close</button></div>
+      <div id="listDialogBody"></div>
+    </dialog>
+
     <div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true"></div>
     <script src="/js/app.js" type="module"></script>
   </body>
