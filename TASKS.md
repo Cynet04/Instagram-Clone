@@ -265,6 +265,7 @@
 - [x] Phase 16 autonomous batch complete (2026-11-08)
 
 ## Phase 17: New Autonomous Features (2026-11-08)
+- [x] Fix: restore missing `renderMe()` (login ReferenceError)
 - [ ] Post share count (local/client interaction feedback)
 - [ ] Profile "Joined" placeholder/date if available
 - [ ] DM conversation list last message preview truncation polish
