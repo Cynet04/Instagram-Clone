@@ -360,12 +360,26 @@ app.post("/api/users/:username/follow", (req, res) => {
 });
 
 app.get("/api/search", (req, res) => {
-  const q = String(req.query.q || "").trim().toLowerCase();
+  const qRaw = String(req.query.q || "").trim();
+  const q = qRaw.toLowerCase();
   const db = loadDb();
-  if (!q) return res.json({ users: [], posts: [] });
-  const users = db.users.filter((u) => u.username.toLowerCase().includes(q) || (u.name || "").toLowerCase().includes(q)).map(safeUser);
-  const posts = db.posts.filter((p) => (p.caption || "").toLowerCase().includes(q)).map((p) => ({ ...p, user: safeUser(db.users.find((u) => u.id === p.userId)) }));
-  res.json({ users, posts });
+  const me = currentUser(req, db);
+  const saved = new Set(me?.saved || []);
+  if (!q) return res.json({ users: [], posts: [], q: qRaw });
+  const users = db.users.filter((u) => u.username.toLowerCase().includes(q.replace(/^#/, "")) || (u.name || "").toLowerCase().includes(q)).map(safeUser);
+  const posts = db.posts.filter((p) => {
+    const cap = String(p.caption || "").toLowerCase();
+    if (q.startsWith("#")) return cap.includes(q);
+    return cap.includes(q) || (p.filter || "").toLowerCase().includes(q);
+  }).map((p) => ({
+    ...p,
+    user: safeUser(db.users.find((u) => u.id === p.userId)),
+    likesCount: p.likes.length,
+    likedByMe: me ? p.likes.includes(me.id) : false,
+    savedByMe: me ? saved.has(p.id) : false,
+    comments: (p.comments || []).map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
+  }));
+  res.json({ users, posts, q: qRaw });
 });
 
 app.get("*", (_req, res) => {

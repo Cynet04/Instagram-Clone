@@ -101,6 +101,8 @@ button { cursor: pointer; }
 .post-actions button.saved { color: var(--text); text-decoration: underline; }
 .post-likes { font-weight: 600; font-size: 14px; padding-top: 6px; }
 .post-caption { padding-top: 6px; font-size: 14px; line-height: 1.4; }
+.hashtag { color: #00376b; text-decoration: none; }
+body.dark .hashtag { color: #e0f1ff; }
 .comments { padding: 8px 14px; color: var(--text); font-size: 14px; }
 .comment { margin: 4px 0; }
 .comment-form { display: flex; border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 14px; gap: 8px; }

@@ -15,6 +15,11 @@ function esc(s = "") {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+function formatCaption(text = "") {
+  const safe = esc(text);
+  return safe.replace(/(^|[\s(])#([\p{L}\p{N}_]+)/gu, (m, pre, tag) => `${pre}<a href="#" class="hashtag" data-tag="#${esc(tag)}">#${esc(tag)}</a>`);
+}
+
 function avatar(user) {
   const name = encodeURIComponent(user?.username || "user");
   return user?.avatar || `https://api.dicebear.com/8.x/initials/svg?seed=${name}`;
@@ -86,7 +91,7 @@ function postHtml(p) {
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
-      <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> ${esc(p.caption || "")}</div>
+      <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
       <div class="comments">${(p.comments || []).map((c) => `<div class="comment"><strong>${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</div>`).join("")}</div>
       <form class="comment-form">
         <input name="text" placeholder="Add a comment..." maxlength="500" ${state.me ? "" : "disabled"} />
@@ -297,7 +302,19 @@ async function renderMessages() {
   } catch (e) { el("view-messages").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
 }
 
+function bindHashtags(root) {
+  root.querySelectorAll("a.hashtag[data-tag]").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const q = a.dataset.tag || "";
+      el("searchInput").value = q;
+      loadSearch(q);
+    });
+  });
+}
+
 function bindPostActions(root) {
+  bindHashtags(root);
   root.querySelectorAll(".post").forEach((postEl) => {
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
