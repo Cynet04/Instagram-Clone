@@ -85,7 +85,8 @@
 - [x] DM/search UX polish (clickable DM header profile link; fixed DM timestamp separator encoding)
 - [x] Profile DM entry point (profile shows Message button for other users and opens DM conversation)
 - [x] Minor status polish (comment delete shows toast feedback; checklist/progress reconciliation)
-- [ ] Additional autonomous features (e.g., search clear/Escape polish, footer/status polish, minor route/accessibility refinements)
+- [x] Search clear/Escape polish (search input has accessible label; Escape clears input/blur, returns from search view)
+- [ ] Additional autonomous features (e.g., footer/status polish, minor route/accessibility refinements, profile/share refinements)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -121,6 +122,7 @@
 - 2026-11-08: DM/search UX polish added (DM conversation header links to profile; DM conversation timestamp separator encoding fixed). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Profile DM entry point added (Message button on other users' profiles opens/selects the DM conversation). Client/server syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor status polish added (comment delete shows toast feedback). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Search clear/Escape polish added (search input aria label; Escape clears/blur and returns from search view). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor a11y/composer polish added (`aria-current` nav active state, `aria-busy` loading cards, caption character count, post-share toast). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.

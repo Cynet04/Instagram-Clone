@@ -766,6 +766,13 @@ el("searchInput").addEventListener("keydown", (e) => {
     const q = e.currentTarget.value.trim();
     if (state.view === "explore") loadExplore(q); else loadSearch(q);
   }
+  if (e.key === "Escape" && e.currentTarget.value) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.value = "";
+    e.currentTarget.blur();
+    if (state.view === "search") setView("explore");
+  }
 });
 el("postForm").addEventListener("submit", async (e) => {
   e.preventDefault();
