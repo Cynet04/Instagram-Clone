@@ -602,7 +602,8 @@ async function renderSettings() {
     const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
   });
-  root.querySelector("#exportDataBtn")?.addEventListener("click", async () => {
+  root.querySelector("#exportDataBtn")?.addEventListener("click", async (e) => {
+    const b=e.currentTarget; if(b.disabled) return; b.disabled=true; b.textContent="Exporting...";
     try {
       const data = await api("/api/me/export");
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -853,7 +854,8 @@ function bindPostActions(root) {
         const { post } = await api(`/api/posts/${postEl.dataset.id}`, { method: "PATCH", body: JSON.stringify({ caption: next.slice(0, 2200) }) });
         if (cap) cap.innerHTML = formatCaption(post.caption || "");
         toast("Caption updated.");
-      } catch (e) { toast(e.message, "error"); }
+      } catch (err) { toast(err.message, "error"); }
+      finally { b.disabled=false; b.textContent="Export my data"; }
     });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
@@ -861,7 +863,8 @@ function bindPostActions(root) {
         await api(`/api/posts/${postEl.dataset.id}`, { method: "DELETE" });
         toast("Post deleted.");
         if (state.view === "saved") loadSaved(el("savedSearch")?.value || ""); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
-      } catch (e) { toast(e.message, "error"); }
+      } catch (err) { toast(err.message, "error"); }
+      finally { b.disabled=false; b.textContent="Export my data"; }
     });
     postEl.querySelector(".like-btn")?.addEventListener("click", async () => {
       if (!state.me) return openAuth();

@@ -436,3 +436,11 @@
 - [ ] DM: prevent sending whitespace-only (already trimmed) � show error toast
 - [x] Feed: "End of feed" only once (idempotent)
 - [x] Phase bump to 42
+
+## Phase 43: New Autonomous Features (2026-11-08)
+- [x] Phase 43 autonomous batch complete (2026-11-08)
+- [x] Accessibility: ensure main landmark has stable label (already)
+- [ ] Feed: post cards get data-post-id already � add ria-describedby not required; add comment form label association
+- [x] Settings: export button disabled while in flight
+- [x] Search: trim query before API call (already trims)
+- [x] Phase bump to 43
