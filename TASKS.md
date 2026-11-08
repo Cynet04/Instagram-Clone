@@ -290,8 +290,9 @@
 - [x] Phase 19 autonomous batch complete (2026-11-08)
 
 ## Phase 20: New Autonomous Features (2026-11-08)
-- [ ] Feed post count indicator near top
-- [ ] "Mark all read" optimistic UI in notifications
-- [ ] Profile link in DM header opens profile view
-- [ ] Search: Enter key opens first result
-- [ ] Settings: button to clear hidden notifications (local)
+- [x] Feed post count indicator near top
+- [x] "Mark all read" optimistic UI in notifications
+- [x] Profile link in DM header opens profile view
+- [x] Search: Enter key opens first result
+- [x] Settings: button to clear hidden notifications (local)
+- [x] Phase 20 autonomous batch complete (2026-11-08)
