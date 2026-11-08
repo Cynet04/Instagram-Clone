@@ -144,6 +144,10 @@ body.dark .hashtag { color: #e0f1ff; }
 #authDialog form { display: grid; gap: 10px; }
 #authDialog .row { display: flex; gap: 8px; align-items: center; }
 #authToggle { border: 0; background: none; color: var(--blue); font-size: 13px; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.skip-link { position: absolute; left: 8px; top: -40px; background: var(--card); border: 1px solid var(--line); padding: 8px 10px; border-radius: 8px; z-index: 50; }
+.skip-link:focus { top: 8px; }
+.post-image[role="button"], .grid img[data-post-id], .explore-grid img[data-post-id] { cursor: pointer; }
 .error { color: #c00; min-height: 1.2em; margin: 0; font-size: 13px; }
 
 @media (max-width: 900px) { .side-col { display: none; } .layout { grid-template-columns: 1fr; } .search { display: none; } }

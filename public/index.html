@@ -25,7 +25,7 @@
       </div>
     </header>
 
-    <main class="layout">
+      <main class="layout" id="mainContent" tabindex="-1">
       <section class="main-col">
         <section id="stories" class="stories card"></section>
         <section id="storyCreator" class="card composer hidden">
@@ -116,9 +116,9 @@
       </div>
     </dialog>
 
-    <dialog id="postDialog" class="post-dialog">
+    <dialog id="postDialog" class="post-dialog" aria-label="Post details">
       <div id="postDialogBody"></div>
-      <button id="postDialogClose" type="button" class="story-close" aria-label="Close">x</button>
+      <button id="postDialogClose" type="button" class="story-close" aria-label="Close post">x</button>
     </dialog>
 
     <script src="/js/app.js" type="module"></script>

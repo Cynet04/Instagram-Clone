@@ -531,6 +531,12 @@ el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentT
 applyTheme();
 setupFeedObserver();
 
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  const dialog = el("postDialog");
+  if (dialog?.open) dialog.close();
+});
+
 await loadMe();
 await loadStories();
 renderMessages();

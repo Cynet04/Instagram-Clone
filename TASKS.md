@@ -57,8 +57,8 @@
 - [x] Clickable profile links on posts/comments
 - [x] Explore search/filter integration (search input filters explore grid; clear)
 - [x] Post detail/open interactions (API `/api/posts/:id`, feed/profile/explore open dialog)
-- [ ] Accessibility/keyboard polish
-- [ ] Additional autonomous features
+- [x] Accessibility/keyboard polish (skip link, main landmark, focus styles, dialog aria labels, Escape handling)
+- [ ] Additional autonomous features (e.g., profile deep links in URL hash, comment delete, optimistic UI, loading/empty states)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -78,4 +78,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Post detail/open interactions added (`GET /api/posts/:id`, dialog, and clickable feed/profile/explore images). Server restarted and health verified. Next: accessibility/keyboard polish.
+- 2026-11-08: Accessibility/keyboard polish added (skip link, main landmark, focus-visible styles, dialog aria labels, Escape-to-close). Server/client syntax and health verified. Next: additional autonomous features.
