@@ -580,3 +580,11 @@
 - [ ] Post: show ltText edit prompt remains
 - [x] Messages: send button re-enabled on error (done)
 - [x] Phase bump to 60
+
+## Phase 61: New Autonomous Features (2026-11-08)
+- [x] Phase 61 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Feed: post author link has ria-label
+- [x] Search results: profile links announce destination
+- [x] Profile: stats buttons have descriptive labels
+- [x] Phase bump to 61
