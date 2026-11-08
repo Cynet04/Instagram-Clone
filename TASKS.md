@@ -572,3 +572,11 @@
 - [x] Profile: saved tab button hidden for non-owners (already)
 - [x] Settings: show session hint (cookie-based)
 - [x] Phase bump to 59
+
+## Phase 60: New Autonomous Features (2026-11-08)
+- [x] Phase 60 autonomous batch complete (2026-11-08)
+- [x] Baseline green (tests/health/clean)
+- [x] Composer: preview alt text source not shown; keep minimal
+- [ ] Post: show ltText edit prompt remains
+- [x] Messages: send button re-enabled on error (done)
+- [x] Phase bump to 60
