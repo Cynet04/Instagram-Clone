@@ -623,6 +623,7 @@ function bindPostOpen(root) {
         el("postDialogBody").innerHTML = postHtml(post);
         bindPostActions(el("postDialogBody"));
         showDialog(el("postDialog"));
+        el("postDialogBody").querySelector(".comment-focus-btn, .like-btn, button, [tabindex]")?.focus?.();
       } catch (err) { toast(err.message, "error"); }
     };
     img.addEventListener("click", open);
