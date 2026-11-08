@@ -34,6 +34,10 @@ button { cursor: pointer; }
 .nav-actions { display: flex; gap: 8px; align-items: center; }
 .nav-actions button { border: 0; background: none; font-size: 14px; padding: 6px; color: var(--text); font-weight: 600; }
 .auth-btn { font-size: 14px !important; color: var(--blue) !important; font-weight: 600; }
+.badge { display: inline-block; min-width: 18px; padding: 1px 5px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11px; vertical-align: middle; }
+.notif { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: start; }
+.notif:last-child { border-bottom: 0; }
+.notif.unread { background: rgba(0,149,246,.08); }
 
 .layout { max-width: 975px; margin: 24px auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 630px) 320px; gap: 28px; align-items: start; }
 .stories { display: flex; gap: 14px; padding: 16px; overflow-x: auto; }

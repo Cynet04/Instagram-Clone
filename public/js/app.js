@@ -1,7 +1,7 @@
 const state = { me: null, view: "feed", authMode: "login" };
 
 const el = (id) => document.getElementById(id);
-const views = ["feed", "explore", "saved", "messages", "profile", "search"];
+const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search"];
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { "Content-Type": "application/json" }, credentials: "same-origin", ...opts });
@@ -34,6 +34,7 @@ function setView(view) {
   el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
   if (view === "feed") loadFeed();
   if (view === "explore") loadExplore();
+  if (view === "notifications") loadNotifications();
   if (view === "saved") loadSaved();
   if (view === "messages") renderMessages();
   if (view === "profile") loadProfile(state.me?.username);
@@ -118,6 +119,33 @@ async function loadSaved() {
   } catch (e) { el("view-saved").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
 }
 
+async function loadNotifications() {
+  if (!state.me) { el("view-notifications").innerHTML = `<div class="card" style="padding:16px">Log in to view notifications.</div>`; return; }
+  try {
+    const { notifications, unread } = await api("/api/notifications");
+    updateBadge(unread);
+    el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
+      (notifications.map((n) => {
+        const actor = esc(n.actor?.username || "Someone");
+        const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : "interacted with you";
+        return `<div class="notif ${n.read ? "" : "unread"}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><div><strong>${actor}</strong> ${msg}<div style="color:var(--muted);font-size:12px">${timeAgo(n.createdAt)}</div></div></div>`;
+      }).join("") || `<div style="padding:16px">No notifications yet.</div>`) + `</div>`;
+    el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
+  } catch (e) { el("view-notifications").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
+}
+
+function updateBadge(n = 0) {
+  const b = el("notifBadge");
+  if (!b) return;
+  b.textContent = String(n);
+  b.classList.toggle("hidden", !state.me || n <= 0);
+}
+
+async function refreshNotificationsBadge() {
+  if (!state.me) return updateBadge(0);
+  try { const { unread } = await api("/api/notifications"); updateBadge(unread); } catch { updateBadge(0); }
+}
+
 async function loadProfile(username) {
   if (!username) {
     el("view-profile").innerHTML = `<div class="card" style="padding:16px">Log in to view your profile.</div>`;
@@ -185,6 +213,7 @@ function bindPostActions(root) {
         await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
         input.value = "";
         if (state.view === "saved") loadSaved(); else loadFeed();
+        refreshNotificationsBadge();
       } catch (err) { alert(err.message); }
     });
   });
@@ -203,6 +232,7 @@ async function loadMe() {
   const { user } = await api("/api/me");
   state.me = user;
   renderMe();
+  refreshNotificationsBadge();
 }
 
 el("authBtn").onclick = async () => {

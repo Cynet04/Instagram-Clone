@@ -47,7 +47,7 @@ function loadDb() {
     return db;
   }
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
-  db.users = (db.users || []).map((u) => ({ saved: [], ...u, saved: Array.isArray(u.saved) ? u.saved : [] }));
+  db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [] }));
   db.posts = db.posts || [];
   db.stories = db.stories || [];
   db.messages = db.messages || [];
@@ -64,10 +64,11 @@ function currentUser(req, db) {
   return db.users.find((u) => u.id === req.session.userId) || null;
 }
 
-function safeUser(u) {
-  if (!u) return null;
-  const { password, ...rest } = u;
-  return rest;
+function addNotification(db, { userId, actorId, type, postId = null, text = "" }) {
+  if (!userId || !actorId || userId === actorId) return;
+  db.notifications = db.notifications || [];
+  db.notifications.unshift({ id: nanoid(10), userId, actorId, type, postId, text, createdAt: Date.now(), read: false });
+  db.notifications = db.notifications.slice(0, 200);
 }
 
 const storage = multer.diskStorage({
@@ -161,7 +162,7 @@ app.post("/api/posts/:id/like", (req, res) => {
   const post = db.posts.find((p) => p.id === req.params.id);
   if (!post) return res.status(404).json({ error: "Post not found." });
   const i = post.likes.indexOf(me.id);
-  if (i >= 0) post.likes.splice(i, 1); else post.likes.push(me.id);
+  if (i >= 0) post.likes.splice(i, 1); else { post.likes.push(me.id); addNotification(db, { userId: post.userId, actorId: me.id, type: "like", postId: post.id }); }
   saveDb(db);
   res.json({ liked: post.likes.includes(me.id), likesCount: post.likes.length });
 });
@@ -207,8 +208,30 @@ app.post("/api/posts/:id/comments", (req, res) => {
   if (!text) return res.status(400).json({ error: "Comment required." });
   const comment = { id: nanoid(8), userId: me.id, text: text.slice(0, 500), createdAt: Date.now() };
   post.comments.push(comment);
+  addNotification(db, { userId: post.userId, actorId: me.id, type: "comment", postId: post.id, text: comment.text });
   saveDb(db);
   res.json({ comment: { ...comment, user: safeUser(me) } });
+});
+
+app.get("/api/notifications", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const notifications = (db.notifications || []).filter((n) => n.userId === me.id).slice(0, 50).map((n) => ({
+    ...n,
+    actor: safeUser(db.users.find((u) => u.id === n.actorId)),
+    post: db.posts.find((p) => p.id === n.postId) ? { id: n.postId } : null
+  }));
+  res.json({ notifications, unread: notifications.filter((n) => !n.read).length });
+});
+
+app.post("/api/notifications/read", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  (db.notifications || []).forEach((n) => { if (n.userId === me.id) n.read = true; });
+  saveDb(db);
+  res.json({ ok: true });
 });
 
 app.get("/api/stories", (req, res) => {

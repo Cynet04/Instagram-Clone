@@ -40,7 +40,7 @@
 ## Phase 9+: Continuous Improvements
 - [x] Dark mode toggle (persisted in localStorage)
 - [x] Bookmarks/saved posts (API + saved view)
-- [ ] Notifications
+- [x] Notifications (like/comment events, list, unread badge, mark-read)
 - [ ] Infinite scroll / pagination
 - [ ] CSS image filters
 - [ ] Real-time-ish message persistence UI
@@ -51,4 +51,5 @@
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
 - 2026-11-08: Phase 9 started — dark mode toggle added; nav encoding normalized; server health verified.
-- 2026-11-08: Bookmarks/saved posts added (per-user save API, saved view, feed save state). Next: notifications.
+- 2026-11-08: Bookmarks/saved posts added (per-user save API, saved view, feed save state).
+- 2026-11-08: Notifications added for likes/comments with unread badge and mark-read. Server restarted and health verified. Next: infinite scroll/pagination.
