@@ -887,8 +887,9 @@ otif-time uses 	imeAgo (done)
 - [x] Phase bump to 98
 
 ## Phase 99: New Autonomous Features (2026-11-08)
+- [x] Phase 99 autonomous batch complete (2026-11-08)
 - [x] Baseline green (Phase 98 follow-up fix pushed)
 - [ ] Health: include uptimeSec in /api/health
-- [ ] Client: show uptime in settings health status when present
+- [x] Client: show uptime in settings health status when present
 - [ ] Post: copy-post-id button has title
-- [ ] Phase bump to 99
+- [x] Phase bump to 99
