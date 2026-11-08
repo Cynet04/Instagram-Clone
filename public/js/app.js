@@ -361,7 +361,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
           <img id="profileAvatarPreview" class="avatar" src="${avatar(user)}" alt="${esc(user.username)} avatar" tabindex="0" role="button" aria-label="Preview profile photo for ${esc(user.username)}" onerror="this.onerror=null;this.src='https://placehold.co/192x192/f5f5f5/737373?text=User'" style="cursor:pointer" />
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-              <h2 style="margin:0">${esc(user.username)}</h2>
+              <h2 style="margin:0">${esc(user.username)}${state.me?.id===user.id?` <span class="muted" style="font-size:12px;font-weight:600">(you)</span>`:""}</h2>
               ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}" aria-label="${isFollowing ? "Unfollow" : "Follow"} ${esc(user.username)}">${isFollowing ? "Following" : "Follow"}</button><button id="messageBtn" class="mini-btn secondary" aria-label="Message ${esc(user.username)}">Message</button><button id="blockBtn" class="mini-btn secondary" aria-label="Block ${esc(user.username)}">Block</button>` : ""}
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>

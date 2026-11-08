@@ -470,8 +470,9 @@
 - [x] Phase bump to 46
 
 ## Phase 47: New Autonomous Features (2026-11-08)
-- [ ] Post: add "Copy image URL" action
-- [ ] Feed: announce refresh completion via toast on manual refresh
-- [ ] Profile: show "This is you" badge on own profile
-- [ ] Notifications: mark-read optimistic button state survives rerender (already handled)
-- [ ] Phase bump to 47
+- [x] Phase 47 autonomous batch complete (2026-11-08)
+- [x] Post: add "Copy image URL" action
+- [x] Feed: announce refresh completion via toast on manual refresh
+- [x] Profile: show "This is you" badge on own profile
+- [x] Notifications: mark-read optimistic button state survives rerender (already handled)
+- [x] Phase bump to 47
