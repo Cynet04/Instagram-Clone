@@ -81,7 +81,8 @@
 - [x] Post creation optimistic/fast feedback (prepends created post to feed without full reload, resets caption count, brand returns home and closes post dialog)
 - [x] Post action binding robustness (supports binding a single `.post` root for optimistic inserts/dialogs)
 - [x] Post share/delete route polish (share copies deep link without mutating current route; delete shows toast feedback)
-- [ ] Additional autonomous features (e.g., search/profile loading refinements, footer/status polish, minor status/route polish)
+- [x] Search/profile loading refinements (search header shows result counts; preserves follow/view interactions)
+- [ ] Additional autonomous features (e.g., footer/status polish, minor status/route polish, DM/search UX polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -113,6 +114,7 @@
 - 2026-11-08: Post creation fast feedback added (created post prepended to feed without full reload, caption count reset, brand returns home/closes post dialog). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post action binding robustness added (`bindPostActions` supports single-post roots for optimistic inserts/dialog flows). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post share/delete route polish added (share copies deep link without mutating the current route; delete shows toast feedback). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Search/profile loading refinements added (search results header displays user/post counts; existing follow/view interactions preserved). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor a11y/composer polish added (`aria-current` nav active state, `aria-busy` loading cards, caption character count, post-share toast). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.

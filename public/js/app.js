@@ -435,7 +435,7 @@ async function loadSearch(q) {
     const postsHtml = posts.length
       ? posts.map(postHtml).join("")
       : emptyState("No posts found", `No results for "${esc(q)}". Try a different keyword or hashtag.`);
-    el("view-search").innerHTML = `<div class="card" style="padding:14px"><h3>Search: ${esc(q)}</h3><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
+    el("view-search").innerHTML = `<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Search: ${esc(q)}</h3><small class="muted">${users.length} user${users.length === 1 ? "" : "s"} · ${posts.length} post${posts.length === 1 ? "" : "s"}</small></div><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
     el("view-search").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
     el("view-search").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
       if (!state.me) return openAuth();
