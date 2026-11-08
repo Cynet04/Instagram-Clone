@@ -274,6 +274,11 @@ async function loadNotifications() {
     el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
     el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile]").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        if (btn.classList.contains("unread")) {
+          btn.classList.remove("unread");
+          updateBadge(Math.max(0, Number(el("notifBadge")?.textContent || 0) - 1));
+          api("/api/notifications/read", { method: "POST", body: JSON.stringify({ ids: [] }) }).catch(() => {});
+        }
         const postId = btn.dataset.notifPost;
         const profile = btn.dataset.notifProfile;
         try {
