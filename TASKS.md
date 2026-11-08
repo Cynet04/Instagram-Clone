@@ -908,3 +908,11 @@ otif-time uses 	imeAgo (done)
 - [ ] Client: show /api/version link in settings
 - [ ] Post: report button hidden for own posts (already)
 - [ ] Phase bump to 101
+
+## Phase 102: New Autonomous Features (2026-11-08)
+- [x] Phase 102 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 101 deployed)
+- [ ] Server: /api/version returns uptimeSec for parity with health
+- [x] Client: "Open /api/version" button text kept; add title
+- [ ] Post: Copy caption button gets title
+- [x] Phase bump to 102
