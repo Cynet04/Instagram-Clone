@@ -708,3 +708,11 @@
 - [x] Profile: follow button shows loading state during request
 - [ ] Messages: DM form input has utocomplete="off" (done)
 - [x] Phase bump to 76
+
+## Phase 77: New Autonomous Features (2026-11-08)
+- [x] Phase 77 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Post: delete confirmation uses clear text
+- [ ] Notifications: follow button has ria-busy during request
+- [ ] Settings: password form has ria-describedby for status
+- [x] Phase bump to 77
