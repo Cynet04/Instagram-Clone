@@ -62,7 +62,8 @@
 - [x] Optimistic UI updates (like/save/comment-like/comment-create/comment-delete with rollback)
 - [x] Loading/empty states (shared state cards/spinner + improved feed/explore/saved/notifications/messages states)
 - [x] Route-aware nav active state + image fallback polish (nav highlights active view; avatars/post images use fallback on load error)
-- [ ] Additional autonomous features (e.g., share/copy profile links, notification deep links, profile post counts refresh polish)
+- [x] Share/copy profile links (profile page copies deep-link URL with fallback prompt)
+- [ ] Additional autonomous features (e.g., notification deep links/open post context, profile post counts refresh polish, keyboard/focus refinements)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -82,4 +83,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Route-aware nav active state and image fallback polish added (active nav highlighting, image/avatar `onerror` fallback). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Share/copy profile links added (profile Share button copies hash deep link with clipboard fallback). Client syntax and health verified. Next: additional autonomous features.

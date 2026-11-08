@@ -309,6 +309,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
             <h2 style="margin:0">${esc(user.username)}</h2>
             ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
             ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
+            <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link">Share</button>
           </div>
           <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
           <div><strong>${esc(user.name || "")}</strong></div>
@@ -333,6 +334,11 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     f.avatar.value = state.me?.avatar || "";
     el("profileEditError").textContent = "";
     el("profileEditDialog").showModal();
+  });
+  el("shareProfileBtn")?.addEventListener("click", async () => {
+    const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
+    try { await navigator.clipboard?.writeText(url); el("shareProfileBtn").textContent = "Copied"; setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500); }
+    catch { prompt("Copy profile link:", url); }
   });
   el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
   setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username: user.username });
