@@ -88,6 +88,7 @@
 - [x] Search clear/Escape polish (search input has accessible label; Escape clears input/blur, returns from search view)
 - [x] Minor accessibility/state polish (`aria-pressed`/labels for like/save/comment-like controls, synced optimistic UI state)
 - [x] Minor route/title polish (document title updates per view/profile; profile routes set title during load)
+- [x] Keyboard accessibility refinements (keyboard-openable notifications and DM conversation items with ARIA labels/roles)
 - [ ] Additional autonomous features (e.g., profile/share refinements, footer/status polish, small accessibility/route refinements)
 
 ## Progress Log
@@ -127,6 +128,7 @@
 - 2026-11-08: Search clear/Escape polish added (search input aria label; Escape clears/blur and returns from search view). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor accessibility/state polish added (`aria-pressed`/labels for post like/save and comment-like controls; optimistic UI keeps button state/text in sync). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor route/title polish added (document title updates per view and profile route). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Keyboard accessibility refinements added (notifications and DM conversation items are keyboard-activatable with Enter/Space and ARIA labels). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Footer/status polish added (sidebar health indicator polling `/api/health`; `PROGRESS.md` created). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Minor a11y/composer polish added (`aria-current` nav active state, `aria-busy` loading cards, caption character count, post-share toast). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.

@@ -294,7 +294,7 @@ async function loadNotifications() {
         const followBtn = n.type === "follow" && state.me && profile && state.me.username !== profile
           ? `<button type="button" class="mini-btn ${n.actor?.isFollowing ? "secondary" : ""}" data-follow-user="${esc(profile)}" style="margin-left:auto;padding:4px 8px;font-size:12px">${n.actor?.isFollowing ? "Following" : "Follow"}</button>`
           : "";
-        return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}</div>`;
+        return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}" tabindex="0" role="button" aria-label="${esc(actor)} ${esc(msg.replace(/<[^>]+>/g, ""))}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}</div>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { const res = await api("/api/notifications/read", { method: "POST", body: "{}" }); updateBadge(res.unread ?? 0); loadNotifications(); });
     el("view-notifications").querySelectorAll("button[data-follow-user]").forEach((btn) => {
@@ -312,18 +312,18 @@ async function loadNotifications() {
         finally { btn.disabled = false; }
       });
     });
-    el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile],[data-notif-id]").forEach((btn) => {
-      if (btn.tagName === "BUTTON" && btn.dataset.followUser) return;
-      btn.addEventListener("click", async (e) => {
+    el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile],[data-notif-id]").forEach((node) => {
+      if (node.tagName === "BUTTON" && node.dataset.followUser) return;
+      const openNotif = async (e) => {
         if (e.target.closest("button[data-follow-user]")) return;
-        const notifId = btn.dataset.notifId;
-        if (btn.classList.contains("unread") && notifId) {
-          btn.classList.remove("unread");
+        const notifId = node.dataset.notifId;
+        if (node.classList.contains("unread") && notifId) {
+          node.classList.remove("unread");
           updateBadge(Math.max(0, Number(el("notifBadge")?.textContent || 0) - 1));
           api("/api/notifications/read", { method: "POST", body: JSON.stringify({ ids: [notifId] }) }).then((r) => updateBadge(r.unread ?? Number(el("notifBadge")?.textContent || 0))).catch(() => {});
         }
-        const postId = btn.dataset.notifPost;
-        const profile = btn.dataset.notifProfile;
+        const postId = node.dataset.postId || node.dataset.notifPost;
+        const profile = node.dataset.profile || node.dataset.notifProfile;
         try {
           if (postId) {
             const { post } = await api(`/api/posts/${postId}`);
@@ -334,7 +334,9 @@ async function loadNotifications() {
             loadProfile(profile);
           }
         } catch (e2) { toast(e2.message, "error"); }
-      });
+      };
+      node.addEventListener("click", openNotif);
+      node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openNotif(e); } });
     });
   } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
 }
@@ -484,7 +486,7 @@ async function renderMessages() {
     el("view-messages").innerHTML = `<div class="card dm">
       <div class="dm-list">
         <div style="padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600">Messages</div>
-        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` · ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
+        ${list.map((c) => `<div class="dm-item ${c.user.id === state.dm.userId ? "active" : ""}" data-dm="${c.user.id}" tabindex="0" role="button" aria-label="Open conversation with ${esc(c.user.username)}"><strong>${esc(c.user.username)}</strong><div style="color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last?.text || "Start a conversation")}${c.last?.createdAt ? ` · ${timeAgo(c.last.createdAt)}` : ""}</div></div>`).join("") || `<div style="padding:14px;color:var(--muted)">No contacts</div>`}
       </div>
       <div class="dm-chat">
         <div class="dm-head">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>` : "Select a conversation"}</div>
@@ -492,7 +494,11 @@ async function renderMessages() {
         ${active ? `<form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" /><button>Send</button></form>` : ``}
       </div>
     </div>`;
-    el("view-messages").querySelectorAll("[data-dm]").forEach((n) => n.onclick = () => { state.dm.userId = n.dataset.dm; renderMessages(); });
+    el("view-messages").querySelectorAll("[data-dm]").forEach((n) => {
+      const open = () => { state.dm.userId = n.dataset.dm; renderMessages(); };
+      n.onclick = open;
+      n.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+    });
     bindProfileLinks(el("view-messages"));
     el("dmForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
