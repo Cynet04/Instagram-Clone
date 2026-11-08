@@ -280,3 +280,10 @@
 - [x] Keyboard shortcut: `r` refresh current view
 - [x] Settings: show build/version/date info from client constants
 - [x] Phase 18 autonomous batch complete (2026-11-08)
+
+## Phase 19: New Autonomous Features (2026-11-08)
+- [ ] Post filter label shown on image/card (subtle)
+- [ ] "Load more comments" for posts with many comments (client-side)
+- [ ] Profile tab remembers last selected tab per username (local)
+- [ ] Notification badge clears optimistically when opening notifications
+- [ ] Composer drag-and-drop image file support (MVP)
