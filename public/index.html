@@ -8,6 +8,7 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/css/styles.css" />
+      <style>.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
   </head>
   <body>
     <header class="nav">
@@ -70,8 +71,8 @@
             </div>
           </form>
         </section>
-        <section id="view-feed"></section>
-        <button id="feedRefreshHint" type="button" class="mini-btn hidden" style="position:sticky;top:72px;z-index:20;margin:0 auto 12px;display:block">New activity — refresh feed</button>
+        <section id="view-feed" aria-label="Home feed"><h2 class="visually-hidden">Feeds</h2></section>
+        <button id="feedRefreshHint" type="button" class="mini-btn hidden" style="position:sticky;top:72px;z-index:20;margin:0 auto 12px;display:block" aria-label="Refresh feed for new activity">New activity � refresh feed</button>
         <div id="feedSentinel" class="feed-sentinel hidden" aria-hidden="true"></div>
         <section id="view-explore" class="hidden"></section>
         <section id="view-notifications" class="hidden"></section>

@@ -68,12 +68,12 @@ function postHtml(p) {
         <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post" title="Delete this post">Delete</button>` : ""}
+        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete this post">Delete</button>` : ""}
       </div>
       <div class="post-image-wrap"><img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by @${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" /><div class="heart-burst" aria-hidden="true">?</div></div>
             <div class="post-actions" aria-label="Post actions">
         <button class="like-btn icon-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}" title="${p.likedByMe ? "Unlike" : "Like"}"><span aria-hidden="true" class="action-icon">${p.likedByMe ? "?" : "?"}</span></button>
-        <button class="comment-focus-btn icon-btn" type="button" aria-label="Comment" title="Comment"><span aria-hidden="true" class="action-icon">??</span></button>
+        <button class="comment-focus-btn icon-btn" type="button" aria-label="Focus comment input" title="Comment"><span aria-hidden="true" class="action-icon">??</span></button>
         <button class="share-post-btn icon-btn" type="button" aria-label="Copy post link" title="Share"><span aria-hidden="true" class="action-icon">?</span></button>
         <button class="copy-caption-btn icon-btn" type="button" aria-label="Copy post caption" title="Copy caption" ${p.caption?"":"disabled"}><span aria-hidden="true" class="action-icon">?</span></button>
         <button class="open-image-btn icon-btn" type="button" aria-label="Open image in new tab" title="Open image"><span aria-hidden="true" class="action-icon">?</span></button>

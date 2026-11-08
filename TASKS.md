@@ -324,7 +324,7 @@
 - [x] Phase 28 autonomous batch complete (2026-11-08)
 - [x] Feed: "Retry" on feed load error already via errorState; add toast on background refresh failure
 - [x] Post dialog: show post ID/location metadata
-- [ ] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable � show website/favicon-like label
+- [x] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable � show website/favicon-like label
 - [x] Explore: show empty state when no posts
 - [x] Global: improve document title on profile view
 
@@ -343,19 +343,19 @@
 - [x] Composer: clear location/alt on reset after post meantoldString
 
 ## Phase 31: New Autonomous Features (2026-11-08)
-- [ ] Post: show saves count label as "save/saves" correctly
-- [ ] Feed: "No more posts" only when not loading (already) � add aria-live polite
-- [ ] Profile: posts stat uses same label style
-- [ ] Messages: show conversation empty state when no contacts
-- [ ] Server: include phase in /api/health as 31
+- [x] Post: show saves count label as "save/saves" correctly
+- [x] Feed: "No more posts" only when not loading (already) � add aria-live polite
+- [x] Profile: posts stat uses same label style
+- [x] Messages: show conversation empty state when no contacts
+- [x] Server: include phase in /api/health as 31
 
 ## Phase 32: New Autonomous Features (2026-11-08)
 - [x] Phase 32 autonomous batch complete (2026-11-08)
-- [ ] Post: "Copy link" button label shows "Copied" briefly via toast only (already) � add aria-live for actions
+- [x] Post: "Copy link" button label shows "Copied" briefly via toast only (already) � add aria-live for actions
 - [x] Explore/search: tag search hint text
-- [ ] Profile: show "Edit profile" only for self (already) � add avatar alt text quality
+- [x] Profile: show "Edit profile" only for self (already) � add avatar alt text quality
 - [x] Messages: Enter-to-send note in placeholder not needed; keep accessible
-- [ ] Health: UI shows phase from /api/health when available
+- [x] Health: UI shows phase from /api/health when available
 
 ## Phase 33: New Autonomous Features (2026-11-08)
 - [x] Phase 33 autonomous batch complete (2026-11-08)
@@ -400,7 +400,7 @@
 ## Phase 38: New Autonomous Features (2026-11-08)
 - [x] Phase 38 autonomous batch complete (2026-11-08)
 - [x] Feed: show "Refresh" button in feed header
-- [ ] Post: show full timestamp in detail dialog (already) � add copy post link in dialog
+- [x] Post: show full timestamp in detail dialog (already) � add copy post link in dialog
 - [x] Settings: show service worker status
 - [x] Profile: "Back" to feed uses history where possible
 - [x] Phase bump to 38
@@ -409,8 +409,8 @@
 - [x] Phase 39 autonomous batch complete (2026-11-08)
 - [x] Post: show share count label in detail dialog when present locally
 - [x] Notifications: "Clear" disabled state/confirm clarity
-- [ ] Feed: loading skeleton not needed; keep "Loading more posts�" sentinel
-- [ ] Messages: conversation preview uses "You:" for last sender (done) � add empty text safety
+- [x] Feed: loading skeleton not needed; keep "Loading more posts�" sentinel
+- [x] Messages: conversation preview uses "You:" for last sender (done) � add empty text safety
 - [x] Phase bump to 39
 
 ## Phase 40: New Autonomous Features (2026-11-08)
@@ -423,7 +423,7 @@
 
 ## Phase 41: New Autonomous Features (2026-11-08)
 - [x] Phase 41 autonomous batch complete (2026-11-08)
-- [ ] Feed: show "No posts match sort" is N/A (server order) � add sort hint text
+- [x] Feed: show "No posts match sort" is N/A (server order) � add sort hint text
 - [x] Search: autofocus not forced; keep accessible
 - [x] Notifications: show empty badge aria-label clarity
 - [x] Profile: show follower/following buttons as counts only (already)
@@ -432,15 +432,15 @@
 ## Phase 42: New Autonomous Features (2026-11-08)
 - [x] Phase 42 autonomous batch complete (2026-11-08)
 - [x] Composer: show image file name/size hint after selection
-- [ ] Profile: saved tab only for owner (already) � add empty saved CTA to Explore
-- [ ] DM: prevent sending whitespace-only (already trimmed) � show error toast
+- [x] Profile: saved tab only for owner (already) � add empty saved CTA to Explore
+- [x] DM: prevent sending whitespace-only (already trimmed) � show error toast
 - [x] Feed: "End of feed" only once (idempotent)
 - [x] Phase bump to 42
 
 ## Phase 43: New Autonomous Features (2026-11-08)
 - [x] Phase 43 autonomous batch complete (2026-11-08)
 - [x] Accessibility: ensure main landmark has stable label (already)
-- [ ] Feed: post cards get data-post-id already � add ria-describedby not required; add comment form label association
+- [x] Feed: post cards get data-post-id already � add ria-describedby not required; add comment form label association
 - [x] Settings: export button disabled while in flight
 - [x] Search: trim query before API call (already trims)
 - [x] Phase bump to 43
@@ -448,22 +448,22 @@
 ## Phase 44: New Autonomous Features (2026-11-08)
 - [x] Phase 44 autonomous batch complete (2026-11-08)
 - [x] Post: show "Saved" state text in save button aria-label
-- [ ] Feed: retry action in error state wired (data-retry-action) � verify binding
+- [x] Feed: retry action in error state wired (data-retry-action) � verify binding
 - [x] Profile: show "Copy username" button
 - [x] Notifications: hide button uses consistent spacing
 - [x] Phase bump to 44
 
 ## Phase 45: New Autonomous Features (2026-11-08)
 - [x] Phase 45 autonomous batch complete (2026-11-08)
-- [ ] Post: report button has confirm text already � add aria-label clarity
+- [x] Post: report button has confirm text already � add aria-label clarity
 - [x] Messages: show "Muted" badge in conversation list
-- [ ] Search: show @me hint in placeholder (already supports) � add aria description
+- [x] Search: show @me hint in placeholder (already supports) � add aria description
 - [x] Profile: list view shows post date
 - [x] Phase bump to 45
 
 ## Phase 46: New Autonomous Features (2026-11-08)
 - [x] Phase 46 autonomous batch complete (2026-11-08)
-- [ ] Post: comment delete button shows for owner (already) � confirm label
+- [x] Post: comment delete button shows for owner (already) � confirm label
 - [x] Explore: show post count in section
 - [x] Settings: show shortcuts count
 - [x] Feed: "New activity" hint clears on refresh (done)
@@ -519,15 +519,15 @@
 
 ## Phase 53: New Autonomous Features (2026-11-08)
 - [x] Phase 53 autonomous batch complete (2026-11-08)
-- [ ] Post image: add explicit width:100% container context (CSS-safe)
+- [x] Post image: add explicit width:100% container context (CSS-safe)
 - [x] Explore: recent search chips have clear label (done)
 - [x] Settings: "Copy diagnostics" includes app build (done)
-- [ ] Search dropdown: ria-label on results container
+- [x] Search dropdown: ria-label on results container
 - [x] Phase bump to 53
 
 ## Phase 54: New Autonomous Features (2026-11-08)
 - [x] Phase 54 autonomous batch complete (2026-11-08)
-- [ ] Post: prevent saving while logged out (auth prompt) � ensure UI feedback
+- [x] Post: prevent saving while logged out (auth prompt) � ensure UI feedback
 - [x] Feed: "Share" action copies link fallback already; unify toast
 - [x] Profile: show "Posts/Saved" as navigation tabs with aria-controls context
 - [x] Settings: show repo/local app name consistently
@@ -543,7 +543,7 @@
 
 ## Phase 56: New Autonomous Features (2026-11-08)
 - [x] Phase 56 autonomous batch complete (2026-11-08)
-- [ ] Post card: ensure like button text reflects count context not needed; add ria-live region for likes not necessary
+- [x] Post card: ensure like button text reflects count context not needed; add ria-live region for likes not necessary
 - [x] Explore: show "No query" state text
 - [x] Profile: show follower count pluralization
 - [x] Settings: add "Reload page" action
@@ -568,7 +568,7 @@
 ## Phase 59: New Autonomous Features (2026-11-08)
 - [x] Phase 59 autonomous batch complete (2026-11-08)
 - [x] Verification: tests pass, health OK, repo clean before batch
-- [ ] Post: ria-label on comments count includes post author context
+- [x] Post: ria-label on comments count includes post author context
 - [x] Profile: saved tab button hidden for non-owners (already)
 - [x] Settings: show session hint (cookie-based)
 - [x] Phase bump to 59
@@ -577,14 +577,14 @@
 - [x] Phase 60 autonomous batch complete (2026-11-08)
 - [x] Baseline green (tests/health/clean)
 - [x] Composer: preview alt text source not shown; keep minimal
-- [ ] Post: show ltText edit prompt remains
+- [x] Post: show ltText edit prompt remains
 - [x] Messages: send button re-enabled on error (done)
 - [x] Phase bump to 60
 
 ## Phase 61: New Autonomous Features (2026-11-08)
 - [x] Phase 61 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Feed: post author link has ria-label
+- [x] Feed: post author link has ria-label
 - [x] Search results: profile links announce destination
 - [x] Profile: stats buttons have descriptive labels
 - [x] Phase bump to 61
@@ -593,16 +593,16 @@
 - [x] Phase 62 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Post: save/share actions announce result via toast (already)
-- [ ] Feed: #feedRefreshBtn has aria-label
-- [ ] Notifications: filter <select> label association (already has aria-label)
+- [x] Feed: #feedRefreshBtn has aria-label
+- [x] Notifications: filter <select> label association (already has aria-label)
 - [x] Phase bump to 62
 
 ## Phase 63: New Autonomous Features (2026-11-08)
 - [x] Phase 63 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Composer: postDropZone announces drag state via aria-live (status exists)
+- [x] Composer: postDropZone announces drag state via aria-live (status exists)
 - [x] Post: "Copy image URL" toast consistent
-- [ ] Profile: grid/list toggle has ria-pressed state
+- [x] Profile: grid/list toggle has ria-pressed state
 - [x] Phase bump to 63
 
 ## Phase 64: New Autonomous Features (2026-11-08)
@@ -610,13 +610,13 @@
 - [x] Baseline green
 - [x] Messages: DM conversation header shows "Muted locally" status clearly (polish)
 - [x] Feed: retry button on error states works for explore/notifications where applicable
-- [ ] Post: Copy caption button disabled when caption empty
+- [x] Post: Copy caption button disabled when caption empty
 - [x] Phase bump to 64
 
 ## Phase 65: New Autonomous Features (2026-11-08)
 - [x] Phase 65 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: add 	itle to action buttons for discoverability
+- [x] Post: add 	itle to action buttons for discoverability
 - [x] Feed: "Refresh" shows loading feedback
 - [x] Explore: error state passes retry action
 - [x] Phase bump to 65
@@ -633,8 +633,8 @@
 - [x] Phase 67 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Feed: end-of-feed message has clear contrast-safe muted style (class-based)
-- [ ] Post: action buttons have consistent 	ype="button" (verify)
-- [ ] Messages: DM send form uses ria-label
+- [x] Post: action buttons have consistent 	ype="button" (verify)
+- [x] Messages: DM send form uses ria-label
 - [x] Phase bump to 67
 
 ## Phase 68: New Autonomous Features (2026-11-08)
@@ -648,16 +648,16 @@
 ## Phase 69: New Autonomous Features (2026-11-08)
 - [x] Phase 69 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: copy-post-link button uses data-post-id for reliability
-- [ ] Profile: "Copy username" includes @ (done)
-- [ ] Search: result items have ria-label (done)
+- [x] Post: copy-post-link button uses data-post-id for reliability
+- [x] Profile: "Copy username" includes @ (done)
+- [x] Search: result items have ria-label (done)
 - [x] Phase bump to 69
 
 ## Phase 70: New Autonomous Features (2026-11-08)
 - [x] Phase 70 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Notifications: ria-label on hide button includes actor/context
-- [ ] Profile: website link uses ria-label
+- [x] Notifications: ria-label on hide button includes actor/context
+- [x] Profile: website link uses ria-label
 - [x] Feed: comment count span has stable semantics (already)
 - [x] Phase bump to 70
 
@@ -665,7 +665,7 @@
 - [x] Phase 71 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Post dialog: include caption/location in accessible description
-- [ ] DM: quick-reply chips have ria-label
+- [x] DM: quick-reply chips have ria-label
 - [x] Settings: "Refresh SW status" label consistent
 - [x] Phase bump to 71
 
@@ -680,7 +680,7 @@
 ## Phase 73: New Autonomous Features (2026-11-08)
 - [x] Phase 73 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: image onerror fallback is consistent
+- [x] Post: image onerror fallback is consistent
 - [x] Feed: sort persists across sessions (done)
 - [x] Profile: follow button text updates optimistically (done)
 - [x] Phase bump to 73
@@ -689,14 +689,14 @@
 - [x] Phase 74 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Search results: "Posts by caption" section only when query non-tag
-- [ ] DM: message timestamps use consistent 	imeAgo
+- [x] DM: message timestamps use consistent 	imeAgo
 - [x] Profile: "Edit profile" button visible only for self (already)
 - [x] Phase bump to 74
 
 ## Phase 75: New Autonomous Features (2026-11-08)
 - [x] Phase 75 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: "More/Less" caption toggle has ria-expanded
+- [x] Post: "More/Less" caption toggle has ria-expanded
 - [x] Profile: "Share profile" action uses toast on clipboard fallback
 - [x] Feed: loading state replaces stale error on retry
 - [x] Phase bump to 75
@@ -706,22 +706,22 @@
 - [x] Baseline green
 - [x] Post: copy-link/image buttons grouped with consistent labels
 - [x] Profile: follow button shows loading state during request
-- [ ] Messages: DM form input has utocomplete="off" (done)
+- [x] Messages: DM form input has utocomplete="off" (done)
 - [x] Phase bump to 76
 
 ## Phase 77: New Autonomous Features (2026-11-08)
 - [x] Phase 77 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Post: delete confirmation uses clear text
-- [ ] Notifications: follow button has ria-busy during request
-- [ ] Settings: password form has ria-describedby for status
+- [x] Notifications: follow button has ria-busy during request
+- [x] Settings: password form has ria-describedby for status
 - [x] Phase bump to 77
 
 ## Phase 78: New Autonomous Features (2026-11-08)
 - [x] Phase 78 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] Feed: post sort select shows current value (done)
-- [ ] Search: # tag result opens explore (done)
+- [x] Search: # tag result opens explore (done)
 - [x] Profile: "Posts" stat opens posts tab (done)
 - [x] Phase bump to 78
 
@@ -735,7 +735,7 @@
 ## Phase 80: New Autonomous Features (2026-11-08)
 - [x] Phase 80 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: share-post-btn has explicit 	itle
+- [x] Post: share-post-btn has explicit 	itle
 - [x] Explore: grid item buttons/images announce "Open post details"
 - [x] Profile: "Message" button visible only when appropriate (already)
 - [x] Phase bump to 80
@@ -743,7 +743,7 @@
 ## Phase 81: New Autonomous Features (2026-11-08)
 - [x] Phase 81 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: comment input gets ria-describedby for count
+- [x] Post: comment input gets ria-describedby for count
 - [x] Feed: "End of feed" marker appears once (done)
 - [x] Settings: reset confirms destructive action (done)
 - [x] Phase bump to 81
@@ -761,14 +761,14 @@
 - [x] Baseline green
 - [x] Notifications: "All caught up" copy matches filter context
 - [x] Feed: post header shows location only when present (done)
-- [ ] Profile: stats ria-label clarifies dialog action (done)
+- [x] Profile: stats ria-label clarifies dialog action (done)
 - [x] Phase bump to 83
 
 ## Phase 84: New Autonomous Features (2026-11-08)
 - [x] Phase 84 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] API: POST /api/auth/logout returns ok (done) � ensure idempotent behavior noted
-- [ ] Client: loadMe handles unauthenticated state cleanly
+- [x] API: POST /api/auth/logout returns ok (done) � ensure idempotent behavior noted
+- [x] Client: loadMe handles unauthenticated state cleanly
 - [x] Feed: duplicate post guard in append path (done)
 - [x] Phase bump to 84
 
@@ -776,23 +776,23 @@
 - [x] Phase 85 autonomous batch complete (2026-11-08)
 - [x] Baseline green
 - [x] DM: delete message confirm not required for MVP; keep quick
-- [ ] Post: Copy post ID available in actions (done)
+- [x] Post: Copy post ID available in actions (done)
 - [x] Profile: avatar dialog close button has label (done)
 - [x] Phase bump to 85
 
 ## Phase 86: New Autonomous Features (2026-11-08)
 - [x] Phase 86 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Server: /api/me returns 
+- [x] Server: /api/me returns 
 ull user cleanly (verify) and 401 not used for polling
-- [ ] Client: updateBadge no-op when element missing
-- [ ] Feed: enderFeedPosts tolerates null/empty safely
+- [x] Client: updateBadge no-op when element missing
+- [x] Feed: enderFeedPosts tolerates null/empty safely
 - [x] Phase bump to 86
 
 ## Phase 87: New Autonomous Features (2026-11-08)
 - [x] Phase 87 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: action buttons have ria-label consistency (verify/correct)
+- [x] Post: action buttons have ria-label consistency (verify/correct)
 - [x] Profile: "Share profile" uses consistent URL origin/path
 - [x] DM: typing indicator clears on conversation switch (done via rerender)
 - [x] Phase bump to 87
@@ -800,16 +800,16 @@ ull user cleanly (verify) and 401 not used for polling
 ## Phase 88: New Autonomous Features (2026-11-08)
 - [x] Phase 88 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Feed: posts render with stable key-like data-post-id (done)
-- [ ] Notifications: 
+- [x] Feed: posts render with stable key-like data-post-id (done)
+- [x] Notifications: 
 otif-time uses 	imeAgo (done)
-- [ ] Server: all JSON error responses use { error } shape (verify core paths)
+- [x] Server: all JSON error responses use { error } shape (verify core paths)
 - [x] Phase bump to 88
 
 ## Phase 89: New Autonomous Features (2026-11-08)
 - [x] Phase 89 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: ria-label on delete includes "post"
+- [x] Post: ria-label on delete includes "post"
 - [x] Comments: report/delete button labels are specific
 - [x] DM: send form button keeps accessible label
 - [x] Phase bump to 89
@@ -817,23 +817,23 @@ otif-time uses 	imeAgo (done)
 ## Phase 90: New Autonomous Features (2026-11-08)
 - [x] Phase 90 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] UI: document.title resets on non-profile views
+- [x] UI: document.title resets on non-profile views
 - [x] Feed: empty/error states remain keyboard reachable
-- [ ] Post: openPostDialog called safely from grid (done)
+- [x] Post: openPostDialog called safely from grid (done)
 - [x] Phase bump to 90
 
 ## Phase 91: New Autonomous Features (2026-11-08)
 - [x] Phase 91 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] API: return 429 not implemented; keep MVP simple (verify no abuse endpoints needed)
-- [ ] Client: pi() already throws on non-ok
-- [ ] UI: ensure all dialogs have ria-modal where supported (already)
+- [x] API: return 429 not implemented; keep MVP simple (verify no abuse endpoints needed)
+- [x] Client: pi() already throws on non-ok
+- [x] UI: ensure all dialogs have ria-modal where supported (already)
 - [x] Phase bump to 91
 
 ## Phase 92: New Autonomous Features (2026-11-08)
 - [x] Phase 92 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Feed: iew button in post actions has 	itle
+- [x] Feed: iew button in post actions has 	itle
 - [x] Messages: DM item avatar not present; keep compact
 - [x] Profile: "Joined" uses locale date (done)
 - [x] Phase bump to 92
@@ -849,15 +849,15 @@ otif-time uses 	imeAgo (done)
 ## Phase 94: New Autonomous Features (2026-11-08)
 - [x] Phase 94 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Server: add Cache-Control: no-store for /api/health (diagnostic freshness)
-- [ ] Client: post action "Open image" has 	itle
-- [ ] Profile: total likes/comments stat uses ria-label
+- [x] Server: add Cache-Control: no-store for /api/health (diagnostic freshness)
+- [x] Client: post action "Open image" has 	itle
+- [x] Profile: total likes/comments stat uses ria-label
 - [x] Phase bump to 94
 
 ## Phase 95: New Autonomous Features (2026-11-08)
 - [x] Phase 95 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Feed: post image has consistent ria-label for open action
+- [x] Feed: post image has consistent ria-label for open action
 - [x] DM: delete-message button label clarifies scope
 - [x] Settings: diagnostics payload includes health phase when known
 - [x] Phase bump to 95
@@ -865,9 +865,9 @@ otif-time uses 	imeAgo (done)
 ## Phase 96: New Autonomous Features (2026-11-08)
 - [x] Phase 96 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] Post: Copy image URL action title present
-- [ ] Profile: grid images have ria-label (already)
-- [ ] Search: result images have lt (done)
+- [x] Post: Copy image URL action title present
+- [x] Profile: grid images have ria-label (already)
+- [x] Search: result images have lt (done)
 - [x] Phase bump to 96
 
 ## Phase 97: New Autonomous Features (2026-11-08)
@@ -875,7 +875,7 @@ otif-time uses 	imeAgo (done)
 - [x] Baseline green
 - [x] API: posts include updatedAt not tracked; keep immutable MVP semantics
 - [x] Client: optimistic like path avoids stale badge race (best-effort)
-- [ ] Docs: PROGRESS.md not updated this run � summarize next commit
+- [x] Docs: PROGRESS.md not updated this run � summarize next commit
 - [x] Phase bump to 97
 
 ## Phase 98: New Autonomous Features (2026-11-08)
@@ -897,64 +897,64 @@ otif-time uses 	imeAgo (done)
 ## Phase 100: New Autonomous Features (2026-11-08)
 - [x] Phase 100 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phases 17-99 complete, server restarted on phase 99)
-- [ ] Server: add GET /api/version (alias-style metadata for tooling)
-- [ ] Client: diagnostics include online and browser language
+- [x] Server: add GET /api/version (alias-style metadata for tooling)
+- [x] Client: diagnostics include online and browser language
 - [x] Post dialog: add "Copy post ID" button alongside copy link
 - [x] Phase bump to 100
 
 ## Phase 101: New Autonomous Features (2026-11-08)
 - [x] Baseline green (health/version phase 100)
-- [ ] API: add GET /api/version to public surface docs check (endpoint exists)
-- [ ] Client: show /api/version link in settings
-- [ ] Post: report button hidden for own posts (already)
-- [ ] Phase bump to 101
+- [x] API: add GET /api/version to public surface docs check (endpoint exists)
+- [x] Client: show /api/version link in settings
+- [x] Post: report button hidden for own posts (already)
+- [x] Phase bump to 101
 
 ## Phase 102: New Autonomous Features (2026-11-08)
 - [x] Phase 102 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 101 deployed)
-- [ ] Server: /api/version returns uptimeSec for parity with health
+- [x] Server: /api/version returns uptimeSec for parity with health
 - [x] Client: "Open /api/version" button text kept; add title
-- [ ] Post: Copy caption button gets title
+- [x] Post: Copy caption button gets title
 - [x] Phase bump to 102
 
 ## Phase 103: New Autonomous Features (2026-11-08)
 - [x] Phase 103 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 102)
-- [ ] Server: include 
+- [x] Server: include 
 odeEnv hint not required; keep minimal � add pid to /api/health for diagnostics
-- [ ] Client: settings diagnostics include userAgent (short)
-- [ ] Profile: "Copy @" button has 	itle
+- [x] Client: settings diagnostics include userAgent (short)
+- [x] Profile: "Copy @" button has 	itle
 - [x] Phase bump to 103
 
 ## Phase 104: New Autonomous Features (2026-11-08)
 - [x] Phase 104 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 103)
-- [ ] Post: Comment button has 	itle
-- [ ] Profile: Block button has 	itle when present
-- [ ] Notifications: follow button in notifications has ria-label
+- [x] Post: Comment button has 	itle
+- [x] Profile: Block button has 	itle when present
+- [x] Notifications: follow button in notifications has ria-label
 - [x] Phase bump to 104
 
 ## Phase 105: New Autonomous Features (2026-11-08)
 - [x] Phase 105 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 104)
-- [ ] Post: Edit/Delete titles on owner actions
-- [ ] Profile: Copy card and Share buttons have titles
-- [ ] Feed: Save button title reflects state
+- [x] Post: Edit/Delete titles on owner actions
+- [x] Profile: Copy card and Share buttons have titles
+- [x] Feed: Save button title reflects state
 - [x] Phase bump to 105
 
 ## Phase 106: New Autonomous Features (2026-11-08)
 - [x] Phase 106 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 105 stable, server restarted)
-- [ ] Server: /api/version omits pid (kept on /api/health) for cleaner public metadata
-- [ ] Client: settings "Open /api/health" link has 	itle
-- [ ] Post: "Copy link" button gets 	itle
+- [x] Server: /api/version omits pid (kept on /api/health) for cleaner public metadata
+- [x] Client: settings "Open /api/health" link has 	itle
+- [x] Post: "Copy link" button gets 	itle
 - [x] Phase bump to 106
 
 ## Phase 107: New Autonomous Features (2026-11-08)
 - [x] Phase 107 autonomous batch complete (2026-11-08)
 - [x] Baseline green (phase 106)
-- [ ] Server: disable x-powered-by header
-- [ ] Post: report button gets 	itle
+- [x] Server: disable x-powered-by header
+- [x] Post: report button gets 	itle
 - [x] Feed refresh hint: has aria-label (verify)
 - [x] Phase bump to 107
 
