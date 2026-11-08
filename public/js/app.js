@@ -1079,10 +1079,12 @@ function renderMe() {
 }
 
 async function loadMe() {
+  try {
   const { user } = await api("/api/me");
   state.me = user;
   renderMe();
-  refreshNotificationsBadge(); refreshDmBadge();
+    refreshNotificationsBadge(); refreshDmBadge();
+  } catch { state.me = null; renderMe(); updateBadge(0); }
 }
 
 async function loadSuggestions() {

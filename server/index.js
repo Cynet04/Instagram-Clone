@@ -115,7 +115,7 @@ app.use(session({
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(path.join(root, "public")));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, app: "instagram-clone-mvp", phase: 83, time: new Date().toISOString() }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, app: "instagram-clone-mvp", phase: 84, time: new Date().toISOString() }));
 
 app.get("/api/me", (req, res) => {
   const db = loadDb();

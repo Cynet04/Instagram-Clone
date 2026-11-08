@@ -763,3 +763,11 @@
 - [x] Feed: post header shows location only when present (done)
 - [ ] Profile: stats ria-label clarifies dialog action (done)
 - [x] Phase bump to 83
+
+## Phase 84: New Autonomous Features (2026-11-08)
+- [x] Phase 84 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] API: POST /api/auth/logout returns ok (done) � ensure idempotent behavior noted
+- [ ] Client: loadMe handles unauthenticated state cleanly
+- [x] Feed: duplicate post guard in append path (done)
+- [x] Phase bump to 84
