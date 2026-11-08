@@ -120,12 +120,12 @@ function postHtml(p) {
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
-        <img class="avatar profile-link" src="${avatar(p.user)}" alt="" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
+        <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
-      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'" />
+      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
@@ -155,7 +155,7 @@ async function loadStories() {
   state.stories = stories || [];
   const add = state.me ? `<button class="story story-add" type="button" id="addStoryBtn"><span class="story-plus">+</span><span>Your story</span></button>` : "";
   el("stories").innerHTML = add + state.stories.map((s, i) => `
-    <button class="story" type="button" data-story-index="${i}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || (add ? "" : `<div class="story"><span>No stories</span></div>`);
+    <button class="story" type="button" data-story-index="${i}" aria-label="View story by ${esc(s.user?.username || "user")}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || (add ? "" : `<div class="story"><span>No stories</span></div>`);
   el("stories").querySelectorAll("[data-story-index]").forEach((b) => b.onclick = () => openStory(Number(b.dataset.storyIndex)));
   el("addStoryBtn")?.addEventListener("click", () => el("storyCreator").classList.toggle("hidden"));
 }
@@ -239,7 +239,7 @@ async function loadExplore(q = "") {
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
         ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
       </div>
-      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" />`).join("") || ""}</div>
+      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
     </div>`;
     bindPostOpen(el("view-explore"));
@@ -341,7 +341,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       </div>
       ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
     </div>
-    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
+    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
   bindPostOpen(el("view-profile"));
   el("followBtn")?.addEventListener("click", async () => {
     try {
