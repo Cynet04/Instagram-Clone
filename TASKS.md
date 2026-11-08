@@ -59,7 +59,7 @@
 - [x] Post detail/open interactions (API `/api/posts/:id`, feed/profile/explore open dialog)
 - [x] Comment delete (owner can delete own comments or comments on own post; API + UI)
 - [x] Profile deep links in URL hash (route/hash handling for views and `/profile/:username`)
-- [ ] Optimistic UI updates
+- [x] Optimistic UI updates (like/save/comment-like/comment-create/comment-delete with rollback)
 - [ ] Loading/empty states
 - [ ] Additional autonomous features
 
@@ -81,4 +81,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Profile deep links in URL hash added (SPA hash routes for main views and profile usernames; route handling on load/hashchange; profile navigation updates URL). Client syntax and health verified. Next: optimistic UI updates.
+- 2026-11-08: Optimistic UI updates added (post like/save, comment like/delete, and comment create now update UI immediately with rollback on API failure). Client syntax and health verified. Next: loading/empty states.

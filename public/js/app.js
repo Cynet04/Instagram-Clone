@@ -412,41 +412,74 @@ function bindPostActions(root) {
     });
     postEl.querySelector(".like-btn")?.addEventListener("click", async () => {
       if (!state.me) return openAuth();
+      const btn = postEl.querySelector(".like-btn");
+      const likesEl = postEl.querySelector(".post-likes");
+      const prevLiked = btn.classList.contains("liked");
+      const prevCount = Number((likesEl.textContent || "0").match(/\d+/)?.[0] || 0);
+      const nextLiked = !prevLiked;
+      btn.classList.toggle("liked", nextLiked);
+      likesEl.textContent = `${Math.max(0, prevCount + (nextLiked ? 1 : -1))} likes`;
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/like`, { method: "POST", body: "{}" });
-        postEl.querySelector(".like-btn").classList.toggle("liked", res.liked);
-        postEl.querySelector(".post-likes").textContent = `${res.likesCount} likes`;
-      } catch (e) { alert(e.message); }
+        btn.classList.toggle("liked", res.liked);
+        likesEl.textContent = `${res.likesCount} likes`;
+      } catch (e) {
+        btn.classList.toggle("liked", prevLiked);
+        likesEl.textContent = `${prevCount} likes`;
+        alert(e.message);
+      }
     });
     postEl.querySelector(".save-btn")?.addEventListener("click", async () => {
       if (!state.me) return openAuth();
+      const btn = postEl.querySelector(".save-btn");
+      const prevSaved = btn.classList.contains("saved");
+      const nextSaved = !prevSaved;
+      btn.classList.toggle("saved", nextSaved);
+      btn.textContent = nextSaved ? "Saved" : "Save";
+      if (state.view === "saved" && !nextSaved) postEl.style.opacity = "0.45";
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/save`, { method: "POST", body: "{}" });
-        const btn = postEl.querySelector(".save-btn");
         btn.classList.toggle("saved", res.saved);
         btn.textContent = res.saved ? "Saved" : "Save";
+        postEl.style.opacity = "";
         if (state.view === "saved" && !res.saved) loadSaved();
-      } catch (e) { alert(e.message); }
+      } catch (e) {
+        btn.classList.toggle("saved", prevSaved);
+        btn.textContent = prevSaved ? "Saved" : "Save";
+        postEl.style.opacity = "";
+        alert(e.message);
+      }
     });
     postEl.querySelectorAll(".comment-like-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!state.me) return openAuth();
         const commentId = btn.closest(".comment")?.dataset.commentId;
+        const prevLiked = btn.classList.contains("liked");
+        const prevCount = Number((btn.textContent || "0").match(/\d+/)?.[0] || 0);
+        const nextLiked = !prevLiked;
+        btn.classList.toggle("liked", nextLiked);
+        btn.textContent = `Like ${Math.max(0, prevCount + (nextLiked ? 1 : -1))}`;
         try {
           const res = await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}/like`, { method: "POST", body: "{}" });
           btn.classList.toggle("liked", res.liked);
           btn.textContent = `Like ${res.likesCount}`;
-        } catch (e) { alert(e.message); }
+        } catch (e) {
+          btn.classList.toggle("liked", prevLiked);
+          btn.textContent = `Like ${prevCount}`;
+          alert(e.message);
+        }
       });
     });
     postEl.querySelectorAll(".comment-delete-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!state.me || !confirm("Delete this comment?")) return;
         const commentId = btn.closest(".comment")?.dataset.commentId;
+        const node = btn.closest(".comment");
+        node?.style.setProperty("opacity", "0.45");
         try {
           await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}`, { method: "DELETE" });
-          btn.closest(".comment")?.remove();
-        } catch (e) { alert(e.message); }
+          node?.remove();
+        } catch (e) { if (node) node.style.opacity = ""; alert(e.message); }
       });
     });
     postEl.querySelector(".comment-form")?.addEventListener("submit", async (e) => {
@@ -455,12 +488,21 @@ function bindPostActions(root) {
       const input = e.currentTarget.querySelector("input[name=text]");
       const text = input.value.trim();
       if (!text) return;
+      const list = postEl.querySelector(".comments");
+      const tempId = `tmp_${Date.now()}`;
+      const optimistic = document.createElement("div");
+      optimistic.className = "comment";
+      optimistic.dataset.commentId = tempId;
+      optimistic.style.opacity = "0.6";
+      optimistic.innerHTML = `<span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" disabled>Like 0</button></span>`;
+      list?.appendChild(optimistic);
+      input.value = "";
       try {
-        await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
-        input.value = "";
-        if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "search") {/* keep */} else loadFeed(true);
+        const res = await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
+        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
+        bindPostActions(postEl);
         refreshNotificationsBadge();
-      } catch (err) { alert(err.message); }
+      } catch (err) { optimistic.remove(); input.value = text; alert(err.message); }
     });
   });
 }
