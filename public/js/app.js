@@ -599,10 +599,16 @@ el("authBtn").onclick = async () => {
   else openAuth("login");
 };
 el("authToggle").onclick = () => openAuth(state.authMode === "login" ? "signup" : "login");
+el("profileEditCancel")?.addEventListener("click", () => closeDialog(el("profileEditDialog")));
 el("authForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const fd = new FormData(e.currentTarget);
   const payload = Object.fromEntries(fd.entries());
+  const username = String(payload.username || "").trim();
+  const password = String(payload.password || "");
+  if (!/^[A-Za-z0-9._]{3,30}$/.test(username)) { el("authError").textContent = "Username must be 3-30 chars: letters, numbers, dot, underscore."; return; }
+  if (password.length < 6) { el("authError").textContent = "Password must be at least 6 characters."; return; }
+  payload.username = username;
   try {
     const path = state.authMode === "login" ? "/api/auth/login" : "/api/auth/signup";
     const { user } = await api(path, { method: "POST", body: JSON.stringify(payload) });
@@ -658,8 +664,12 @@ el("storyForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.me) return openAuth();
   const fd = new FormData(e.currentTarget);
+  const payload = Object.fromEntries(fd.entries());
+  const image = String(payload.image || "").trim();
+  if (!/^https?:\/\//i.test(image)) { alert("Story image must be a valid http(s) URL."); return; }
+  payload.image = image;
   try {
-    await api("/api/stories", { method: "POST", body: JSON.stringify(Object.fromEntries(fd.entries())) });
+    await api("/api/stories", { method: "POST", body: JSON.stringify(payload) });
     e.currentTarget.reset();
     el("storyCreator").classList.add("hidden");
     await loadStories();
@@ -669,8 +679,14 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.me) return openAuth();
   const fd = new FormData(e.currentTarget);
+  const payload = Object.fromEntries(fd.entries());
+  const avatar = String(payload.avatar || "").trim();
+  if (avatar && !/^https?:\/\//i.test(avatar) && !avatar.startsWith("/uploads/")) {
+    el("profileEditError").textContent = "Avatar must be an http(s) URL or /uploads/ path."; return;
+  }
+  payload.avatar = avatar;
   try {
-    const { user } = await api("/api/me/profile", { method: "POST", body: JSON.stringify(Object.fromEntries(fd.entries())) });
+    const { user } = await api("/api/me/profile", { method: "POST", body: JSON.stringify(payload) });
     state.me = user;
     renderMe();
     closeDialog(el("profileEditDialog"));

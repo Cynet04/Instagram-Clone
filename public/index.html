@@ -86,9 +86,9 @@
     <dialog id="authDialog">
       <form id="authForm" method="dialog">
         <h3 id="authTitle">Log in</h3>
-        <input name="username" placeholder="Username" required minlength="3" />
-        <input name="name" placeholder="Name (signup)" />
-        <input name="password" type="password" placeholder="Password" required minlength="6" />
+        <input name="username" placeholder="Username" required minlength="3" maxlength="30" pattern="[A-Za-z0-9._]+" title="Letters, numbers, dot, underscore" />
+        <input name="name" placeholder="Name (signup)" maxlength="80" />
+        <input name="password" type="password" placeholder="Password" required minlength="6" maxlength="128" />
         <div class="row">
           <button id="authSubmit" value="default">Continue</button>
           <button id="authToggle" type="button">Need an account?</button>
@@ -105,7 +105,7 @@
         <input name="avatar" placeholder="Avatar URL (https://...)" maxlength="500" />
         <div class="row">
           <button id="profileSaveBtn" value="default">Save</button>
-          <button type="button" onclick="document.getElementById('profileEditDialog').close()">Cancel</button>
+          <button type="button" id="profileEditCancel">Cancel</button>
         </div>
         <p id="profileEditError" class="error"></p>
       </form>
