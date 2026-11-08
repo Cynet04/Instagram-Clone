@@ -125,7 +125,7 @@ function postHtml(p) {
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
-      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" title="Open post details" onerror="this.onerror=null;this.src='${fallback}'" />
+      <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
@@ -239,7 +239,7 @@ async function loadExplore(q = "") {
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
         ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
       </div>
-      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
+      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
     </div>`;
     bindPostOpen(el("view-explore"));
@@ -341,7 +341,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       </div>
       ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
     </div>
-    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
+    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Post by ${esc(user.username)}" loading="lazy" data-post-id="${p.id}" title="Open post details" tabindex="0" role="button" aria-label="Open post details" onerror="this.style.opacity='0.35'" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
   bindPostOpen(el("view-profile"));
   el("followBtn")?.addEventListener("click", async () => {
     const btn = el("followBtn");
@@ -466,7 +466,7 @@ function closeDialog(dialog) {
 
 function bindPostOpen(root) {
   root.querySelectorAll(".post-image, .grid img[data-post-id], .explore-grid img[data-post-id]").forEach((img) => {
-    img.addEventListener("click", async (e) => {
+    const open = async (e) => {
       if (e.target.closest(".post-actions,.comment-form,.delete-post-btn")) return;
       const postId = img.closest("[data-id]")?.dataset.id || img.dataset.postId;
       if (!postId) return;
@@ -476,7 +476,9 @@ function bindPostOpen(root) {
         bindPostActions(el("postDialogBody"));
         showDialog(el("postDialog"));
       } catch (err) { alert(err.message); }
-    });
+    };
+    img.addEventListener("click", open);
+    img.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
   });
 }
 

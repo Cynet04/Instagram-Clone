@@ -62,8 +62,17 @@
 - [x] Optimistic UI updates (like/save/comment-like/comment-create/comment-delete with rollback)
 - [x] Loading/empty states (shared state cards/spinner + improved feed/explore/saved/notifications/messages states)
 - [x] Route-aware nav active state + image fallback polish (nav highlights active view; avatars/post images use fallback on load error)
-- [x] Share/copy profile links (profile page copies deep-link URL with fallback prompt)
-- [ ] Additional autonomous features (e.g., notification deep links/open post context, profile post counts refresh polish, keyboard/focus refinements)
+- [x] Share/copy profile links (profile page copies deep-link URL with clipboard fallback)
+- [x] Notification deep links/open context (notifications open related post dialog or actor profile)
+- [x] Composer UX polish (post preview/filter preview, inline status/errors, submit/reset states)
+- [x] Keyboard/focus/dialog refinements (shared dialog open/close with focus restore, Escape closes open dialogs, comment focus uses event handler)
+- [x] Image accessibility/fallback labels (descriptive post/avatar alt text, explore/profile/story aria labels, grid image fallback handling)
+- [x] Lightweight client validation (auth username/password constraints, story/profile/avatar URL checks, profile cancel uses dialog helper)
+- [x] Profile follow optimistic polish (follow button/follower count update immediately with rollback)
+- [x] DM/notification timestamp polish (conversation/message timestamps shown; message time styling)
+- [x] Feed image open affordance (hover feedback + post detail title)
+- [x] Keyboard-accessible post open (grid/explore/feed images focusable via keyboard with Enter/Space)
+- [ ] Additional autonomous features (e.g., profile post counts refresh polish, search empty-state polish, post share/copy link)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -85,3 +94,4 @@
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
 - 2026-11-08: DM/notification timestamp polish added (conversation/message timestamps rendered in DM UI; message time styling). Client syntax and health verified.
 - 2026-11-08: Feed image open affordance added (hover feedback and post-detail title on post images). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Keyboard-accessible post open added (feed/profile/explore post images are focusable with Enter/Space support and ARIA labels). Client syntax and health verified. Next: additional autonomous features.
