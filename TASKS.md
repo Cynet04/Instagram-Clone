@@ -108,6 +108,7 @@
 - [x] Story viewer/add-story accessibility polish (`Your story` button has aria label; opening story viewer focuses navigation control)
 - [x] Error recovery polish (shared error states include contextual Try again actions)
 - [x] Client robustness fix (added missing `timeAgo`/`avatar` helpers; fixed stray story keydown listener typo)
+- [x] Account settings MVP (Settings view + theme/password/logout controls; `POST /api/me/password` with bcrypt verification)
 - [ ] Additional autonomous features (e.g., share refinements, small UX refinements, perf polish)
 
 ## Progress Log

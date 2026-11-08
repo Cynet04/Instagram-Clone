@@ -1,7 +1,7 @@
 const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false }, dm: { userId: null }, stories: [], storyIndex: 0 };
 
 const el = (id) => document.getElementById(id);
-const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search"];
+const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search", "settings"];
 let feedObserver;
 
 async function api(path, opts = {}) {
@@ -424,6 +424,61 @@ async function openDmWith(userId) {
   setView("messages");
 }
 
+async 
+async function renderSettings() {
+  const root = el("view-settings");
+  if (!root) return;
+  if (!state.me) {
+    root.innerHTML = `<div class="card" style="padding:16px"><h3 style="margin-top:0">Settings</h3><p class="muted">Log in to manage your account.</p><button id="settingsLoginBtn" class="mini-btn" type="button">Log in</button></div>`;
+    root.querySelector("#settingsLoginBtn")?.addEventListener("click", openAuth);
+    return;
+  }
+  root.innerHTML = `
+    <div class="card" style="padding:16px;display:grid;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h3 style="margin:0">Settings</h3>
+        <button type="button" class="mini-btn secondary" data-profile="${esc(state.me.username)}">View profile</button>
+      </div>
+      <section>
+        <h4 style="margin:0 0 8px">Appearance</h4>
+        <button id="settingsThemeBtn" type="button" class="mini-btn secondary" aria-pressed="${document.body.classList.contains("dark") ? "true" : "false"}">${document.body.classList.contains("dark") ? "Switch to light mode" : "Switch to dark mode"}</button>
+      </section>
+      <section>
+        <h4 style="margin:0 0 8px">Change password</h4>
+        <form id="passwordForm" style="display:grid;gap:8px;max-width:360px">
+          <input name="currentPassword" type="password" placeholder="Current password" required minlength="6" maxlength="128" aria-label="Current password" autocomplete="current-password" />
+          <input name="newPassword" type="password" placeholder="New password" required minlength="6" maxlength="128" aria-label="New password" autocomplete="new-password" />
+          <button type="submit" id="passwordSubmit">Update password</button>
+          <div id="passwordStatus" class="form-status" aria-live="polite"></div>
+        </form>
+      </section>
+      <section>
+        <h4 style="margin:0 0 8px">Account</h4>
+        <button id="settingsLogoutBtn" type="button" class="mini-btn secondary">Log out</button>
+      </section>
+    </div>`;
+  bindProfileLinks(root);
+  root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
+  root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
+  root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const currentPassword = String(fd.get("currentPassword") || "");
+    const newPassword = String(fd.get("newPassword") || "");
+    const status = el("passwordStatus"); const submit = el("passwordSubmit");
+    status.textContent = ""; status.classList.remove("error");
+    if (newPassword.length < 6) { status.textContent = "New password must be at least 6 characters."; status.classList.add("error"); return; }
+    if (submit) { submit.disabled = true; submit.textContent = "Updating..."; }
+    try {
+      await api("/api/me/password", { method: "POST", body: JSON.stringify({ currentPassword, newPassword }) });
+      form.reset();
+      status.textContent = "Password updated."; status.classList.remove("error");
+      toast("Password updated.");
+    } catch (err) { status.textContent = err.message; status.classList.add("error"); toast(err.message, "error"); }
+    finally { if (submit) { submit.disabled = false; submit.textContent = "Update password"; } }
+  });
+}
 async function renderMessages() {
   if (!state.me) { el("view-messages").innerHTML = emptyState("Log in to use messages", "Direct messages will appear here."); return; }
   el("view-messages").innerHTML = loadingState("Loading messages...");

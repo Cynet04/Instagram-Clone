@@ -350,6 +350,21 @@ app.post("/api/me/profile", (req, res) => {
   res.json({ user: safeUser(me) });
 });
 
+app.post("/api/me/password", async (req, res) => {
+  const db = loadDb();
+  const meUser = currentUser(req, db);
+  if (!meUser) return res.status(401).json({ error: "Login required." });
+  const me = db.users.find((u) => u.id === meUser.id);
+  if (!me) return res.status(404).json({ error: "User not found." });
+  const currentPassword = String(req.body.currentPassword || "");
+  const newPassword = String(req.body.newPassword || "");
+  if (newPassword.length < 6) return res.status(400).json({ error: "New password must be at least 6 characters." });
+  if (!(await bcrypt.compare(currentPassword, me.password || ""))) return res.status(400).json({ error: "Current password is incorrect." });
+  me.password = await bcrypt.hash(newPassword, 10);
+  saveDb(db);
+  res.json({ ok: true });
+});
+
 app.get("/api/messages/conversations", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
