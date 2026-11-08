@@ -217,7 +217,7 @@ async function loadExplore(q = "") {
         <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
         ${query ? `<button id="clearExplore" class="mini-btn secondary" type="button" aria-label="Clear explore search">Clear</button>` : ""}
       </div>
-      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35'" />`).join("") || ""}</div>
+      <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="Explore post by ${esc(p.user?.username || "user")}" loading="lazy" decoding="async" data-post-id="${p.id}" title="Open post by ${esc(p.user?.username || "")}" tabindex="0" role="button" aria-label="Open post by ${esc(p.user?.username || "user")}" onerror="this.style.opacity='0.35';this.alt='Image unavailable'" />`).join("") || ""}</div>
       ${posts.length ? "" : emptyState("No posts found", query ? "Try a different search." : "Posts will appear here.")}
     </div>`;
     bindPostOpen(el("view-explore"));

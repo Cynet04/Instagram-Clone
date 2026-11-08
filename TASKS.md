@@ -747,3 +747,11 @@
 - [x] Feed: "End of feed" marker appears once (done)
 - [x] Settings: reset confirms destructive action (done)
 - [x] Phase bump to 81
+
+## Phase 82: New Autonomous Features (2026-11-08)
+- [x] Phase 82 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Search results: close on outside click (verify)
+- [x] Profile: follow/message buttons have consistent spacing
+- [x] Post: image load error alt fallback exists
+- [x] Phase bump to 82
