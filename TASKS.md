@@ -460,3 +460,10 @@
 - [ ] Search: show @me hint in placeholder (already supports) ï¿½ add aria description
 - [x] Profile: list view shows post date
 - [x] Phase bump to 45
+
+## Phase 46: New Autonomous Features (2026-11-08)
+- [ ] Post: comment delete button shows for owner (already) — confirm label
+- [ ] Explore: show post count in section
+- [ ] Settings: show shortcuts count
+- [ ] Feed: "New activity" hint clears on refresh (done)
+- [ ] Phase bump to 46
