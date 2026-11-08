@@ -390,8 +390,9 @@
 - [x] Phase bump to 36
 
 ## Phase 37: New Autonomous Features (2026-11-08)
-- [ ] Notifications: "Mark read" updates button state immediately
-- [ ] Feed: preserve sort after refresh (already persisted)
-- [ ] Profile: show post count in tab labels where helpful
-- [ ] Search results: show "No matches" more clearly
-- [ ] Phase bump to 37
+- [x] Phase 37 autonomous batch complete (2026-11-08)
+- [x] Notifications: "Mark read" updates button state immediately
+- [x] Feed: preserve sort after refresh (already persisted)
+- [x] Profile: show post count in tab labels where helpful
+- [x] Search results: show "No matches" more clearly
+- [x] Phase bump to 37

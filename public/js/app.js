@@ -258,13 +258,13 @@ async function loadNotifications() {
         return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}" tabindex="0" role="button" aria-label="${esc(actor)} ${esc(msg.replace(/<[^>]+>/g, ""))}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}<button type="button" class="notif-hide-btn mini-btn secondary" data-hide-notif="${esc(n.id||"")}" aria-label="Hide notification" style="padding:2px 6px;font-size:11px">Hide</button></div>`;
       }).join("") : `<div style="padding:16px">${emptyState("All caught up", "No visible notifications with current filters.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => {
-      updateBadge(0); el("view-notifications").querySelectorAll(".notif.unread").forEach((n)=>n.classList.remove("unread"));
+      updateBadge(0); const btn=el("markReadBtn"); if(btn){ btn.disabled=true; btn.style.opacity=".6"; btn.style.color="var(--muted)"; } el("view-notifications").querySelectorAll(".notif.unread").forEach((n)=>n.classList.remove("unread"));
       try {
         const res = await api("/api/notifications/read", { method: "POST", body: "{}" });
         updateBadge(res.unread ?? 0);
         toast("Notifications marked as read.");
         loadNotifications();
-      } catch (e) { toast(e.message, "error"); }
+      } catch (e) { toast(e.message, "error"); loadNotifications(); }
     });
     el("view-notifications").querySelectorAll("button[data-follow-user]").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
