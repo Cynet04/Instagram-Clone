@@ -6,31 +6,44 @@
   --muted: #8e8e8e;
   --blue: #0095f6;
   --red: #ed4956;
+  --input: #efefef;
+  --nav: #fff;
+}
+body.dark {
+  --bg: #000;
+  --card: #121212;
+  --line: #363636;
+  --text: #f5f5f5;
+  --muted: #a8a8a8;
+  --blue: #0095f6;
+  --red: #ed4956;
+  --input: #262626;
+  --nav: #000;
 }
 * { box-sizing: border-box; }
-body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); transition: background .2s ease, color .2s ease; }
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 .hidden { display: none !important; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 16px; }
 
-.nav { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--line); }
+.nav { position: sticky; top: 0; z-index: 10; background: var(--nav); border-bottom: 1px solid var(--line); }
 .nav-inner { max-width: 975px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 16px; }
 .brand { border: 0; background: none; font-size: 28px; font-family: "Segoe Script", "Brush Script MT", cursive; padding: 0; }
-.search { flex: 0 1 268px; margin-left: auto; background: #efefef; border: 0; border-radius: 8px; padding: 10px 14px; }
+.search { flex: 0 1 268px; margin-left: auto; background: var(--input); color: var(--text); border: 0; border-radius: 8px; padding: 10px 14px; }
 .nav-actions { display: flex; gap: 8px; align-items: center; }
-.nav-actions button { border: 0; background: none; font-size: 20px; padding: 6px; }
-.auth-btn { font-size: 14px !important; color: var(--blue); font-weight: 600; }
+.nav-actions button { border: 0; background: none; font-size: 14px; padding: 6px; color: var(--text); font-weight: 600; }
+.auth-btn { font-size: 14px !important; color: var(--blue) !important; font-weight: 600; }
 
 .layout { max-width: 975px; margin: 24px auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 630px) 320px; gap: 28px; align-items: start; }
 .stories { display: flex; gap: 14px; padding: 16px; overflow-x: auto; }
 .story { text-align: center; min-width: 66px; }
-.story img, .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #d6249f; padding: 2px; background: #fff; }
+.story img, .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #d6249f; padding: 2px; background: var(--card); }
 .story span { display: block; font-size: 12px; margin-top: 4px; max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .composer { padding: 14px; }
 .composer form { display: grid; gap: 8px; }
-.composer input, .composer textarea, #authDialog input { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+.composer input, .composer textarea, #authDialog input { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--card); color: var(--text); }
 .composer button, #authSubmit { background: var(--blue); color: #fff; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
 
 .post-head, .post-actions, .post-likes, .post-caption, .comments, .comment-form { padding: 0 14px; }
@@ -38,16 +51,16 @@ button { cursor: pointer; }
 .post-head .avatar { width: 34px; height: 34px; border-width: 1px; }
 .post-user { font-weight: 600; font-size: 14px; }
 .post-time { color: var(--muted); font-size: 12px; margin-left: auto; }
-.post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #eee; }
+.post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; }
 .post-actions { display: flex; gap: 10px; padding-top: 10px; }
-.post-actions button { border: 0; background: none; font-size: 22px; padding: 0; }
+.post-actions button { border: 0; background: none; font-size: 14px; padding: 0; color: var(--text); font-weight: 600; }
 .post-actions button.liked { color: var(--red); }
 .post-likes { font-weight: 600; font-size: 14px; padding-top: 6px; }
 .post-caption { padding-top: 6px; font-size: 14px; line-height: 1.4; }
-.comments { padding: 8px 14px; color: #444; font-size: 14px; }
+.comments { padding: 8px 14px; color: var(--text); font-size: 14px; }
 .comment { margin: 4px 0; }
 .comment-form { display: flex; border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 14px; gap: 8px; }
-.comment-form input { flex: 1; border: 0; outline: 0; }
+.comment-form input { flex: 1; border: 0; outline: 0; background: transparent; color: var(--text); }
 .comment-form button { border: 0; background: none; color: var(--blue); font-weight: 600; }
 
 .side-col { position: sticky; top: 84px; }

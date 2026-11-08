@@ -74,8 +74,8 @@ function postHtml(p) {
       </div>
       <img class="post-image" src="${esc(p.image)}" alt="post" loading="lazy" />
       <div class="post-actions">
-        <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">♥</button>
-        <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">💬</button>
+        <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
+        <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">Comment</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
       <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> ${esc(p.caption || "")}</div>
@@ -216,6 +216,19 @@ el("postForm").addEventListener("submit", async (e) => {
     await loadFeed();
   } catch (err) { alert(err.message); }
 });
+
+function applyTheme() {
+  const dark = localStorage.getItem("ig_theme") === "dark";
+  document.body.classList.toggle("dark", dark);
+  const btn = el("themeBtn");
+  if (btn) btn.textContent = dark ? "Light" : "Dark";
+}
+el("themeBtn")?.addEventListener("click", () => {
+  const dark = document.body.classList.toggle("dark");
+  localStorage.setItem("ig_theme", dark ? "dark" : "light");
+  el("themeBtn").textContent = dark ? "Light" : "Dark";
+});
+applyTheme();
 
 await loadMe();
 await loadStories();

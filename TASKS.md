@@ -38,7 +38,7 @@
 - [x] Explore grid
 
 ## Phase 9+: Continuous Improvements
-- [ ] Dark mode toggle
+- [x] Dark mode toggle (persisted in localStorage)
 - [ ] Bookmarks/saved posts
 - [ ] Notifications
 - [ ] Infinite scroll / pagination
@@ -49,4 +49,5 @@
 - [ ] Additional autonomous features
 
 ## Progress Log
-- 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK). Next: Phase 9+ improvements.
+- 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
+- 2026-11-08: Phase 9 started — dark mode toggle added; nav encoding normalized; server health verified. Next: bookmarks/saved posts.
