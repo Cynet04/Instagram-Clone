@@ -304,11 +304,16 @@ app.get("/api/notifications", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
   if (!me) return res.status(401).json({ error: "Login required." });
-  const notifications = (db.notifications || []).filter((n) => n.userId === me.id).slice(0, 50).map((n) => ({
-    ...n,
-    actor: safeUser(db.users.find((u) => u.id === n.actorId)),
-    post: db.posts.find((p) => p.id === n.postId) ? { id: n.postId } : null
-  }));
+  const notifications = (db.notifications || []).filter((n) => n.userId === me.id).slice(0, 50).map((n) => {
+    const actor = db.users.find((u) => u.id === n.actorId);
+    const actorSafe = safeUser(actor);
+    if (actorSafe) actorSafe.isFollowing = me ? (me.following || []).includes(actor.id) : false;
+    return {
+      ...n,
+      actor: actorSafe,
+      post: db.posts.find((p) => p.id === n.postId) ? { id: n.postId } : null
+    };
+  });
   res.json({ notifications, unread: notifications.filter((n) => !n.read).length });
 });
 

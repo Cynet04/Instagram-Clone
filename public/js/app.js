@@ -285,11 +285,31 @@ async function loadNotifications() {
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";
         const postId = n.post?.id || "";
         const profile = n.actor?.username || "";
-        return `<button type="button" class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span></button>`;
+        const followBtn = n.type === "follow" && state.me && profile && state.me.username !== profile
+          ? `<button type="button" class="mini-btn ${n.actor?.isFollowing ? "secondary" : ""}" data-follow-user="${esc(profile)}" style="margin-left:auto;padding:4px 8px;font-size:12px">${n.actor?.isFollowing ? "Following" : "Follow"}</button>`
+          : "";
+        return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}</div>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { const res = await api("/api/notifications/read", { method: "POST", body: "{}" }); updateBadge(res.unread ?? 0); loadNotifications(); });
+    el("view-notifications").querySelectorAll("button[data-follow-user]").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        if (!state.me) return openAuth();
+        const prev = btn.textContent;
+        btn.disabled = true;
+        try {
+          const res = await api(`/api/users/${encodeURIComponent(btn.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
+          btn.textContent = res.following ? "Following" : "Follow";
+          btn.classList.toggle("secondary", !!res.following);
+          toast(res.following ? "Following user." : "Unfollowed.");
+        } catch (err) { btn.textContent = prev; toast(err.message, "error"); }
+        finally { btn.disabled = false; }
+      });
+    });
     el("view-notifications").querySelectorAll("[data-notif-post],[data-notif-profile],[data-notif-id]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
+      if (btn.tagName === "BUTTON" && btn.dataset.followUser) return;
+      btn.addEventListener("click", async (e) => {
+        if (e.target.closest("button[data-follow-user]")) return;
         const notifId = btn.dataset.notifId;
         if (btn.classList.contains("unread") && notifId) {
           btn.classList.remove("unread");
@@ -307,7 +327,7 @@ async function loadNotifications() {
           } else if (profile) {
             loadProfile(profile);
           }
-        } catch (e) { toast(e.message, "error"); }
+        } catch (e2) { toast(e2.message, "error"); }
       });
     });
   } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
