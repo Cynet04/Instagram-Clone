@@ -105,6 +105,7 @@
 - [x] Post dialog focus polish (opening post detail moves focus into dialog content)
 - [x] Story viewer keyboard polish (ArrowLeft/ArrowRight navigate stories while story dialog is open; previous disabled at start)
 - [x] Profile/share refinements (profile share button state guarded with element ref; copy feedback preserved)
+- [x] Story viewer/add-story accessibility polish (`Your story` button has aria label; opening story viewer focuses navigation control)
 - [ ] Additional autonomous features (e.g., small route refinements, accessibility/perf polish, DM/share refinements)
 
 ## Progress Log
@@ -161,6 +162,7 @@
 - 2026-11-08: Post dialog focus polish added (opening post detail moves focus into dialog content). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Story viewer keyboard polish added (ArrowLeft/ArrowRight navigation while story dialog open; previous disabled at start). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Profile/share refinements added (profile share button text updates use guarded element ref). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Story viewer/add-story accessibility polish added (`Your story` aria label; opening story viewer focuses navigation control). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Composer accessibility polish added (post file/URL inputs have explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Dialog/form accessibility polish added (story/auth/profile dialog inputs include explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification follow action labels added (follow/unfollow controls in notifications expose and sync explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
