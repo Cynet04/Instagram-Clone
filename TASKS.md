@@ -724,3 +724,10 @@
 - [ ] Search: # tag result opens explore (done)
 - [x] Profile: "Posts" stat opens posts tab (done)
 - [x] Phase bump to 78
+
+## Phase 79: New Autonomous Features (2026-11-08)
+- [x] Baseline green
+- [x] Server: /api/health includes pp and 	ime; logout response simplified
+- [x] Client: settings health status shows app name from API
+- [x] Phase bump to 79
+- [x] Phase 79 autonomous batch complete (2026-11-08)
