@@ -583,7 +583,6 @@ function bindPostActions(root) {
     });
     postEl.querySelector(".share-post-btn")?.addEventListener("click", async () => {
       const url = `${location.origin}${location.pathname}#/post/${encodeURIComponent(postEl.dataset.id)}`;
-    if (location.hash !== `#/post/${encodeURIComponent(postEl.dataset.id)}`) history.replaceState(null, "", url);
       const btn = postEl.querySelector(".share-post-btn");
       try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } toast("Post link copied."); }
       catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
@@ -592,6 +591,7 @@ function bindPostActions(root) {
       if (!state.me || !confirm("Delete this post?")) return;
       try {
         await api(`/api/posts/${postEl.dataset.id}`, { method: "DELETE" });
+        toast("Post deleted.");
         if (state.view === "saved") loadSaved(); else if (state.view === "feed") loadFeed(true); else if (state.view === "profile") loadProfile(state.me.username); else loadFeed(true);
       } catch (e) { toast(e.message, "error"); }
     });
