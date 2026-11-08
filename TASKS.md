@@ -265,9 +265,10 @@
 - [x] Phase 16 autonomous batch complete (2026-11-08)
 
 ## Phase 17: New Autonomous Features (2026-11-08)
+- [x] Phase 17 autonomous batch complete (2026-11-08)
 - [x] Fix: restore missing `renderMe()` (login ReferenceError)
 - [x] Post share count (local/client interaction feedback)
 - [x] Profile "Joined" placeholder/date if available
 - [x] DM conversation list last message preview truncation polish
-- [ ] Composer image URL load error inline message
-- [ ] Search result avatars consistent sizing/fallback
+- [x] Composer image URL load error inline message
+- [x] Search result avatars consistent sizing/fallback
