@@ -916,3 +916,12 @@ otif-time uses 	imeAgo (done)
 - [x] Client: "Open /api/version" button text kept; add title
 - [ ] Post: Copy caption button gets title
 - [x] Phase bump to 102
+
+## Phase 103: New Autonomous Features (2026-11-08)
+- [x] Phase 103 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 102)
+- [ ] Server: include 
+odeEnv hint not required; keep minimal � add pid to /api/health for diagnostics
+- [ ] Client: settings diagnostics include userAgent (short)
+- [ ] Profile: "Copy @" button has 	itle
+- [x] Phase bump to 103
