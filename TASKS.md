@@ -348,3 +348,10 @@
 - [ ] Profile: posts stat uses same label style
 - [ ] Messages: show conversation empty state when no contacts
 - [ ] Server: include phase in /api/health as 31
+
+## Phase 32: New Autonomous Features (2026-11-08)
+- [ ] Post: "Copy link" button label shows "Copied" briefly via toast only (already) — add aria-live for actions
+- [ ] Explore: tag search hint text
+- [ ] Profile: show "Edit profile" only for self (already) — add avatar alt text quality
+- [ ] Messages: Enter-to-send note in placeholder not needed; keep accessible
+- [ ] Health: UI shows phase from /api/health when available
