@@ -2,6 +2,7 @@ node_modules/
 data/*.db
 data/*.sqlite
 data/*.sqlite3
+data/*.json
 .env
 .DS_Store
 Thumbs.db

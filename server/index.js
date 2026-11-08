@@ -71,6 +71,12 @@ function addNotification(db, { userId, actorId, type, postId = null, text = "" }
   db.notifications = db.notifications.slice(0, 200);
 }
 
+function safeUser(u) {
+  if (!u) return null;
+  const { password, ...rest } = u;
+  return rest;
+}
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadsDir),
   filename: (_req, file, cb) => {
