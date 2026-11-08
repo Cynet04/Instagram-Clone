@@ -548,3 +548,11 @@
 - [x] Profile: show follower count pluralization
 - [x] Settings: add "Reload page" action
 - [x] Phase bump to 56
+
+## Phase 57: New Autonomous Features (2026-11-08)
+- [x] Phase 57 autonomous batch complete (2026-11-08)
+- [x] Feed: post count pluralization in header
+- [x] Profile: follower/following pluralization in stats
+- [x] Notifications: clear button disabled when none
+- [x] Post detail dialog: escape key closes (native dialog + handler exists)
+- [x] Phase bump to 57
