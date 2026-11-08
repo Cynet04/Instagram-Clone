@@ -74,7 +74,7 @@ function postHtml(p) {
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
-        <button class="copy-caption-btn" type="button" aria-label="Copy post caption">Copy caption</button>
+        <button class="copy-caption-btn" type="button" aria-label="Copy post caption" ${p.caption?"":"disabled"}>Copy caption</button>
         <button class="copy-image-btn" type="button" aria-label="Copy image link">Copy image</button>
         <button class="open-image-btn" type="button" aria-label="Open image in new tab">Open image</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>

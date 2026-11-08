@@ -604,3 +604,11 @@
 - [x] Post: "Copy image URL" toast consistent
 - [ ] Profile: grid/list toggle has ria-pressed state
 - [x] Phase bump to 63
+
+## Phase 64: New Autonomous Features (2026-11-08)
+- [x] Phase 64 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Messages: DM conversation header shows "Muted locally" status clearly (polish)
+- [x] Feed: retry button on error states works for explore/notifications where applicable
+- [ ] Post: Copy caption button disabled when caption empty
+- [x] Phase bump to 64
