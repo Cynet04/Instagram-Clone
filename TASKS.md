@@ -111,7 +111,8 @@
 - [x] Account settings MVP (Settings view + theme/password/logout controls; `POST /api/me/password` with bcrypt verification)
 - [x] Post report MVP (non-owner Report action; `POST /api/posts/:id/report` with dedupe in `reports`)
 - [x] PWA smoke + basic install shell (manifest, icon, service worker for static assets only; smoke tests)
-- [ ] Additional autonomous features (e.g., share refinements, small UX refinements, perf polish)
+- [x] Post share image-link fallback refinement (share includes image URL/text where appropriate; clipboard fallback remains)
+- [ ] Additional autonomous features (e.g., small UX refinements, perf polish)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
