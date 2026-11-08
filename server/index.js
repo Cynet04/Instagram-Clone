@@ -172,13 +172,15 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
   if (!me) return res.status(401).json({ error: "Login required." });
-  const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
-  if (!image) return res.status(400).json({ error: "Image required." });
+  const imageUrl = String(req.body.imageUrl || req.body.image || "").trim();
+  const image = req.file ? `/uploads/${req.file.filename}` : imageUrl;
+  if (!image) return res.status(400).json({ error: "Image file or image URL required." });
+  if (!req.file && !(/^https?:\/\//i.test(image) || image.startsWith("/uploads/"))) return res.status(400).json({ error: "Image URL must start with http(s) or /uploads/." });
   const filter = String(req.body.filter || "none").slice(0, 40);
   const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), filter, createdAt: Date.now(), likes: [], comments: [] };
   db.posts.unshift(post);
   saveDb(db);
-  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false } });
+  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false, comments: [] } });
 });
 
 app.delete("/api/posts/:id", (req, res) => {

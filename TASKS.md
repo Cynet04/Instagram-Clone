@@ -53,7 +53,9 @@
 - [x] Profile saved tab (owner profile tabs: Posts/Saved)
 - [x] Story creation (URL-based add-story API + feed story composer)
 - [x] Suggested users follow actions (sidebar follow/view with follow state)
-- [ ] Image URL post fallback polish / upload validation
+- [x] Image URL post fallback polish / upload validation
+- [x] Clickable profile links on posts/comments
+- [ ] Explore from hashtag/search integration polish
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -71,4 +73,5 @@
 - 2026-11-08: Comment likes added (comment like endpoint, counters in feed/saved/search payloads, UI buttons, and comment-like notifications). Server restarted and health verified.
 - 2026-11-08: Profile saved tab added for owners (Posts/Saved tabs using saved API). Client syntax and server health verified.
 - 2026-11-08: Story creation added (authenticated POST `/api/stories`, feed "Your story" composer, story refresh). Server restarted and health verified.
-- 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified. Next: image URL post fallback polish / upload validation.
+- 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
+- 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified. Next: explore/search integration polish.

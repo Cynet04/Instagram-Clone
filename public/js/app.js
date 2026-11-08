@@ -95,8 +95,8 @@ function postHtml(p) {
   return `
     <article class="card post" data-id="${p.id}">
       <div class="post-head">
-        <img class="avatar" src="${avatar(p.user)}" alt="" />
-        <span class="post-user">${esc(p.user?.username || "user")}</span>
+        <img class="avatar profile-link" src="${avatar(p.user)}" alt="" data-profile="${esc(p.user?.username || "")}" />
+        <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
         ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
@@ -107,10 +107,10 @@ function postHtml(p) {
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
-      <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
+      <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
       <div class="comments">${(p.comments || []).map((c) => `
         <div class="comment" data-comment-id="${c.id}">
-          <span><strong>${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
+          <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="Like comment">Like ${c.likesCount || 0}</button>
         </div>`).join("")}</div>
       <form class="comment-form">
@@ -342,8 +342,21 @@ function bindHashtags(root) {
   });
 }
 
+function bindProfileLinks(root) {
+  root.querySelectorAll("[data-profile]").forEach((n) => {
+    n.addEventListener("click", (e) => {
+      const u = n.dataset.profile;
+      if (!u) return;
+      e.preventDefault();
+      e.stopPropagation();
+      loadProfile(u);
+    });
+  });
+}
+
 function bindPostActions(root) {
   bindHashtags(root);
+  bindProfileLinks(root);
   root.querySelectorAll(".post").forEach((postEl) => {
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
