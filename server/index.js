@@ -22,9 +22,9 @@ function seed() {
   const demoPass = bcrypt.hashSync("password123", 10);
   return {
     users: [
-      { id: "u_demo", username: "demo", name: "Demo User", password: demoPass, bio: "Building an Instagram clone.", avatar: "" },
-      { id: "u_alex", username: "alex", name: "Alex Rivera", password: demoPass, bio: "Coffee, code, sunsets.", avatar: "" },
-      { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "" }
+      { id: "u_demo", username: "demo", name: "Demo User", password: demoPass, bio: "Building an Instagram clone.", avatar: "", saved: [] },
+      { id: "u_alex", username: "alex", name: "Alex Rivera", password: demoPass, bio: "Coffee, code, sunsets.", avatar: "", saved: [] },
+      { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "", saved: [] }
     ],
     posts: [
       { id: nanoid(10), userId: "u_alex", image: "https://picsum.photos/seed/ig1/1080/1080", caption: "Morning light in the city.", createdAt: now - 3600_000, likes: ["u_demo"], comments: [{ id: nanoid(8), userId: "u_demo", text: "Great shot!", createdAt: now - 3000_000 }] },
@@ -46,7 +46,13 @@ function loadDb() {
     fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
     return db;
   }
-  return JSON.parse(fs.readFileSync(dbPath, "utf8"));
+  const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
+  db.users = (db.users || []).map((u) => ({ saved: [], ...u, saved: Array.isArray(u.saved) ? u.saved : [] }));
+  db.posts = db.posts || [];
+  db.stories = db.stories || [];
+  db.messages = db.messages || [];
+  db.notifications = db.notifications || [];
+  return db;
 }
 
 function saveDb(db) {
@@ -121,6 +127,7 @@ app.post("/api/auth/logout", (req, res) => {
 app.get("/api/feed", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
+  const saved = new Set(me?.saved || []);
   const posts = [...db.posts].sort((a, b) => b.createdAt - a.createdAt).map((p) => {
     const user = db.users.find((u) => u.id === p.userId);
     return {
@@ -128,6 +135,7 @@ app.get("/api/feed", (req, res) => {
       user: safeUser(user),
       likesCount: p.likes.length,
       likedByMe: me ? p.likes.includes(me.id) : false,
+      savedByMe: me ? saved.has(p.id) : false,
       comments: p.comments.map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
     };
   });
@@ -156,6 +164,37 @@ app.post("/api/posts/:id/like", (req, res) => {
   if (i >= 0) post.likes.splice(i, 1); else post.likes.push(me.id);
   saveDb(db);
   res.json({ liked: post.likes.includes(me.id), likesCount: post.likes.length });
+});
+
+app.post("/api/posts/:id/save", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const user = db.users.find((u) => u.id === me.id);
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post || !user) return res.status(404).json({ error: "Not found." });
+  user.saved = Array.isArray(user.saved) ? user.saved : [];
+  const i = user.saved.indexOf(post.id);
+  if (i >= 0) user.saved.splice(i, 1); else user.saved.push(post.id);
+  saveDb(db);
+  res.json({ saved: user.saved.includes(post.id) });
+});
+
+app.get("/api/saved", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const user = db.users.find((u) => u.id === me.id);
+  const ids = new Set(user?.saved || []);
+  const posts = db.posts.filter((p) => ids.has(p.id)).sort((a, b) => b.createdAt - a.createdAt).map((p) => ({
+    ...p,
+    user: safeUser(db.users.find((u) => u.id === p.userId)),
+    likesCount: p.likes.length,
+    likedByMe: p.likes.includes(me.id),
+    savedByMe: true,
+    comments: p.comments.map((c) => ({ ...c, user: safeUser(db.users.find((u) => u.id === c.userId)) }))
+  }));
+  res.json({ posts });
 });
 
 app.post("/api/posts/:id/comments", (req, res) => {

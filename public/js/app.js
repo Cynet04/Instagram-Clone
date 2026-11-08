@@ -1,7 +1,7 @@
 const state = { me: null, view: "feed", authMode: "login" };
 
 const el = (id) => document.getElementById(id);
-const views = ["feed", "explore", "messages", "profile", "search"];
+const views = ["feed", "explore", "saved", "messages", "profile", "search"];
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { "Content-Type": "application/json" }, credentials: "same-origin", ...opts });
@@ -34,6 +34,7 @@ function setView(view) {
   el("composer").classList.toggle("hidden", view !== "feed" || !state.me);
   if (view === "feed") loadFeed();
   if (view === "explore") loadExplore();
+  if (view === "saved") loadSaved();
   if (view === "messages") renderMessages();
   if (view === "profile") loadProfile(state.me?.username);
 }
@@ -76,6 +77,7 @@ function postHtml(p) {
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">Comment</button>
+        <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
       <div class="post-caption"><strong>${esc(p.user?.username || "")}</strong> ${esc(p.caption || "")}</div>
@@ -105,6 +107,15 @@ async function loadFeed() {
 async function loadExplore() {
   const { posts } = await api("/api/feed");
   el("view-explore").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Explore</h3><div class="explore-grid">${posts.map((p) => `<img src="${esc(p.image)}" alt="" loading="lazy" />`).join("")}</div></div>`;
+}
+
+async function loadSaved() {
+  if (!state.me) { el("view-saved").innerHTML = `<div class="card" style="padding:16px">Log in to view saved posts.</div>`; return; }
+  try {
+    const { posts } = await api("/api/saved");
+    el("view-saved").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0 0 10px">Saved</h3></div>` + (posts.map(postHtml).join("") || `<div class="card" style="padding:16px">No saved posts yet.</div>`);
+    bindPostActions(el("view-saved"));
+  } catch (e) { el("view-saved").innerHTML = `<div class="card" style="padding:16px">${esc(e.message)}</div>`; }
 }
 
 async function loadProfile(username) {
@@ -154,6 +165,16 @@ function bindPostActions(root) {
         postEl.querySelector(".post-likes").textContent = `${res.likesCount} likes`;
       } catch (e) { alert(e.message); }
     });
+    postEl.querySelector(".save-btn")?.addEventListener("click", async () => {
+      if (!state.me) return openAuth();
+      try {
+        const res = await api(`/api/posts/${postEl.dataset.id}/save`, { method: "POST", body: "{}" });
+        const btn = postEl.querySelector(".save-btn");
+        btn.classList.toggle("saved", res.saved);
+        btn.textContent = res.saved ? "Saved" : "Save";
+        if (state.view === "saved" && !res.saved) loadSaved();
+      } catch (e) { alert(e.message); }
+    });
     postEl.querySelector(".comment-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!state.me) return openAuth();
@@ -163,7 +184,7 @@ function bindPostActions(root) {
       try {
         await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
         input.value = "";
-        loadFeed();
+        if (state.view === "saved") loadSaved(); else loadFeed();
       } catch (err) { alert(err.message); }
     });
   });

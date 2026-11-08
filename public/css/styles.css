@@ -54,7 +54,7 @@ button { cursor: pointer; }
 .post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; }
 .post-actions { display: flex; gap: 10px; padding-top: 10px; }
 .post-actions button { border: 0; background: none; font-size: 14px; padding: 0; color: var(--text); font-weight: 600; }
-.post-actions button.liked { color: var(--red); }
+.post-actions button.saved { color: var(--text); text-decoration: underline; }
 .post-likes { font-weight: 600; font-size: 14px; padding-top: 6px; }
 .post-caption { padding-top: 6px; font-size: 14px; line-height: 1.4; }
 .comments { padding: 8px 14px; color: var(--text); font-size: 14px; }

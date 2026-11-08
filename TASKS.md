@@ -39,7 +39,7 @@
 
 ## Phase 9+: Continuous Improvements
 - [x] Dark mode toggle (persisted in localStorage)
-- [ ] Bookmarks/saved posts
+- [x] Bookmarks/saved posts (API + saved view)
 - [ ] Notifications
 - [ ] Infinite scroll / pagination
 - [ ] CSS image filters
@@ -50,4 +50,5 @@
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
-- 2026-11-08: Phase 9 started — dark mode toggle added; nav encoding normalized; server health verified. Next: bookmarks/saved posts.
+- 2026-11-08: Phase 9 started — dark mode toggle added; nav encoding normalized; server health verified.
+- 2026-11-08: Bookmarks/saved posts added (per-user save API, saved view, feed save state). Next: notifications.
