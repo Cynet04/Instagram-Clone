@@ -47,6 +47,7 @@ button { cursor: pointer; }
 .dm-body { flex: 1; padding: 14px; overflow: auto; display: flex; flex-direction: column; gap: 8px; }
 .dm-msg { max-width: 75%; padding: 8px 12px; border-radius: 18px; background: var(--input); }
 .dm-msg.me { align-self: flex-end; background: var(--blue); color: #fff; }
+.dm-time { font-size: 11px; opacity: .75; margin-top: 2px; }
 .dm-form { display: flex; gap: 8px; border-top: 1px solid var(--line); padding: 10px; }
 .dm-form input { flex: 1; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--card); color: var(--text); }
 .dm-form button { border: 0; background: var(--blue); color: #fff; border-radius: 999px; padding: 0 14px; font-weight: 600; }
