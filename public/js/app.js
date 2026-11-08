@@ -213,7 +213,7 @@ async function loadNotifications() {
   try {
     const { notifications, unread } = await api("/api/notifications");
     updateBadge(unread);
-    el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" type="button" aria-label="Mark all notifications as read" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
+    el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><div style="display:flex;gap:10px"><button id="clearNotifBtn" type="button" aria-label="Clear notifications" style="border:0;background:none;color:var(--muted);font-weight:600">Clear</button><button id="markReadBtn" type="button" aria-label="Mark all notifications as read" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div></div>` +
       (notifications.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
         const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "comment_like" ? "liked your comment" : n.type === "follow" ? "started following you" : "interacted with you";

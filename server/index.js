@@ -398,6 +398,15 @@ app.get("/api/notifications", (req, res) => {
   res.json({ notifications, unread });
 });
 
+app.post("/api/notifications/clear", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  db.notifications = (db.notifications || []).filter((n) => n.userId !== me.id);
+  saveDb(db);
+  res.json({ ok: true, unread: 0 });
+});
+
 app.post("/api/notifications/read", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
