@@ -788,3 +788,11 @@ ull user cleanly (verify) and 401 not used for polling
 - [ ] Client: updateBadge no-op when element missing
 - [ ] Feed: enderFeedPosts tolerates null/empty safely
 - [x] Phase bump to 86
+
+## Phase 87: New Autonomous Features (2026-11-08)
+- [x] Phase 87 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: action buttons have ria-label consistency (verify/correct)
+- [x] Profile: "Share profile" uses consistent URL origin/path
+- [x] DM: typing indicator clears on conversation switch (done via rerender)
+- [x] Phase bump to 87
