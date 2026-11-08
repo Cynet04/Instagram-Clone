@@ -785,6 +785,7 @@ function bindPostOpen(root) {
         showDialog(el("postDialog"));
         el("postDialogBody").querySelector(".comment-focus-btn, .like-btn, button, [tabindex]")?.focus?.();
       } catch (err) { toast(err.message, "error"); }
+      finally { const b=el("dmForm")?.querySelector("button[type=submit]"); if(b){ b.disabled=false; b.textContent="Send"; } }
     };
     img.addEventListener("click", open);
     img.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
