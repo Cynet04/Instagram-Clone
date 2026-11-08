@@ -668,3 +668,11 @@
 - [ ] DM: quick-reply chips have ria-label
 - [x] Settings: "Refresh SW status" label consistent
 - [x] Phase bump to 71
+
+## Phase 72: New Autonomous Features (2026-11-08)
+- [x] Phase 72 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Auth: toggle button announces mode
+- [x] Story dialog: image input placeholder already clear
+- [x] Profile edit: website field validation message clear (already)
+- [x] Phase bump to 72
