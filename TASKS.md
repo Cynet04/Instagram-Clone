@@ -272,3 +272,10 @@
 - [x] DM conversation list last message preview truncation polish
 - [x] Composer image URL load error inline message
 - [x] Search result avatars consistent sizing/fallback
+
+## Phase 18: New Autonomous Features (2026-11-08)
+- [ ] Feed "new posts available" refresh hint after manual actions
+- [ ] Profile post count/click opens posts tab explicitly
+- [ ] Notification item delete (local hide) + persist hidden IDs
+- [ ] Keyboard shortcut:  refresh current view
+- [ ] Settings: show build/version/date info from client constants
