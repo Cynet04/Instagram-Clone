@@ -462,6 +462,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   }
 }
 
+function notifSoundPref(){ try { return localStorage.getItem("ig_notif_sound")==="true"; } catch { return false; } }
+function setNotifSoundPref(v){ localStorage.setItem("ig_notif_sound", String(!!v)); }
 function activityStatusEnabled(){ try { const v=localStorage.getItem("ig_activity_status"); return v===null?true:v==="true"; } catch { return true; } }
 function setActivityStatusEnabled(v){ localStorage.setItem("ig_activity_status", String(!!v)); }
 function loadNotifPrefs(){ try { return { like:true, comment:true, follow:true, comment_like:true, ...(JSON.parse(localStorage.getItem("ig_notif_prefs")||"{}")) }; } catch { return { like:true, comment:true, follow:true, comment_like:true }; } }
@@ -544,6 +546,7 @@ async function renderSettings() {
       <section>
         <h4 style="margin:0 0 8px">Privacy & preferences (local)</h4>
         <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px"><input type="checkbox" id="activityStatusPref" ${activityStatusEnabled()?"checked":""}/> Show activity status (local indicator)</label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px"><input type="checkbox" id="notifSoundPref" ${notifSoundPref()?"checked":""}/> Notification feedback (visual pulse, local)</label>
         <h5 style="margin:8px 0">Notification preferences</h5>
         <div id="notifPrefs" style="display:grid;gap:6px;font-size:14px">
           ${[["like","Likes"],["comment","Comments"],["follow","Follows"],["comment_like","Comment likes"]].map(([k,l])=>`<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-notif-pref="${k}" ${loadNotifPrefs()[k]!==false?"checked":""}/> ${l}</label>`).join("")}
@@ -596,6 +599,7 @@ async function renderSettings() {
   });
   root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); localStorage.removeItem("ig_notif_prefs"); applyTheme(); toast("Local preferences cleared."); });
   root.querySelector("#activityStatusPref")?.addEventListener("change", (e)=>{ setActivityStatusEnabled(e.target.checked); toast(e.target.checked?"Activity status enabled (local).":"Activity status hidden (local)."); renderMessages(); });
+  root.querySelector("#notifSoundPref")?.addEventListener("change", (e)=>{ setNotifSoundPref(e.target.checked); toast(e.target.checked?"Notification feedback enabled.":"Notification feedback disabled."); });
   root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));
   root.querySelector("#showShortcutsBtn")?.addEventListener("click", () => showDialog(el("shortcutsDialog")));
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
