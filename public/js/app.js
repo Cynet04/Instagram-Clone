@@ -623,8 +623,20 @@ function bindPostActions(root) {
     postEl.querySelector(".share-post-btn")?.addEventListener("click", async () => {
       const url = `${location.origin}${location.pathname}#/post/${encodeURIComponent(postEl.dataset.id)}`;
       const btn = postEl.querySelector(".share-post-btn");
-      try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } toast("Post link copied."); }
-      catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: "Instagram Clone post", url });
+          toast("Post shared.");
+          return;
+        }
+        await navigator.clipboard?.writeText(url);
+        if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); }
+        toast("Post link copied.");
+      } catch (e) {
+        if (e?.name === "AbortError") return;
+        try { await navigator.clipboard?.writeText(url); toast("Post link copied."); }
+        catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
+      }
     });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
