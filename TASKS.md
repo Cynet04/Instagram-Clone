@@ -282,8 +282,9 @@
 - [x] Phase 18 autonomous batch complete (2026-11-08)
 
 ## Phase 19: New Autonomous Features (2026-11-08)
-- [ ] Post filter label shown on image/card (subtle)
-- [ ] "Load more comments" for posts with many comments (client-side)
-- [ ] Profile tab remembers last selected tab per username (local)
-- [ ] Notification badge clears optimistically when opening notifications
-- [ ] Composer drag-and-drop image file support (MVP)
+- [x] Post filter label shown on image/card (subtle)
+- [x] "Load more comments" for posts with many comments (client-side)
+- [x] Profile tab remembers last selected tab per username (local)
+- [x] Notification badge clears optimistically when opening notifications
+- [x] Composer drag-and-drop image file support (MVP)
+- [x] Phase 19 autonomous batch complete (2026-11-08)
