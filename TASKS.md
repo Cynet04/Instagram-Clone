@@ -304,3 +304,10 @@
 - [x] Notifications: show type filter active state
 - [x] Settings: "Copy app build info" button
 - [x] Phase 25 autonomous batch complete (2026-11-08)
+
+## Phase 26: New Autonomous Features (2026-11-08)
+- [ ] Post: show comment count in actions/meta
+- [ ] Feed: "Jump to first post" from back-to-top behavior enhancement
+- [ ] Profile: quick "Open in Explore" context for hashtags in bio (none) / show posts/saves labels clearly
+- [ ] Messages: disable send button while request in-flight (UI guard)
+- [ ] Notifications: persist "Hide read" state visibly
