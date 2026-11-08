@@ -729,6 +729,7 @@ el("authForm").addEventListener("submit", async (e) => {
 });
 
 document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
+document.querySelector(".brand")?.addEventListener("click", () => { closeDialog(el("postDialog")); setView("feed"); });
 el("newPostBtn").onclick = () => { if (!state.me) return openAuth(); el("composer").classList.toggle("hidden"); };
 function updatePostPreview() {
   const form = el("postForm"); if (!form) return;
@@ -770,12 +771,22 @@ el("postForm").addEventListener("submit", async (e) => {
     const res = await fetch("/api/posts", { method: "POST", body: fd, credentials: "same-origin" });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Upload failed");
-    form.reset(); updatePostPreview();
+    form.reset(); updatePostPreview(); updateCaptionCount();
     status.textContent = "Post shared."; status.classList.remove("error");
     toast("Post shared.");
     el("composer").classList.add("hidden");
-    await loadFeed(true);
-  } catch (err) { status.textContent = err.message; status.classList.add("error"); }
+    if (data.post) {
+      state.feed.offset = (state.feed.offset || 0) + 1;
+      const wrap = document.createElement("div");
+      wrap.innerHTML = postHtml(data.post);
+      bindPostActions(wrap);
+      const feed = el("view-feed");
+      feed.querySelectorAll('.card.state-card').forEach((n) => { if ((n.textContent || '').includes('No posts yet')) n.remove(); });
+      feed.prepend(wrap.firstElementChild);
+    } else {
+      await loadFeed(true);
+    }
+  } catch (err) { status.textContent = err.message; status.classList.add("error"); toast(err.message, "error"); }
   finally { if (submit) { submit.disabled = false; submit.textContent = "Share"; } setTimeout(() => { if (status?.textContent === "Post shared.") status.textContent = ""; }, 2000); }
 });
 el("storyForm")?.addEventListener("submit", async (e) => {
