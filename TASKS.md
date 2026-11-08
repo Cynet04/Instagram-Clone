@@ -239,3 +239,10 @@
 - [x] Comment pin by post owner (MVP, highlight pinned comment)
 - [x] Profile notes/private memo (local, visible only to self)
 - [x] Phase 12 autonomous batch complete (2026-11-08)
+
+## Phase 13: New Autonomous Features (2026-11-08)
+- [x] Post save count indicator (show saves count to post owner in UI)
+- [ ] Comment sort toggle (newest/top/oldest, client-side)
+- [ ] Quick profile hover card info in post header (local UI enhancement)
+- [ ] "Seen" indicator for own DM messages (client-side/local state)
+- [ ] Search history quick chips on explore page

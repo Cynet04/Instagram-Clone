@@ -74,7 +74,7 @@ function postHtml(p) {
         ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
-      <div class="post-likes">${p.likesCount} likes</div>
+      <div class="post-likes">${p.likesCount} likes${mine && typeof p.savesCount === "number" ? ` · ${p.savesCount} saves` : ""}</div>
       <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
       <div class="comments">${(p.comments || []).map((c) => {
         const canDelete = state.me && (c.user?.id === state.me.id || mine);

@@ -163,12 +163,14 @@ app.post("/api/auth/logout", (req, res) => {
 
 function mapPost(db, p, me) {
   const saved = new Set(me?.saved || []);
+  const savesCount = (db.users || []).filter((u) => (u.saved || []).includes(p.id)).length;
   return {
     ...p,
     user: safeUser(db.users.find((u) => u.id === p.userId)),
     likesCount: p.likes.length,
     likedByMe: me ? p.likes.includes(me.id) : false,
     savedByMe: me ? saved.has(p.id) : false,
+    savesCount,
     comments: (p.comments || []).map((c) => mapComment(db, c, me))
   };
 }
@@ -204,7 +206,7 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   const post = { id: nanoid(10), userId: me.id, image, caption: String(req.body.caption || "").slice(0, 2200), altText, filter, createdAt: Date.now(), likes: [], comments: [] };
   db.posts.unshift(post);
   saveDb(db);
-  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false, comments: [] } });
+  res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false, savesCount: 0, comments: [] } });
 });
 
 app.patch("/api/posts/:id", (req, res) => {
@@ -304,6 +306,7 @@ app.get("/api/saved", (req, res) => {
     likesCount: p.likes.length,
     likedByMe: p.likes.includes(me.id),
     savedByMe: true,
+    savesCount: (db.users || []).filter((u) => (u.saved || []).includes(p.id)).length,
     comments: (p.comments || []).map((c) => mapComment(db, c, me))
   }));
   res.json({ posts });
@@ -640,6 +643,7 @@ app.get("/api/search", (req, res) => {
     likesCount: p.likes.length,
     likedByMe: me ? p.likes.includes(me.id) : false,
     savedByMe: me ? saved.has(p.id) : false,
+    savesCount: (db.users || []).filter((u) => (u.saved || []).includes(p.id)).length,
     comments: (p.comments || []).map((c) => mapComment(db, c, me))
   }));
   res.json({ users, posts, q: qRaw });
