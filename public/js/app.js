@@ -15,6 +15,17 @@ function esc(s = "") {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+let toastTimer;
+function toast(message, kind = "") {
+  const node = el("toast"); if (!node) return;
+  node.textContent = message || "";
+  node.className = `toast ${kind}`.trim();
+  if (!message) { node.classList.add("hidden"); return; }
+  node.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => node.classList.add("hidden"), 2400);
+}
+
 function loadingState(message = "Loading...") {
   return `<div class="card state-card" role="status" aria-live="polite"><div class="state-spinner" aria-hidden="true"></div><div>${esc(message)}</div></div>`;
 }
@@ -376,8 +387,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
-    try { await navigator.clipboard?.writeText(url); el("shareProfileBtn").textContent = "Copied"; setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500); }
-    catch { prompt("Copy profile link:", url); }
+    try { await navigator.clipboard?.writeText(url); toast("Profile link copied."); el("shareProfileBtn").textContent = "Copied"; setTimeout(() => { if (el("shareProfileBtn")) el("shareProfileBtn").textContent = "Share"; }, 1500); }
+    catch { prompt("Copy profile link:", url); toast("Copy the profile link from the prompt."); }
   });
   el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
   setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username: user.username });
@@ -503,8 +514,8 @@ function bindPostActions(root) {
     postEl.querySelector(".share-post-btn")?.addEventListener("click", async () => {
       const url = `${location.origin}${location.pathname}#/post/${encodeURIComponent(postEl.dataset.id)}`;
       const btn = postEl.querySelector(".share-post-btn");
-      try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } }
-      catch { prompt("Copy post link:", url); }
+      try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } toast("Post link copied."); }
+      catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
     });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
