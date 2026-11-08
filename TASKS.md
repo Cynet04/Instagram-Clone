@@ -96,6 +96,7 @@
 - [x] Small accessibility/perf polish (post avatar/username profile links are keyboard-focusable with Enter/Space activation)
 - [x] Profile/share/accessibility refinements (owner Posts/Saved tabs use `tablist/tab/aria-selected`)
 - [x] Story dialog accessibility polish (aria labels/roles for story viewer controls and dynamic story image alt text)
+- [x] DM responsive polish (messages layout stacks on small screens; conversation list becomes scrollable panel)
 - [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility/perf polish)
 
 ## Progress Log
@@ -143,6 +144,7 @@
 - 2026-11-08: Small accessibility/perf polish added (post avatar/username profile links keyboard-focusable with Enter/Space activation). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Profile/share/accessibility refinements added (owner profile Posts/Saved tabs expose `tablist/tab/aria-selected`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Story dialog accessibility polish added (story viewer aria labels/controls and dynamic story image alt text). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: DM responsive polish added (messages UI stacks on small screens with bounded conversation list). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
