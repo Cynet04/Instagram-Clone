@@ -330,6 +330,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
               ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}" aria-label="${isFollowing ? "Unfollow" : "Follow"} ${esc(user.username)}">${isFollowing ? "Following" : "Follow"}</button><button id="messageBtn" class="mini-btn secondary" aria-label="Message ${esc(user.username)}">Message</button><button id="blockBtn" class="mini-btn secondary" aria-label="Block ${esc(user.username)}">Block</button>` : ""}
               ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
               <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>
+              <button id="copyUsernameBtn" class="mini-btn secondary" type="button" aria-label="Copy username">Copy @</button>
             </div>
             <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><button type="button" class="link-btn" id="showFollowersBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong id="followersCount">${followers}</strong> followers</button><button type="button" class="link-btn" id="showFollowingBtn" style="border:0;background:none;padding:0;font:inherit;cursor:pointer"><strong>${following}</strong> following</button></div>
             <div><strong>${esc(user.name || "")}</strong></div>
@@ -394,6 +395,9 @@ async function loadProfile(username, tab = "posts", opts = {}) {
       el("profileEditError").textContent = "";
       showDialog(el("profileEditDialog"));
     });
+  el("copyUsernameBtn")?.addEventListener("click", async () => {
+    try { await navigator.clipboard?.writeText(`@${user.username}`); toast("Username copied."); } catch { prompt("Username:", `@${user.username}`); }
+  });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const btn = el("shareProfileBtn");
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
