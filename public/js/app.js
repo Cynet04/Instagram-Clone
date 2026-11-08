@@ -142,10 +142,10 @@ function postHtml(p) {
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
-        <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
+        <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
-        <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
+        <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
       <div class="post-caption"><strong class="profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "")}</strong> <span class="caption-text">${formatCaption(p.caption || "")}</span></div>
@@ -155,7 +155,7 @@ function postHtml(p) {
         <div class="comment" data-comment-id="${c.id}" data-comment-user="${c.user?.id || ""}">
           <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <span class="comment-actions">
-            <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="Like comment">Like ${c.likesCount || 0}</button>
+            <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
             ${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
           </span>
         </div>`; }).join("")}</div>
@@ -611,13 +611,22 @@ function bindPostActions(root) {
       const prevCount = Number((likesEl.textContent || "0").match(/\d+/)?.[0] || 0);
       const nextLiked = !prevLiked;
       btn.classList.toggle("liked", nextLiked);
+      btn.setAttribute("aria-pressed", String(nextLiked));
+      btn.setAttribute("aria-label", nextLiked ? "Unlike" : "Like");
+      btn.textContent = nextLiked ? "Liked" : "Like";
       likesEl.textContent = `${Math.max(0, prevCount + (nextLiked ? 1 : -1))} likes`;
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/like`, { method: "POST", body: "{}" });
         btn.classList.toggle("liked", res.liked);
+        btn.setAttribute("aria-pressed", String(res.liked));
+        btn.setAttribute("aria-label", res.liked ? "Unlike" : "Like");
+        btn.textContent = res.liked ? "Liked" : "Like";
         likesEl.textContent = `${res.likesCount} likes`;
       } catch (e) {
         btn.classList.toggle("liked", prevLiked);
+        btn.setAttribute("aria-pressed", String(prevLiked));
+        btn.setAttribute("aria-label", prevLiked ? "Unlike" : "Like");
+        btn.textContent = prevLiked ? "Liked" : "Like";
         likesEl.textContent = `${prevCount} likes`;
         toast(e.message, "error");
       }
@@ -629,16 +638,22 @@ function bindPostActions(root) {
       const nextSaved = !prevSaved;
       btn.classList.toggle("saved", nextSaved);
       btn.textContent = nextSaved ? "Saved" : "Save";
+      btn.setAttribute("aria-pressed", String(nextSaved));
+      btn.setAttribute("aria-label", nextSaved ? "Remove from saved" : "Save");
       if (state.view === "saved" && !nextSaved) postEl.style.opacity = "0.45";
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/save`, { method: "POST", body: "{}" });
         btn.classList.toggle("saved", res.saved);
         btn.textContent = res.saved ? "Saved" : "Save";
+        btn.setAttribute("aria-pressed", String(res.saved));
+        btn.setAttribute("aria-label", res.saved ? "Remove from saved" : "Save");
         postEl.style.opacity = "";
         if (state.view === "saved" && !res.saved) loadSaved();
       } catch (e) {
         btn.classList.toggle("saved", prevSaved);
         btn.textContent = prevSaved ? "Saved" : "Save";
+        btn.setAttribute("aria-pressed", String(prevSaved));
+        btn.setAttribute("aria-label", prevSaved ? "Remove from saved" : "Save");
         postEl.style.opacity = "";
         toast(e.message, "error");
       }
@@ -652,13 +667,19 @@ function bindPostActions(root) {
         const nextLiked = !prevLiked;
         btn.classList.toggle("liked", nextLiked);
         btn.textContent = `Like ${Math.max(0, prevCount + (nextLiked ? 1 : -1))}`;
+        btn.setAttribute("aria-pressed", String(nextLiked));
+        btn.setAttribute("aria-label", nextLiked ? "Unlike comment" : "Like comment");
         try {
           const res = await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}/like`, { method: "POST", body: "{}" });
           btn.classList.toggle("liked", res.liked);
           btn.textContent = `Like ${res.likesCount}`;
+          btn.setAttribute("aria-pressed", String(res.liked));
+          btn.setAttribute("aria-label", res.liked ? "Unlike comment" : "Like comment");
         } catch (e) {
           btn.classList.toggle("liked", prevLiked);
           btn.textContent = `Like ${prevCount}`;
+          btn.setAttribute("aria-pressed", String(prevLiked));
+          btn.setAttribute("aria-label", prevLiked ? "Unlike comment" : "Like comment");
         toast(e.message, "error");
         }
       });
@@ -693,7 +714,7 @@ function bindPostActions(root) {
       input.value = "";
       try {
         const res = await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
-        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
+        optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
         bindPostActions(postEl);
         refreshNotificationsBadge();
       } catch (err) { optimistic.remove(); input.value = text; toast(err.message, "error"); }
