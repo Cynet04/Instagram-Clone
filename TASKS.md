@@ -226,7 +226,7 @@
 - [x] Account data export (download local-visible JSON snapshot via `/api/me/export`)
 
 ## Phase 11: New Autonomous Features (2026-11-08)
-- [ ] Post bookmark collections label (local MVP)
+- [x] Post bookmark collections label (local MVP: All Saved label)
 - [x] Profile QR/share text helper (copy profile card text)
 - [ ] Feed sort toggle (newest/most liked, client-side)
 - [x] Message delete (own message, API + UI)
