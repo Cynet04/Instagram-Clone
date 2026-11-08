@@ -103,6 +103,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 8 * 1024 * 1024 } });
 
 const app = express();
+app.disable("x-powered-by");
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -115,8 +116,8 @@ app.use(session({
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(path.join(root, "public")));
 
-app.get("/api/health", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 106, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()), pid: process.pid }); });
-app.get("/api/version", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 106, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()), pid: process.pid }); });
+app.get("/api/health", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 107, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()), pid: process.pid }); });
+app.get("/api/version", (_req, res) => { res.set("Cache-Control","no-store"); res.json({ ok: true, app: "instagram-clone-mvp", phase: 107, time: new Date().toISOString(), uptimeSec: Math.round(process.uptime()), pid: process.pid }); });
 
 app.get("/api/me", (req, res) => {
   const db = loadDb();

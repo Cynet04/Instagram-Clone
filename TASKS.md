@@ -949,3 +949,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Client: settings "Open /api/health" link has 	itle
 - [ ] Post: "Copy link" button gets 	itle
 - [x] Phase bump to 106
+
+## Phase 107: New Autonomous Features (2026-11-08)
+- [x] Phase 107 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 106)
+- [ ] Server: disable x-powered-by header
+- [ ] Post: report button gets 	itle
+- [x] Feed refresh hint: has aria-label (verify)
+- [x] Phase bump to 107
