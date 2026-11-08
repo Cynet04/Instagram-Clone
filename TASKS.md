@@ -341,3 +341,10 @@
 - [x] Search: remember last query in input on view return (local)
 - [x] Notifications: click actor avatar/name also navigates to profile
 - [x] Composer: clear location/alt on reset after post meantoldString
+
+## Phase 31: New Autonomous Features (2026-11-08)
+- [ ] Post: show saves count label as "save/saves" correctly
+- [ ] Feed: "No more posts" only when not loading (already) — add aria-live polite
+- [ ] Profile: posts stat uses same label style
+- [ ] Messages: show conversation empty state when no contacts
+- [ ] Server: include phase in /api/health as 31
