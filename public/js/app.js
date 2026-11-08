@@ -437,6 +437,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
 
 async function loadSearch(q) {
   if (!String(q || "").trim()) { setView("explore"); return; }
+  setDocumentTitle(`Search: ${q}`);
+  history.replaceState(null, "", `#/search/${encodeURIComponent(q)}`);
   el("view-search").innerHTML = loadingState("Searching...");
   try {
     const { users = [], posts = [] } = await api(`/api/search?q=${encodeURIComponent(q)}`);
@@ -925,6 +927,11 @@ async function handleRoute() {
   if (!route || route === "feed") return setView("feed", { fromHash: true });
   if (route.startsWith("profile/")) return loadProfile(decodeURIComponent(route.slice("profile/".length)), "posts", { fromRoute: true });
   if (route === "profile") return loadProfile(state.me?.username, "posts", { fromRoute: true });
+  if (route.startsWith("search/")) {
+    const q = decodeURIComponent(route.slice("search/".length));
+    el("searchInput").value = q;
+    return loadSearch(q);
+  }
   if (route.startsWith("post/")) {
     const id = decodeURIComponent(route.slice("post/".length));
     setView("feed", { fromHash: true });
