@@ -407,10 +407,12 @@ app.get("/api/messages/conversations", (req, res) => {
   }
   const conversations = [...map.entries()].map(([userId, last]) => ({
     user: safeUser(db.users.find((u) => u.id === userId)),
-    last: { ...last, fromUser: safeUser(db.users.find((u) => u.id === last.from)) }
+    last: { ...last, fromUser: safeUser(db.users.find((u) => u.id === last.from)) },
+    unread: (db.messages || []).some((m) => m.from === userId && m.to === me.id && m.read === false)
   })).filter((c) => c.user).sort((a, b) => b.last.createdAt - a.last.createdAt);
   const contacts = db.users.filter((u) => u.id !== me.id).map(safeUser);
-  res.json({ conversations, contacts });
+  const unread = (db.messages || []).filter((m) => m.to === me.id && m.read === false).length;
+  res.json({ conversations, contacts, unread });
 });
 
 app.get("/api/messages/:userId", (req, res) => {
@@ -419,8 +421,12 @@ app.get("/api/messages/:userId", (req, res) => {
   if (!me) return res.status(401).json({ error: "Login required." });
   const other = db.users.find((u) => u.id === req.params.userId);
   if (!other) return res.status(404).json({ error: "User not found." });
+  let changed = false;
+  (db.messages || []).forEach((m) => { if (m.from === other.id && m.to === me.id && m.read === false) { m.read = true; changed = true; } });
+  if (changed) saveDb(db);
   const messages = (db.messages || []).filter((m) => (m.from === me.id && m.to === other.id) || (m.from === other.id && m.to === me.id)).sort((a, b) => a.createdAt - b.createdAt).map((m) => ({ ...m, fromUser: safeUser(db.users.find((u) => u.id === m.from)) }));
-  res.json({ user: safeUser(other), messages });
+  const unread = (db.messages || []).filter((m) => m.to === me.id && m.read === false).length;
+  res.json({ user: safeUser(other), messages, unread });
 });
 
 app.post("/api/messages/:userId", (req, res) => {
@@ -431,7 +437,7 @@ app.post("/api/messages/:userId", (req, res) => {
   if (!other) return res.status(404).json({ error: "User not found." });
   const text = String(req.body.text || "").trim();
   if (!text) return res.status(400).json({ error: "Message required." });
-  const msg = { id: nanoid(10), from: me.id, to: other.id, text: text.slice(0, 1000), createdAt: Date.now() };
+  const msg = { id: nanoid(10), from: me.id, to: other.id, text: text.slice(0, 1000), createdAt: Date.now(), read: false };
   db.messages = db.messages || [];
   db.messages.push(msg);
   saveDb(db);

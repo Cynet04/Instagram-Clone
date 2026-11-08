@@ -283,6 +283,16 @@ function updateBadge(n = 0) {
   setDocumentTitle(document.title.replace(/^\(\d+\)\s*/, "").replace(/\s�\sInstagram Clone$/, "").replace(/^Instagram Clone$/, "") || "");
 }
 
+async function refreshDmBadge() {
+  const badge = el("dmBadge"); if (!badge) return;
+  if (!state.me) { badge.classList.add("hidden"); badge.textContent = "0"; return; }
+  try {
+    const res = await api("/api/messages/conversations");
+    const n = Number(res.unread || 0);
+    badge.textContent = String(n);
+    badge.classList.toggle("hidden", n <= 0);
+  } catch {}
+}
 async function refreshNotificationsBadge() {
   if (!state.me) return updateBadge(0);
   try { const { unread } = await api("/api/notifications"); updateBadge(unread); } catch { updateBadge(0); }
@@ -358,7 +368,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         btn.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${user.username}`);
         if (count && typeof res.followers === "number") count.textContent = String(res.followers);
         toast(res.following ? `Following @${user.username}.` : `Unfollowed @${user.username}.`);
-        refreshNotificationsBadge();
+        refreshNotificationsBadge(); refreshDmBadge();
       } catch (e) {
         btn.classList.toggle("secondary", prevFollowing);
         btn.textContent = prevFollowing ? "Following" : "Follow";
@@ -442,7 +452,7 @@ async function loadSearch(q) {
         b.classList.toggle("secondary", !!res.following);
         b.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
         toast(res.following ? "Following user." : "Unfollowed.");
-        refreshNotificationsBadge();
+        refreshNotificationsBadge(); refreshDmBadge();
       } catch (e) { b.textContent = prev; b.setAttribute("aria-label", `${prev === "Following" ? "Unfollow" : "Follow"} ${b.dataset.followUser}`); toast(e.message, "error"); }
       finally { b.disabled = false; }
     });
@@ -490,8 +500,9 @@ async function renderSettings() {
         <button id="settingsLogoutBtn" type="button" class="mini-btn secondary">Log out</button>
       </section>
       <section>
-        <h4 style="margin:0 0 8px">App info</h4>
-        <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme stored in localStorage. Runtime data/uploads are local. Not the Supabase/React spec stack.</div>
+        <h4 style="margin:0 0 8px">Local data / diagnostics</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button></div>
+        <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme/recent searches stored in localStorage. Runtime data/uploads are local and not exported by this client.</div>
       </section>
       <section>
         <h4 style="margin:0 0 8px">My reports (local MVP)</h4>
@@ -506,6 +517,12 @@ async function renderSettings() {
   } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
+  root.querySelector("#checkServerBtn")?.addEventListener("click", async () => { await refreshHealth(); toast("Server status refreshed."); });
+  root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
+    const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
+    try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
+  });
+  root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); applyTheme(); toast("Local preferences cleared."); });
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -529,7 +546,9 @@ async function renderMessages() {
   if (!state.me) { el("view-messages").innerHTML = emptyState("Log in to use messages", "Direct messages will appear here."); return; }
   el("view-messages").innerHTML = loadingState("Loading messages...");
   try {
-    const { conversations, contacts } = await api("/api/messages/conversations");
+    const convRes = await api("/api/messages/conversations");
+    const { conversations, contacts, unread = 0 } = convRes;
+    const dmBadge = el("dmBadge"); if (dmBadge) { dmBadge.textContent = String(unread); dmBadge.classList.toggle("hidden", Number(unread) <= 0); }
     const list = [...conversations];
     for (const c of contacts || []) if (!list.some((x) => x.user?.id === c.id)) list.push({ user: c, last: null });
     if (!state.dm.userId && list[0]?.user?.id) state.dm.userId = list[0].user.id;
@@ -819,7 +838,7 @@ function bindPostActions(root) {
         const res = await api(`/api/posts/${postEl.dataset.id}/comments`, { method: "POST", body: JSON.stringify({ text }) });
         optimistic.outerHTML = `<div class="comment" data-comment-id="${res.comment.id}" data-comment-user="${state.me.id}"><span><strong class="profile-link" data-profile="${esc(state.me.username)}">${esc(state.me.username)}</strong> ${esc(res.comment.text || text)}</span><span class="comment-actions"><button class="comment-like-btn" type="button" aria-label="Like comment" aria-pressed="false">Like ${res.comment.likesCount || 0}</button><button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button></span></div>`;
         bindPostActions(postEl);
-        refreshNotificationsBadge();
+        refreshNotificationsBadge(); refreshDmBadge();
       } catch (err) { optimistic.remove(); input.value = text; toast(err.message, "error"); }
     });
   });
@@ -838,7 +857,7 @@ async function loadMe() {
   const { user } = await api("/api/me");
   state.me = user;
   renderMe();
-  refreshNotificationsBadge();
+  refreshNotificationsBadge(); refreshDmBadge();
 }
 
 async function loadSuggestions() {
