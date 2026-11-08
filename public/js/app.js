@@ -364,9 +364,9 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     setView("profile", { skipLoad: true, fromHash: opts.fromRoute, skipTitle: true });
     return;
   }
-  const hash = `#/profile/${encodeURIComponent(username)}`;
+  const hash = tab === "saved" ? `#/profile/${encodeURIComponent(username)}/saved` : `#/profile/${encodeURIComponent(username)}`;
   if (location.hash !== hash) history.replaceState(null, "", hash);
-  setDocumentTitle(`@${username}`);
+  setDocumentTitle(tab === "saved" ? `@${username} • Saved` : `@${username}`);
   el("view-profile").innerHTML = loadingState("Loading profile...");
   setView("profile", { skipLoad: true, fromHash: opts.fromRoute, username, skipTitle: true });
   try {
@@ -971,7 +971,13 @@ document.addEventListener("keydown", (e) => {
 async function handleRoute() {
   const route = routeHash();
   if (!route || route === "feed") return setView("feed", { fromHash: true });
-  if (route.startsWith("profile/")) return loadProfile(decodeURIComponent(route.slice("profile/".length)), "posts", { fromRoute: true });
+  if (route.startsWith("profile/")) {
+    const rest = route.slice("profile/".length);
+    const parts = rest.split("/").map((p) => decodeURIComponent(p || ""));
+    const username = parts[0] || "";
+    const tab = parts[1] === "saved" ? "saved" : "posts";
+    return loadProfile(username, tab, { fromRoute: true });
+  }
   if (route === "profile") return loadProfile(state.me?.username, "posts", { fromRoute: true });
   if (route.startsWith("search/")) {
     const q = decodeURIComponent(route.slice("search/".length));
