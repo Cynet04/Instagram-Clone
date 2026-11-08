@@ -146,26 +146,35 @@ app.post("/api/auth/logout", (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
 });
 
+function mapPost(db, p, me) {
+  const saved = new Set(me?.saved || []);
+  return {
+    ...p,
+    user: safeUser(db.users.find((u) => u.id === p.userId)),
+    likesCount: p.likes.length,
+    likedByMe: me ? p.likes.includes(me.id) : false,
+    savedByMe: me ? saved.has(p.id) : false,
+    comments: (p.comments || []).map((c) => mapComment(db, c, me))
+  };
+}
+
 app.get("/api/feed", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
-  const saved = new Set(me?.saved || []);
   const offset = Math.max(0, Number(req.query.offset || 0));
   const limit = Math.min(50, Math.max(1, Number(req.query.limit || 10)));
   const all = [...db.posts].sort((a, b) => b.createdAt - a.createdAt);
   const slice = all.slice(offset, offset + limit);
-  const posts = slice.map((p) => {
-    const user = db.users.find((u) => u.id === p.userId);
-    return {
-      ...p,
-      user: safeUser(user),
-      likesCount: p.likes.length,
-      likedByMe: me ? p.likes.includes(me.id) : false,
-      savedByMe: me ? saved.has(p.id) : false,
-      comments: p.comments.map((c) => mapComment(db, c, me))
-    };
-  });
+  const posts = slice.map((p) => mapPost(db, p, me));
   res.json({ posts, offset, limit, total: all.length, hasMore: offset + slice.length < all.length });
+});
+
+app.get("/api/posts/:id", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  res.json({ post: mapPost(db, post, me) });
 });
 
 app.post("/api/posts", upload.single("image"), (req, res) => {

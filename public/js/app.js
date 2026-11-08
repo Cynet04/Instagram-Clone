@@ -205,9 +205,9 @@ async function loadExplore(q = "") {
       <h3 style="margin:0">Explore ${query ? `: ${esc(query)}` : ""}</h3>
       ${query ? `<button id="clearExplore" class="mini-btn secondary">Clear</button>` : ""}
     </div>
-    <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-profile="${esc(p.user?.username || "")}" title="${esc(p.user?.username || "")}" />`).join("") || `<div style="padding:8px;color:var(--muted)">No posts found.</div>`}</div>
+    <div class="explore-grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" title="${esc(p.user?.username || "")}" />`).join("") || `<div style="padding:8px;color:var(--muted)">No posts found.</div>`}</div>
   </div>`;
-  bindProfileLinks(el("view-explore"));
+  bindPostOpen(el("view-explore"));
   el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
 }
 
@@ -276,7 +276,8 @@ async function loadProfile(username, tab = "posts") {
       </div>
       ${isMe ? `<div class="profile-tabs"><button data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
     </div>
-    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
+    <div class="card" style="padding:4px"><div class="grid">${gridPosts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" data-post-id="${p.id}" />`).join("") || `<div style="padding:16px">No ${tab === "saved" ? "saved posts" : "posts"}</div>`}</div></div>`;
+  bindPostOpen(el("view-profile"));
   el("followBtn")?.addEventListener("click", async () => {
     try {
       await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
@@ -364,9 +365,26 @@ function bindProfileLinks(root) {
   });
 }
 
+function bindPostOpen(root) {
+  root.querySelectorAll(".post-image, .grid img[data-post-id], .explore-grid img[data-post-id]").forEach((img) => {
+    img.addEventListener("click", async (e) => {
+      if (e.target.closest(".post-actions,.comment-form,.delete-post-btn")) return;
+      const postId = img.closest("[data-id]")?.dataset.id || img.dataset.postId;
+      if (!postId) return;
+      try {
+        const { post } = await api(`/api/posts/${postId}`);
+        el("postDialogBody").innerHTML = postHtml(post);
+        bindPostActions(el("postDialogBody"));
+        el("postDialog").showModal();
+      } catch (err) { alert(err.message); }
+    });
+  });
+}
+
 function bindPostActions(root) {
   bindHashtags(root);
   bindProfileLinks(root);
+  bindPostOpen(root);
   root.querySelectorAll(".post").forEach((postEl) => {
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
@@ -508,6 +526,8 @@ el("themeBtn")?.addEventListener("click", () => {
   localStorage.setItem("ig_theme", dark ? "dark" : "light");
   el("themeBtn").textContent = dark ? "Light" : "Dark";
 });
+el("postDialogClose")?.addEventListener("click", () => el("postDialog").close());
+el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 applyTheme();
 setupFeedObserver();
 

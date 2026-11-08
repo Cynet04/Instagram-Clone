@@ -56,7 +56,8 @@
 - [x] Image URL post fallback polish / upload validation
 - [x] Clickable profile links on posts/comments
 - [x] Explore search/filter integration (search input filters explore grid; clear)
-- [ ] Post detail/open interactions
+- [x] Post detail/open interactions (API `/api/posts/:id`, feed/profile/explore open dialog)
+- [ ] Accessibility/keyboard polish
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -76,4 +77,5 @@
 - 2026-11-08: Story creation added (authenticated POST `/api/stories`, feed "Your story" composer, story refresh). Server restarted and health verified.
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
-- 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified. Next: post detail/open interactions.
+- 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
+- 2026-11-08: Post detail/open interactions added (`GET /api/posts/:id`, dialog, and clickable feed/profile/explore images). Server restarted and health verified. Next: accessibility/keyboard polish.

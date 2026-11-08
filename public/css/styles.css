@@ -84,7 +84,11 @@ button { cursor: pointer; }
 .post-user { font-weight: 600; font-size: 14px; }
 .post-time { color: var(--muted); font-size: 12px; margin-left: auto; }
 .delete-post-btn { margin-left: 8px; border: 0; background: none; color: var(--red); font-size: 12px; font-weight: 600; padding: 0; }
-.post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; }
+.post-dialog { border: 0; padding: 0; background: transparent; max-width: min(96vw, 720px); width: 100%; }
+.post-dialog::backdrop { background: rgba(0,0,0,.75); }
+.post-dialog .card { margin: 0; max-height: 88vh; overflow: auto; }
+.post-dialog .story-close { top: 8px; right: 8px; }
+.post-image { width: 100%; display: block; max-height: 780px; object-fit: cover; background: #111; cursor: pointer; }
 .filter-none { filter: none; }
 .filter-clarendon { filter: contrast(1.2) saturate(1.35); }
 .filter-gingham { filter: brightness(1.05) hue-rotate(-10deg); }
