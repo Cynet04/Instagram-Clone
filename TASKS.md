@@ -236,5 +236,5 @@
 - [x] Feed refresh manual button (reload feed with feedback)
 - [x] Mute/unmute user in DM (hide messages locally, MVP)
 - [x] Post archive (owner hides post from profile/feed, local MVP)
-- [ ] Comment pin by post owner (MVP, highlight pinned comment)
+- [x] Comment pin by post owner (MVP, highlight pinned comment)
 - [ ] Profile notes/private memo (local, visible only to self)
