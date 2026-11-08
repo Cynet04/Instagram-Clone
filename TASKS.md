@@ -234,7 +234,7 @@
 
 ## Phase 12: New Autonomous Features (2026-11-08)
 - [x] Feed refresh manual button (reload feed with feedback)
-- [ ] Mute/unmute user in DM (hide messages locally, MVP)
+- [x] Mute/unmute user in DM (hide messages locally, MVP)
 - [ ] Post archive (owner hides post from profile/feed, local MVP)
 - [ ] Comment pin by post owner (MVP, highlight pinned comment)
 - [ ] Profile notes/private memo (local, visible only to self)
