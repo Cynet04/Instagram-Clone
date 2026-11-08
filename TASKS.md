@@ -298,8 +298,9 @@
 - [x] Phase 20 autonomous batch complete (2026-11-08)
 
 ## Phase 21: New Autonomous Features (2026-11-08)
-- [ ] Post image click opens detail dialog (existing) with keyboard focus
-- [ ] DM "typing" indicator clears on send
-- [ ] Explore grid shows like count overlay on hover (CSS/title)
-- [ ] Profile website opens in new tab with safe rel (already) + visible external indicator
-- [ ] Empty saved posts shows link to explore
+- [x] Post image click opens detail dialog (existing) with keyboard focus
+- [x] DM "typing" indicator clears on send
+- [x] Explore grid shows like count overlay on hover (CSS/title)
+- [x] Profile website opens in new tab with safe rel (already) + visible external indicator
+- [x] Empty saved posts shows link to explore
+- [x] Phase 21 autonomous batch complete (2026-11-08)
