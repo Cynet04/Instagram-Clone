@@ -161,6 +161,7 @@
 - 2026-11-08: Post dialog focus polish added (opening post detail moves focus into dialog content). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Story viewer keyboard polish added (ArrowLeft/ArrowRight navigation while story dialog open; previous disabled at start). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Profile/share refinements added (profile share button text updates use guarded element ref). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Composer accessibility polish added (post file/URL inputs have explicit `aria-label`s). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
