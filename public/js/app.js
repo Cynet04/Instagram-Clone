@@ -27,7 +27,7 @@ function toast(message, kind = "") {
 }
 
 function loadingState(message = "Loading...") {
-  return `<div class="card state-card" role="status" aria-live="polite"><div class="state-spinner" aria-hidden="true"></div><div>${esc(message)}</div></div>`;
+  return `<div class="card state-card" role="status" aria-live="polite" aria-busy="true"><div class="state-spinner" aria-hidden="true"></div><div>${esc(message)}</div></div>`;
 }
 function emptyState(title, detail = "") {
   return `<div class="card state-card"><div class="state-title">${esc(title)}</div>${detail ? `<div class="state-detail">${esc(detail)}</div>` : ""}</div>`;
@@ -55,7 +55,11 @@ function timeAgo(ts) {
 }
 
 function setNavActive(view) {
-  document.querySelectorAll("[data-nav-view]").forEach((b) => b.classList.toggle("active", b.dataset.navView === view));
+  document.querySelectorAll("[data-nav-view]").forEach((b) => {
+    const active = b.dataset.navView === view;
+    b.classList.toggle("active", active);
+    if (active) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  });
 }
 
 function routeHash() {
@@ -680,7 +684,12 @@ function updatePostPreview() {
 el("postForm")?.querySelector('input[name="image"]')?.addEventListener("change", updatePostPreview);
 el("postForm")?.querySelector('input[name="imageUrl"]')?.addEventListener("input", updatePostPreview);
 el("postForm")?.querySelector('select[name="filter"]')?.addEventListener("change", updatePostPreview);
-el("postFormReset")?.addEventListener("click", () => { el("postForm")?.reset(); updatePostPreview(); el("postFormStatus").textContent = ""; el("postFormStatus").classList.remove("error"); });
+function updateCaptionCount() {
+  const ta = el("postCaption"); const out = el("captionCount"); if (!ta || !out) return;
+  out.textContent = `${ta.value.length}/2200`;
+}
+el("postCaption")?.addEventListener("input", updateCaptionCount);
+el("postFormReset")?.addEventListener("click", () => { el("postForm")?.reset(); updatePostPreview(); updateCaptionCount(); el("postFormStatus").textContent = ""; el("postFormStatus").classList.remove("error"); });
 el("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.currentTarget.value.trim()) {
     const q = e.currentTarget.value.trim();
@@ -704,6 +713,7 @@ el("postForm").addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "Upload failed");
     form.reset(); updatePostPreview();
     status.textContent = "Post shared."; status.classList.remove("error");
+    toast("Post shared.");
     el("composer").classList.add("hidden");
     await loadFeed(true);
   } catch (err) { status.textContent = err.message; status.classList.add("error"); }
