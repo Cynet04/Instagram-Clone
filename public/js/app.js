@@ -197,7 +197,7 @@ async function loadExplore(q = "") {
   } catch (e) { el("view-explore").innerHTML = errorState(e.message, "explore"); }
 }
 
-async function loadSaved(el("savedSearch")?.value || "") {
+async function loadSaved(q = "") {
   if (!state.me) { el("view-saved").innerHTML = emptyState("Log in to view saved posts", "Your saved posts will appear here."); return; }
   el("view-saved").innerHTML = loadingState("Loading saved posts...");
   try {
