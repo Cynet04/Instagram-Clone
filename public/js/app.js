@@ -61,7 +61,7 @@ function postHtml(p) {
         <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
+        ${mine ? `<button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="Post by ${esc(p.user?.username || "user")}${p.caption ? `: ${esc(String(p.caption).slice(0, 80))}` : ""}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
@@ -523,6 +523,7 @@ async function renderSettings() {
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
   });
   root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); applyTheme(); toast("Local preferences cleared."); });
+  root.querySelector("#showShortcutsBtn")?.addEventListener("click", () => showDialog(el("shortcutsDialog")));
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -716,6 +717,17 @@ function bindPostActions(root) {
         try { await navigator.clipboard?.writeText(url); toast("Post link copied."); }
         catch { prompt("Copy post link:", url); toast("Copy the post link from the prompt."); }
       }
+    });
+    postEl.querySelector(".edit-post-btn")?.addEventListener("click", async () => {
+      if (!state.me) return openAuth();
+      const cap = postEl.querySelector(".caption-text");
+      const next = prompt("Edit caption:", (cap?.textContent || "").trim());
+      if (next == null) return;
+      try {
+        const { post } = await api(`/api/posts/${postEl.dataset.id}`, { method: "PATCH", body: JSON.stringify({ caption: next.slice(0, 2200) }) });
+        if (cap) cap.innerHTML = formatCaption(post.caption || "");
+        toast("Caption updated.");
+      } catch (e) { toast(e.message, "error"); }
     });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;

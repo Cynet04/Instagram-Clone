@@ -193,6 +193,18 @@ app.post("/api/posts", upload.single("image"), (req, res) => {
   res.json({ post: { ...post, user: safeUser(me), likesCount: 0, likedByMe: false, savedByMe: false, comments: [] } });
 });
 
+app.patch("/api/posts/:id", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const post = db.posts.find((p) => p.id === req.params.id);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+  if (post.userId !== me.id) return res.status(403).json({ error: "You can only edit your own posts." });
+  post.caption = String(req.body.caption ?? post.caption ?? "").trim().slice(0, 2200);
+  saveDb(db);
+  res.json({ post: mapPost(post, db, me) });
+});
+
 app.delete("/api/posts/:id", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
