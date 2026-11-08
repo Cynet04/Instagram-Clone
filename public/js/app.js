@@ -61,7 +61,7 @@ function postHtml(p) {
         <img class="avatar profile-link" src="${avatar(p.user)}" alt="${esc(p.user?.username || "user")} avatar" data-profile="${esc(p.user?.username || "")}" onerror="this.onerror=null;this.src='${fallback}'" />
         <span class="post-user profile-link" data-profile="${esc(p.user?.username || "")}">${esc(p.user?.username || "user")}</span>
         <span class="post-time">${timeAgo(p.createdAt)}</span>
-        ${mine ? `<button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
+        ${mine ? `<button class="archive-post-btn" type="button" title="Archive post" aria-label="Archive post">Archive</button><button class="edit-post-btn" title="Edit caption" aria-label="Edit caption">Edit</button><button class="delete-post-btn" title="Delete post" aria-label="Delete post">Delete</button>` : ""}
       </div>
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="${esc(p.altText || `Post by ${p.user?.username || "user"}${p.caption ? `: ${String(p.caption).slice(0, 80)}` : ""}`)}" loading="lazy" decoding="async" title="Open post details" tabindex="0" role="button" aria-label="Open post details by ${esc(p.user?.username || "user")}" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
@@ -136,7 +136,8 @@ function renderFeedPosts(posts = []) {
 }
 function applyFeedSort() {
   const sort = state.feed.sort || "newest";
-  const posts = [...(state.feed.posts || [])].sort((a,b)=> sort==="liked" ? ((b.likesCount||0)-(a.likesCount||0)) || ((b.createdAt||0)-(a.createdAt||0)) : ((b.createdAt||0)-(a.createdAt||0)));
+  const archived = state.me ? new Set(archivedPostIds(state.me.username)) : new Set();
+  const posts = [...(state.feed.posts || [])].filter((p)=>!archived.has(p.id)).sort((a,b)=> sort==="liked" ? ((b.likesCount||0)-(a.likesCount||0)) || ((b.createdAt||0)-(a.createdAt||0)) : ((b.createdAt||0)-(a.createdAt||0)));
   const header = `<div class="card" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:10px"><h3 style="margin:0">Feed</h3><button id="feedRefreshBtn" type="button" class="mini-btn secondary" aria-label="Refresh feed">Refresh</button></div><label class="muted" style="font-size:13px;display:flex;align-items:center;gap:8px">Sort <select id="feedSort" aria-label="Sort feed"><option value="newest" ${state.feed.sort==="newest"?"selected":""}>Newest</option><option value="liked" ${state.feed.sort==="liked"?"selected":""}>Most liked</option></select></label></div>`;
   const root = el("view-feed"); if (!root) return;
   root.innerHTML = header + (posts.length ? posts.map(postHtml).join("") : emptyState("No posts yet", "When people share photos, they'll appear here.").replace('<div class="card state-card">','<div class="state-card" style="margin:16px">'));
@@ -768,6 +769,12 @@ function bindPostActions(root) {
   bindPostOpen(root);
   const posts = root.classList?.contains("post") ? [root] : Array.from(root.querySelectorAll(".post"));
   posts.forEach((postEl) => {
+    postEl.querySelector(".archive-post-btn")?.addEventListener("click", () => {
+      if (!state.me) return openAuth();
+      const ids = archivedPostIds(state.me.username); const id = postEl.dataset.id;
+      const next = ids.includes(id) ? ids.filter((x)=>x!==id) : [...ids, id];
+      setArchivedPostIds(state.me.username, next); toast(ids.includes(id) ? "Post unarchived." : "Post archived locally."); loadFeed(true);
+    });
     postEl.querySelector(".open-image-btn")?.addEventListener("click", () => {
       const url = postEl.querySelector(".post-image")?.getAttribute("src") || "";
       if (url) window.open(url, "_blank", "noopener,noreferrer"); else toast("No image URL.", "error");
