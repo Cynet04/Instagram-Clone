@@ -898,11 +898,14 @@ function applyTheme() {
   document.body.classList.toggle("dark", dark);
   const btn = el("themeBtn");
   if (btn) btn.textContent = dark ? "Light" : "Dark";
+  if (btn) btn.setAttribute("aria-pressed", String(dark));
 }
 el("themeBtn")?.addEventListener("click", () => {
   const dark = document.body.classList.toggle("dark");
   localStorage.setItem("ig_theme", dark ? "dark" : "light");
-  el("themeBtn").textContent = dark ? "Light" : "Dark";
+  const btn = el("themeBtn");
+  if (btn) { btn.textContent = dark ? "Light" : "Dark"; btn.setAttribute("aria-pressed", String(dark)); }
+  toast(dark ? "Dark mode on." : "Light mode on.");
 });
 el("postDialogClose")?.addEventListener("click", () => closeDialog(el("postDialog")));
 el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
@@ -913,6 +916,7 @@ setInterval(refreshHealth, 30000);
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
+  if (e.target?.id === "searchInput" && e.target.value) return;
   ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
 });
 
