@@ -404,3 +404,18 @@
 - [x] Settings: show service worker status
 - [x] Profile: "Back" to feed uses history where possible
 - [x] Phase bump to 38
+
+## Phase 39: New Autonomous Features (2026-11-08)
+- [x] Phase 39 autonomous batch complete (2026-11-08)
+- [x] Post: show share count label in detail dialog when present locally
+- [x] Notifications: "Clear" disabled state/confirm clarity
+- [ ] Feed: loading skeleton not needed; keep "Loading more posts�" sentinel
+- [ ] Messages: conversation preview uses "You:" for last sender (done) � add empty text safety
+- [x] Phase bump to 39
+
+## Phase 40: New Autonomous Features (2026-11-08)
+- [ ] Post: double-tap/like animation not needed; add subtle liked-state aria text
+- [ ] Explore: preserve active query in header after reload (done via input)
+- [ ] Profile: show blocked-users count not exposed; keep simple
+- [ ] Settings: add "Refresh SW registration" button
+- [ ] Phase bump to 40
