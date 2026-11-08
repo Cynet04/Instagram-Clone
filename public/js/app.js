@@ -423,6 +423,8 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   }
 }
 
+function loadNotifPrefs(){ try { return { like:true, comment:true, follow:true, comment_like:true, ...(JSON.parse(localStorage.getItem("ig_notif_prefs")||"{}")) }; } catch { return { like:true, comment:true, follow:true, comment_like:true }; } }
+function saveNotifPrefs(p){ localStorage.setItem("ig_notif_prefs", JSON.stringify(p)); }
 function recentSearches() { try { return JSON.parse(localStorage.getItem("ig_recent_searches") || "[]").filter((x) => typeof x === "string"); } catch { return []; } }
 function saveRecentSearch(q) {
   const v = String(q || "").trim().slice(0, 80); if (!v) return;
@@ -499,6 +501,12 @@ async function renderSettings() {
         <button id="settingsThemeBtn" type="button" class="mini-btn secondary" aria-pressed="${document.body.classList.contains("dark") ? "true" : "false"}">${document.body.classList.contains("dark") ? "Switch to light mode" : "Switch to dark mode"}</button>
       </section>
       <section>
+        <h4 style="margin:0 0 8px">Notification preferences (local)</h4>
+        <div id="notifPrefs" style="display:grid;gap:6px;font-size:14px">
+          ${[["like","Likes"],["comment","Comments"],["follow","Follows"],["comment_like","Comment likes"]].map(([k,l])=>`<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-notif-pref="${k}" ${loadNotifPrefs()[k]!==false?"checked":""}/> ${l}</label>`).join("")}
+        </div>
+      </section>
+      <section>
         <h4 style="margin:0 0 8px">Change password</h4>
         <form id="passwordForm" style="display:grid;gap:8px;max-width:360px">
           <input name="currentPassword" type="password" placeholder="Current password" required minlength="6" maxlength="128" aria-label="Current password" autocomplete="current-password" />
@@ -534,7 +542,8 @@ async function renderSettings() {
     const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
   });
-  root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); applyTheme(); toast("Local preferences cleared."); });
+  root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); localStorage.removeItem("ig_notif_prefs"); applyTheme(); toast("Local preferences cleared."); });
+  root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));
   root.querySelector("#showShortcutsBtn")?.addEventListener("click", () => showDialog(el("shortcutsDialog")));
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();

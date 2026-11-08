@@ -217,3 +217,10 @@
 - 2026-11-08: Notification/profile follow-state refinements added (notifications API returns actor `isFollowing`; follow notifications render inline follow/unfollow with toast feedback and safe click handling). Server/client syntax and health verified after restart. Next: additional autonomous features.
 - 2026-11-08: Small empty-state polish added (profile posts/saved grid uses shared empty-state copy for owner/visitor contexts). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM UX polish added (optimistic message send with sending state/rollback, conversation preview timestamp update, timestamp separator fix). Client syntax and health verified. Next: additional autonomous features.
+
+## Phase 10: New Autonomous Features (2026-11-08)
+- [ ] Notification preferences toggles (localStorage; mute likes/comments/follows/comment likes)
+- [ ] Post pin/unpin on own profile (MVP local/API)
+- [ ] Story reply/quick reaction UI (MVP local state/toast)
+- [ ] DM typing indicator simulation (local UI polish)
+- [ ] Account data export (download local-visible JSON snapshot)
