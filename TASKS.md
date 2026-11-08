@@ -508,3 +508,11 @@
 - [x] Profile: show "No posts" empty state uses consistent copy
 - [x] Notifications: ensure hide-read filter persists across reloads (already)
 - [x] Phase bump to 51
+
+## Phase 52: New Autonomous Features (2026-11-08)
+- [x] Phase 52 autonomous batch complete (2026-11-08)
+- [x] Post: show "Report submitted" state not stored; keep toast
+- [x] Profile: show edit button label consistency
+- [x] Messages: DM body has aria-live for new messages context (polite)
+- [x] Feed: end-of-feed marker uses role status
+- [x] Phase bump to 52
