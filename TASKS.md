@@ -941,3 +941,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Profile: Copy card and Share buttons have titles
 - [ ] Feed: Save button title reflects state
 - [x] Phase bump to 105
+
+## Phase 106: New Autonomous Features (2026-11-08)
+- [x] Phase 106 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 105 stable, server restarted)
+- [ ] Server: /api/version omits pid (kept on /api/health) for cleaner public metadata
+- [ ] Client: settings "Open /api/health" link has 	itle
+- [ ] Post: "Copy link" button gets 	itle
+- [x] Phase bump to 106
