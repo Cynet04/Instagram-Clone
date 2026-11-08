@@ -44,7 +44,7 @@
 - [x] Infinite scroll / pagination (feed offset/limit + intersection observer)
 - [x] CSS image filters (selectable on upload, rendered in feed/explore)
 - [x] Real-time-ish message persistence UI (conversations, thread view, send)
-- [ ] Story viewer modal
+- [x] Story viewer modal (clickable stories, prev/next/close)
 - [ ] Follow/unfollow
 - [ ] Profile edit (bio/avatar)
 - [ ] Additional autonomous features
@@ -55,4 +55,5 @@
 - 2026-11-08: Bookmarks/saved posts added (per-user save API, saved view, feed save state).
 - 2026-11-08: Notifications added for likes/comments with unread badge and mark-read. Server restarted and health verified.
 - 2026-11-08: Feed pagination/infinite scroll and CSS image filters added. Server restarted and API verified.
-- 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified. Next: story viewer modal.
+- 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified.
+- 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified. Next: follow/unfollow.

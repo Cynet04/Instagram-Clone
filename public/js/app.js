@@ -1,4 +1,4 @@
-const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false }, dm: { userId: null } };
+const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false }, dm: { userId: null }, stories: [], storyIndex: 0 };
 
 const el = (id) => document.getElementById(id);
 const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search"];
@@ -95,11 +95,30 @@ function postHtml(p) {
 
 async function loadStories() {
   const { stories } = await api("/api/stories");
-  const users = new Map();
-  stories.forEach((s) => { if (s.user && !users.has(s.user.id)) users.set(s.user.id, s.user); });
-  el("stories").innerHTML = [...users.values()].map((u) => `
-    <div class="story"><img src="${avatar(u)}" alt="" /><span>${esc(u.username)}</span></div>`).join("") || `<div class="story"><span>No stories</span></div>`;
+  state.stories = stories || [];
+  el("stories").innerHTML = state.stories.map((s, i) => `
+    <button class="story" type="button" data-story-index="${i}"><img src="${avatar(s.user)}" alt="" /><span>${esc(s.user?.username || "story")}</span></button>`).join("") || `<div class="story"><span>No stories</span></div>`;
+  el("stories").querySelectorAll("[data-story-index]").forEach((b) => b.onclick = () => openStory(Number(b.dataset.storyIndex)));
 }
+
+function renderStory() {
+  const s = state.stories[state.storyIndex];
+  if (!s) return;
+  el("storyImage").src = s.image;
+  el("storyMeta").textContent = `${s.user?.username || "story"} • ${timeAgo(s.createdAt)}`;
+}
+
+function openStory(index = 0) {
+  if (!state.stories.length) return;
+  state.storyIndex = Math.max(0, Math.min(index, state.stories.length - 1));
+  renderStory();
+  el("storyDialog").showModal();
+}
+
+el("storyPrev")?.addEventListener("click", () => { if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } });
+el("storyNext")?.addEventListener("click", () => { if (state.storyIndex < state.stories.length - 1) { state.storyIndex++; renderStory(); } else el("storyDialog").close(); });
+el("storyClose")?.addEventListener("click", () => el("storyDialog").close());
+el("storyDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 
 async function loadFeed(reset = true) {
   if (state.feed.loading) return;
