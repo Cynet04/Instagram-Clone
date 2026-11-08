@@ -599,7 +599,7 @@ async function renderMessages() {
       </div>
       <div class="dm-chat">
         <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button>` : "Select a conversation"}</div>
-        <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
+        <div class="dm-body">${(thread.messages || []).map((m) => `<div class="dm-msg ${m.from === state.me.id ? "me" : ""}" data-msg-id="${esc(m.id || "")}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}${m.from === state.me.id && m.id ? ` <button type="button" class="del-msg-btn" data-msg-id="${esc(m.id)}" style="border:0;background:none;color:inherit;cursor:pointer;padding:0;margin-left:6px">Delete</button>` : ""}</div></div>`).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`}</div>
         ${active ? `<div id="dmTyping" class="form-status" aria-live="polite" style="padding:0 14px"></div><form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
       </div>
     </div>`;
@@ -609,6 +609,12 @@ async function renderMessages() {
       n.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
     });
     bindProfileLinks(el("view-messages"));
+    el("view-messages").querySelectorAll(".del-msg-btn").forEach((b) => b.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const id = b.dataset.msgId; if (!id || !state.dm.userId) return;
+      try { await api(`/api/messages/${state.dm.userId}/${id}`, { method: "DELETE" }); b.closest(".dm-msg")?.remove(); toast("Message deleted."); }
+      catch (err) { toast(err.message, "error"); }
+    }));
     el("clearDmBtn")?.addEventListener("click", async () => {
       if (!state.dm.userId || !confirm("Clear this conversation?")) return;
       try { await api(`/api/messages/${state.dm.userId}`, { method: "DELETE" }); toast("Conversation cleared."); renderMessages(); refreshDmBadge(); }

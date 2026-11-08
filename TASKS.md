@@ -219,8 +219,15 @@
 - 2026-11-08: DM UX polish added (optimistic message send with sending state/rollback, conversation preview timestamp update, timestamp separator fix). Client syntax and health verified. Next: additional autonomous features.
 
 ## Phase 10: New Autonomous Features (2026-11-08)
-- [ ] Notification preferences toggles (localStorage; mute likes/comments/follows/comment likes)
-- [ ] Post pin/unpin on own profile (MVP local/API)
+- [x] Notification preferences toggles (localStorage; mute likes/comments/follows/comment likes)
+- [x] Post pin/unpin on own profile (MVP local indicators/actions)
 - [x] Story reply/quick reaction UI (MVP local state/toast)
 - [x] DM typing indicator simulation (local UI polish)
 - [x] Account data export (download local-visible JSON snapshot via `/api/me/export`)
+
+## Phase 11: New Autonomous Features (2026-11-08)
+- [ ] Post bookmark collections label (local MVP)
+- [ ] Profile QR/share text helper (copy profile card text)
+- [ ] Feed sort toggle (newest/most liked, client-side)
+- [x] Message delete (own message, API + UI)
+- [ ] Activity status indicator (local setting)

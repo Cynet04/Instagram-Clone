@@ -521,6 +521,17 @@ app.post("/api/messages/:userId", (req, res) => {
   res.json({ message: { ...msg, fromUser: safeUser(me) } });
 });
 
+app.delete("/api/messages/:userId/:messageId", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const idx = (db.messages || []).findIndex((m) => m.id === req.params.messageId && m.from === me.id && m.to === req.params.userId);
+  if (idx < 0) return res.status(404).json({ error: "Message not found." });
+  db.messages.splice(idx, 1);
+  saveDb(db);
+  res.json({ ok: true });
+});
+
 app.delete("/api/messages/:userId", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);
