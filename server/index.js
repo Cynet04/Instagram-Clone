@@ -444,7 +444,12 @@ app.get("/api/search", (req, res) => {
   const me = currentUser(req, db);
   const saved = new Set(me?.saved || []);
   if (!q) return res.json({ users: [], posts: [], q: qRaw });
-  const users = db.users.filter((u) => u.username.toLowerCase().includes(q.replace(/^#/, "")) || (u.name || "").toLowerCase().includes(q)).map(safeUser);
+  const users = db.users.filter((u) => u.username.toLowerCase().includes(q.replace(/^#/, "")) || (u.name || "").toLowerCase().includes(q)).map((u) => {
+    const s = safeUser(u);
+    const followers = db.users.filter((x) => (x.following || []).includes(u.id)).length;
+    const isFollowing = me ? (me.following || []).includes(u.id) : false;
+    return { ...s, followers, isFollowing, isMe: !!me && me.id === u.id };
+  });
   const posts = db.posts.filter((p) => {
     const cap = String(p.caption || "").toLowerCase();
     if (q.startsWith("#")) return cap.includes(q);

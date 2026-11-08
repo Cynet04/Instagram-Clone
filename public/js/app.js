@@ -410,13 +410,27 @@ async function loadSearch(q) {
   try {
     const { users = [], posts = [] } = await api(`/api/search?q=${encodeURIComponent(q)}`);
     const usersHtml = users.length
-      ? users.map((u) => `<div class="suggestion"><img class="avatar" src="${avatar(u)}" alt="" /><strong>${esc(u.username)}</strong><button data-user="${esc(u.username)}">View</button></div>`).join("")
+      ? users.map((u) => `<div class="suggestion"><img class="avatar profile-link" src="${avatar(u)}" alt="" data-profile="${esc(u.username)}" /><div style="flex:1"><strong class="profile-link" data-profile="${esc(u.username)}">${esc(u.username)}</strong><small class="muted" style="display:block">${esc(u.name || "")}</small></div>${state.me && !u.isMe ? `<button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px">${u.isFollowing ? "Following" : "Follow"}</button>` : ""}<button data-user="${esc(u.username)}" class="mini-btn secondary" style="padding:4px 8px;font-size:12px">View</button></div>`).join("")
       : `<div style="padding:8px 0;color:var(--muted)">No users found.</div>`;
     const postsHtml = posts.length
       ? posts.map(postHtml).join("")
       : emptyState("No posts found", `No results for "${esc(q)}". Try a different keyword or hashtag.`);
     el("view-search").innerHTML = `<div class="card" style="padding:14px"><h3>Search: ${esc(q)}</h3><h4>Users</h4>${usersHtml}</div><div class="card" style="padding:14px"><h4 style="margin-top:0">Posts</h4></div>${postsHtml}`;
     el("view-search").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
+    el("view-search").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
+      if (!state.me) return openAuth();
+      const prev = b.textContent;
+      b.disabled = true;
+      try {
+        const res = await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
+        b.textContent = res.following ? "Following" : "Follow";
+        b.classList.toggle("secondary", !!res.following);
+        toast(res.following ? "Following user." : "Unfollowed.");
+        refreshNotificationsBadge();
+      } catch (e) { b.textContent = prev; toast(e.message, "error"); }
+      finally { b.disabled = false; }
+    });
+    bindProfileLinks(el("view-search"));
     bindPostActions(el("view-search"));
     setView("search", { skipLoad: true });
   } catch (e) { el("view-search").innerHTML = errorState(e.message); setView("search", { skipLoad: true }); }

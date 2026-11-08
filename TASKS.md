@@ -112,3 +112,4 @@
 - 2026-11-08: Remaining `alert()` calls replaced with toast/status feedback (kept confirm/prompt for delete confirmation and clipboard fallback). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Post detail route/hash polish added (post dialog open/close syncs `#/post/:id`/feed hash; auth/story success toasts). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small status/feedback polish added (profile update toast, health indicator error color, post deep-link failure resets hash). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Search/profile follow-state refinements added (`/api/search` includes follow state, search results render follow/view actions with optimistic updates and toasts). Server/client syntax and health verified. Next: additional autonomous features.
