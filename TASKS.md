@@ -114,6 +114,7 @@
 - [x] Post share image-link fallback refinement (share includes image URL/text where appropriate; clipboard fallback remains)
 - [x] Settings route/auth-state UX (settings view refreshes on auth changes; title/route behavior consistent)
 - [x] Copy caption action (post action copies caption text with clipboard/prompt fallback and toast)
+- [x] Double-tap like on feed post image (image double-click likes post without changing open behavior)
 - [ ] Additional autonomous features (e.g., small UX refinements, perf polish)
 
 ## Progress Log
