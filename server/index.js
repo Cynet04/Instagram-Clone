@@ -211,6 +211,17 @@ app.delete("/api/posts/:id", (req, res) => {
   res.json({ ok: true });
 });
 
+
+app.get("/api/me/reports", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const mine = (db.reports || []).filter((r) => r.reporterId === me.id).slice(0, 50).map((r) => {
+    const post = r.type === "post" ? (db.posts || []).find((p) => p.id === r.targetId) : null;
+    return { ...r, target: post ? { id: post.id, caption: post.caption || "", image: post.image || "", user: safeUser(db.users.find((u) => u.id === post.userId)) } : null };
+  });
+  res.json({ reports: mine });
+});
 app.post("/api/posts/:id/report", (req, res) => {
   const db = loadDb();
   const me = currentUser(req, db);

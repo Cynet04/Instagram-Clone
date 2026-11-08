@@ -489,8 +489,17 @@ async function renderSettings() {
         <h4 style="margin:0 0 8px">App info</h4>
         <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme stored in localStorage. Runtime data/uploads are local. Not the Supabase/React spec stack.</div>
       </section>
+      <section>
+        <h4 style="margin:0 0 8px">My reports (local MVP)</h4>
+        <div id="myReportsList" class="muted" style="font-size:13px">Loading reports...</div>
+      </section>
     </div>`;
   bindProfileLinks(root);
+  try {
+    const { reports = [] } = await api("/api/me/reports");
+    el("myReportsList").innerHTML = reports.length ? reports.map((r) => `<div class="notif" style="align-items:center"><div style="flex:1"><strong>${esc(r.type)}</strong> ${esc(r.reason || "")} ${r.target?.user?.username ? `· @${esc(r.target.user.username)}` : ""}<div style="color:var(--muted);font-size:12px">${timeAgo(r.createdAt)} · ${esc(r.status || "open")}</div></div>${r.target?.id ? `<button type="button" class="mini-btn secondary" data-post-id="${esc(r.target.id)}">Open</button>` : ""}</div>`).join("") : "No reports submitted.";
+    bindPostOpen(el("myReportsList"));
+  } catch (e) { el("myReportsList").textContent = e.message || "Could not load reports."; }
   root.querySelector("#settingsThemeBtn")?.addEventListener("click", () => el("themeBtn")?.click());
   root.querySelector("#settingsLogoutBtn")?.addEventListener("click", () => el("authBtn")?.click());
   root.querySelector("#passwordForm")?.addEventListener("submit", async (e) => {
