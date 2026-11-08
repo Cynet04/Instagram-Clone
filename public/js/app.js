@@ -189,7 +189,7 @@ async function loadNotifications() {
     el("view-notifications").innerHTML = `<div class="card"><div style="padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Notifications</h3><button id="markReadBtn" style="border:0;background:none;color:var(--blue);font-weight:600">Mark read</button></div>` +
       (notifications.map((n) => {
         const actor = esc(n.actor?.username || "Someone");
-        const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : "interacted with you";
+        const msg = n.type === "like" ? "liked your post" : n.type === "comment" ? `commented: ${esc(n.text || "")}` : n.type === "follow" ? "started following you" : "interacted with you";
         return `<div class="notif ${n.read ? "" : "unread"}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><div><strong>${actor}</strong> ${msg}<div style="color:var(--muted);font-size:12px">${timeAgo(n.createdAt)}</div></div></div>`;
       }).join("") || `<div style="padding:16px">No notifications yet.</div>`) + `</div>`;
     el("markReadBtn")?.addEventListener("click", async () => { await api("/api/notifications/read", { method: "POST", body: "{}" }); loadNotifications(); });
@@ -214,20 +214,30 @@ async function loadProfile(username) {
     setView("profile");
     return;
   }
-  const { user, posts } = await api(`/api/users/${encodeURIComponent(username)}`);
+  const { user, posts, followers = 0, following = 0, isFollowing = false, isMe = false } = await api(`/api/users/${encodeURIComponent(username)}`);
   el("view-profile").innerHTML = `
     <div class="card">
       <div class="profile-head">
         <img class="avatar" src="${avatar(user)}" alt="" />
-        <div>
-          <h2 style="margin:0 0 6px">${esc(user.username)}</h2>
-          <div><strong>${posts.length}</strong> posts</div>
-          <div style="margin-top:6px"><strong>${esc(user.name || "")}</strong></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <h2 style="margin:0">${esc(user.username)}</h2>
+            ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
+          </div>
+          <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
+          <div><strong>${esc(user.name || "")}</strong></div>
           <div>${esc(user.bio || "")}</div>
         </div>
       </div>
     </div>
-    <div class="card" style="padding:4px"><div class="grid">${posts.map((p) => `<img src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No posts</div>`}</div></div>`;
+    <div class="card" style="padding:4px"><div class="grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No posts</div>`}</div></div>`;
+  el("followBtn")?.addEventListener("click", async () => {
+    try {
+      const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
+      loadProfile(user.username);
+      refreshNotificationsBadge();
+    } catch (e) { alert(e.message); }
+  });
   setView("profile");
 }
 

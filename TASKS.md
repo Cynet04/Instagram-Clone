@@ -40,13 +40,14 @@
 ## Phase 9+: Continuous Improvements
 - [x] Dark mode toggle (persisted in localStorage)
 - [x] Bookmarks/saved posts (API + saved view)
-- [x] Notifications (like/comment events, list, unread badge, mark-read)
+- [x] Notifications (like/comment/follow events, list, unread badge, mark-read)
 - [x] Infinite scroll / pagination (feed offset/limit + intersection observer)
-- [x] CSS image filters (selectable on upload, rendered in feed/explore)
+- [x] CSS image filters (selectable on upload, rendered in feed/explore/profile)
 - [x] Real-time-ish message persistence UI (conversations, thread view, send)
 - [x] Story viewer modal (clickable stories, prev/next/close)
-- [ ] Follow/unfollow
+- [x] Follow/unfollow (API + profile counts + follow notifications)
 - [ ] Profile edit (bio/avatar)
+- [ ] Post delete
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -56,4 +57,5 @@
 - 2026-11-08: Notifications added for likes/comments with unread badge and mark-read. Server restarted and health verified.
 - 2026-11-08: Feed pagination/infinite scroll and CSS image filters added. Server restarted and API verified.
 - 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified.
-- 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified. Next: follow/unfollow.
+- 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified.
+- 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified. Next: profile edit.

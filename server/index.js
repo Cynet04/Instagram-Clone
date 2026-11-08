@@ -22,9 +22,9 @@ function seed() {
   const demoPass = bcrypt.hashSync("password123", 10);
   return {
     users: [
-      { id: "u_demo", username: "demo", name: "Demo User", password: demoPass, bio: "Building an Instagram clone.", avatar: "", saved: [] },
-      { id: "u_alex", username: "alex", name: "Alex Rivera", password: demoPass, bio: "Coffee, code, sunsets.", avatar: "", saved: [] },
-      { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "", saved: [] }
+      { id: "u_demo", username: "demo", name: "Demo User", password: demoPass, bio: "Building an Instagram clone.", avatar: "", saved: [], following: ["u_alex"] },
+      { id: "u_alex", username: "alex", name: "Alex Rivera", password: demoPass, bio: "Coffee, code, sunsets.", avatar: "", saved: [], following: ["u_demo"] },
+      { id: "u_sam", username: "sam", name: "Sam Lee", password: demoPass, bio: "Travel snapshots.", avatar: "", saved: [], following: [] }
     ],
     posts: [
       { id: nanoid(10), userId: "u_alex", image: "https://picsum.photos/seed/ig1/1080/1080", caption: "Morning light in the city.", createdAt: now - 3600_000, likes: ["u_demo"], comments: [{ id: nanoid(8), userId: "u_demo", text: "Great shot!", createdAt: now - 3000_000 }] },
@@ -47,7 +47,7 @@ function loadDb() {
     return db;
   }
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
-  db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [] }));
+  db.users = (db.users || []).map((u) => ({ ...u, saved: Array.isArray(u.saved) ? u.saved : [], following: Array.isArray(u.following) ? u.following : [] }));
   db.posts = (db.posts || []).map((p) => ({ ...p, filter: p.filter || "none" }));
   db.stories = db.stories || [];
   db.messages = db.messages || [];
@@ -297,10 +297,32 @@ app.get("/api/stories", (req, res) => {
 
 app.get("/api/users/:username", (req, res) => {
   const db = loadDb();
+  const me = currentUser(req, db);
   const user = db.users.find((u) => u.username.toLowerCase() === req.params.username.toLowerCase());
   if (!user) return res.status(404).json({ error: "User not found." });
-  const posts = db.posts.filter((p) => p.userId === user.id).sort((a, b) => b.createdAt - a.createdAt);
-  res.json({ user: safeUser(user), posts });
+  const posts = db.posts.filter((p) => p.userId === user.id).sort((a, b) => b.createdAt - a.createdAt).map((p) => ({ ...p, filter: p.filter || "none" }));
+  const followers = db.users.filter((u) => (u.following || []).includes(user.id)).length;
+  const following = (user.following || []).length;
+  const isFollowing = me ? (me.following || []).includes(user.id) : false;
+  res.json({ user: safeUser(user), posts, followers, following, isFollowing, isMe: !!me && me.id === user.id });
+});
+
+app.post("/api/users/:username/follow", (req, res) => {
+  const db = loadDb();
+  const meUser = currentUser(req, db);
+  if (!meUser) return res.status(401).json({ error: "Login required." });
+  const me = db.users.find((u) => u.id === meUser.id);
+  const target = db.users.find((u) => u.username.toLowerCase() === req.params.username.toLowerCase());
+  if (!target || !me) return res.status(404).json({ error: "User not found." });
+  if (target.id === me.id) return res.status(400).json({ error: "Cannot follow yourself." });
+  me.following = Array.isArray(me.following) ? me.following : [];
+  const i = me.following.indexOf(target.id);
+  let following;
+  if (i >= 0) { me.following.splice(i, 1); following = false; }
+  else { me.following.push(target.id); following = true; addNotification(db, { userId: target.id, actorId: me.id, type: "follow" }); }
+  saveDb(db);
+  const followers = db.users.filter((u) => (u.following || []).includes(target.id)).length;
+  res.json({ following, followers });
 });
 
 app.get("/api/search", (req, res) => {
