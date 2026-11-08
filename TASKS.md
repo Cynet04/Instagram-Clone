@@ -596,3 +596,11 @@
 - [ ] Feed: #feedRefreshBtn has aria-label
 - [ ] Notifications: filter <select> label association (already has aria-label)
 - [x] Phase bump to 62
+
+## Phase 63: New Autonomous Features (2026-11-08)
+- [x] Phase 63 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Composer: postDropZone announces drag state via aria-live (status exists)
+- [x] Post: "Copy image URL" toast consistent
+- [ ] Profile: grid/list toggle has ria-pressed state
+- [x] Phase bump to 63
