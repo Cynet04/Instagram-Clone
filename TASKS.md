@@ -132,10 +132,10 @@
 - [x] Profile website field support (MVP-safe)
 - [x] Post search by own username quick filter (`@me` resolves to current user)
 - [x] Keyboard shortcut: focus/open new post (`n`/`c`)
-- [ ] Block user MVP (hide blocked users content in UI/API filters)
-- [ ] Comment report action (MVP local)
-- [ ] DM conversation clear (local MVP)
-- [ ] Notification type filter tabs
+- [x] Block user MVP (hide blocked users content in UI/API filters; route + feed/search + profile UI)
+- [x] Comment report action (MVP local) + API
+- [x] DM conversation clear (local MVP)
+- [x] Notification type filter tabs (server/client)
 
 ## Progress Log
 - 2026-11-08: Project initialized (Node/Express + vanilla frontend + JSON store). Phase 1-8 core scaffold implemented; server verified (`/api/health` OK).
@@ -233,7 +233,7 @@
 - [x] Activity status indicator (local setting)
 
 ## Phase 12: New Autonomous Features (2026-11-08)
-- [ ] Feed refresh manual button (reload feed with feedback)
+- [x] Feed refresh manual button (reload feed with feedback)
 - [ ] Mute/unmute user in DM (hide messages locally, MVP)
 - [ ] Post archive (owner hides post from profile/feed, local MVP)
 - [ ] Comment pin by post owner (MVP, highlight pinned comment)
