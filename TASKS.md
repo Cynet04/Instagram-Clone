@@ -628,3 +628,11 @@
 - [x] Saved view: error state uses retry action
 - [x] Profile: private note textarea has visible label association (done)
 - [x] Phase bump to 66
+
+## Phase 67: New Autonomous Features (2026-11-08)
+- [x] Phase 67 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Feed: end-of-feed message has clear contrast-safe muted style (class-based)
+- [ ] Post: action buttons have consistent 	ype="button" (verify)
+- [ ] Messages: DM send form uses ria-label
+- [x] Phase bump to 67
