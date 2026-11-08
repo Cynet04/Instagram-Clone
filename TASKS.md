@@ -957,3 +957,11 @@ odeEnv hint not required; keep minimal � add pid to /api/health for diagnostic
 - [ ] Post: report button gets 	itle
 - [x] Feed refresh hint: has aria-label (verify)
 - [x] Phase bump to 107
+
+## Phase 108: New Autonomous Features (2026-11-08)
+- [x] Phase 108 autonomous batch complete (2026-11-08)
+- [x] Baseline green (phase 107)
+- [ ] Server: add HEAD /api/health support for lightweight checks
+- [x] Client: comment like button title reflects state
+- [ ] Post: Open action already titled; ensure explore grid open uses same label
+- [x] Phase bump to 108
