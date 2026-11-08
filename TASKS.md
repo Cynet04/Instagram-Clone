@@ -755,3 +755,11 @@
 - [x] Profile: follow/message buttons have consistent spacing
 - [x] Post: image load error alt fallback exists
 - [x] Phase bump to 82
+
+## Phase 83: New Autonomous Features (2026-11-08)
+- [x] Phase 83 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [x] Notifications: "All caught up" copy matches filter context
+- [x] Feed: post header shows location only when present (done)
+- [ ] Profile: stats ria-label clarifies dialog action (done)
+- [x] Phase bump to 83
