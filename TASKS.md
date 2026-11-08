@@ -676,3 +676,11 @@
 - [x] Story dialog: image input placeholder already clear
 - [x] Profile edit: website field validation message clear (already)
 - [x] Phase bump to 72
+
+## Phase 73: New Autonomous Features (2026-11-08)
+- [x] Phase 73 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: image onerror fallback is consistent
+- [x] Feed: sort persists across sessions (done)
+- [x] Profile: follow button text updates optimistically (done)
+- [x] Phase bump to 73
