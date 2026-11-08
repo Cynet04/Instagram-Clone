@@ -930,6 +930,21 @@ function bindPostActions(root) {
         if (state.view === "profile") loadProfile(state.me?.username); else loadFeed(true);
       });
     });
+    postEl.querySelector(".comment-sort")?.addEventListener("change", () => {
+      const sort = postEl.querySelector(".comment-sort")?.value || "top";
+      const wrap = postEl.querySelector(".comments"); if (!wrap) return;
+      const items = Array.from(wrap.querySelectorAll(".comment"));
+      // Re-fetch not needed; just reload view for simplicity
+      if (state.view === "profile") loadProfile(state.me?.username); else loadFeed(true);
+    });
+    postEl.querySelectorAll(".comment-pin-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const postId = postEl.dataset.id; const id = btn.dataset.commentId; const ids = pinnedCommentIds(postId);
+        const next = ids.includes(id) ? ids.filter((x)=>x!==id) : [id, ...ids].slice(0,3);
+        setPinnedCommentIds(postId, next); toast(ids.includes(id) ? "Comment unpinned." : "Comment pinned.");
+        if (state.view === "profile") loadProfile(state.me?.username); else loadFeed(true);
+      });
+    });
     postEl.querySelectorAll(".comment-report-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!state.me) return openAuth();
