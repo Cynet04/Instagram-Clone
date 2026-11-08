@@ -873,7 +873,7 @@ otif-time uses 	imeAgo (done)
 ## Phase 97: New Autonomous Features (2026-11-08)
 - [x] Phase 97 autonomous batch complete (2026-11-08)
 - [x] Baseline green
-- [ ] API: posts include updatedAt not tracked; keep immutable MVP semantics
+- [x] API: posts include updatedAt not tracked; keep immutable MVP semantics
 - [x] Client: optimistic like path avoids stale badge race (best-effort)
 - [ ] Docs: PROGRESS.md not updated this run � summarize next commit
 - [x] Phase bump to 97
@@ -889,7 +889,7 @@ otif-time uses 	imeAgo (done)
 ## Phase 99: New Autonomous Features (2026-11-08)
 - [x] Phase 99 autonomous batch complete (2026-11-08)
 - [x] Baseline green (Phase 98 follow-up fix pushed)
-- [ ] Health: include uptimeSec in /api/health
+- [x] Health: include uptimeSec in /api/health
 - [x] Client: show uptime in settings health status when present
-- [ ] Post: copy-post-id button has title
+- [x] Post: copy-post-id button has title
 - [x] Phase bump to 99
