@@ -274,8 +274,9 @@
 - [x] Search result avatars consistent sizing/fallback
 
 ## Phase 18: New Autonomous Features (2026-11-08)
-- [ ] Feed "new posts available" refresh hint after manual actions
-- [ ] Profile post count/click opens posts tab explicitly
-- [ ] Notification item delete (local hide) + persist hidden IDs
-- [ ] Keyboard shortcut:  refresh current view
-- [ ] Settings: show build/version/date info from client constants
+- [x] Feed "new posts available" refresh hint after manual actions
+- [x] Profile post count/click opens posts tab explicitly
+- [x] Notification item delete (local hide) + persist hidden IDs
+- [x] Keyboard shortcut: `r` refresh current view
+- [x] Settings: show build/version/date info from client constants
+- [x] Phase 18 autonomous batch complete (2026-11-08)
