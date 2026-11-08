@@ -83,4 +83,4 @@
 - 2026-11-08: Suggested users sidebar now supports follow/view actions with follow-state hydration. Client syntax verified.
 - 2026-11-08: Post creation accepts file or validated image URL fallback; feed posts/comments now have clickable profile links. Server restarted and health verified.
 - 2026-11-08: Explore integrates with search input and clear action; explore results show clickable profile-linked images. Client syntax verified.
-- 2026-11-08: Composer UX polish added (post image/filter preview, inline form status/errors, submit/reset controls). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Keyboard/focus/dialog refinements added (shared dialog open/close with focus restore, Escape closes open dialogs, comment focus uses event handler). Client syntax and health verified. Next: additional autonomous features.

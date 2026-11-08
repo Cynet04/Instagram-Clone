@@ -128,7 +128,7 @@ function postHtml(p) {
       <img class="post-image filter-${filter}" src="${esc(p.image)}" alt="post" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'" />
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
-        <button aria-label="Comment" onclick="document.querySelector('[data-id=\\'${p.id}\\'] .comment-form input')?.focus()">Comment</button>
+        <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
@@ -171,13 +171,13 @@ function openStory(index = 0) {
   if (!state.stories.length) return;
   state.storyIndex = Math.max(0, Math.min(index, state.stories.length - 1));
   renderStory();
-  el("storyDialog").showModal();
+  showDialog(el("storyDialog"));
 }
 
 el("storyPrev")?.addEventListener("click", () => { if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } });
-el("storyNext")?.addEventListener("click", () => { if (state.storyIndex < state.stories.length - 1) { state.storyIndex++; renderStory(); } else el("storyDialog").close(); });
-el("storyClose")?.addEventListener("click", () => el("storyDialog").close());
-el("storyDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+el("storyNext")?.addEventListener("click", () => { if (state.storyIndex < state.stories.length - 1) { state.storyIndex++; renderStory(); } else closeDialog(el("storyDialog")); });
+el("storyClose")?.addEventListener("click", () => closeDialog(el("storyDialog")));
+el("storyDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 
 async function loadFeed(reset = true) {
   if (state.feed.loading) return;
@@ -281,7 +281,7 @@ async function loadNotifications() {
             const { post } = await api(`/api/posts/${postId}`);
             el("postDialogBody").innerHTML = postHtml(post);
             bindPostActions(el("postDialogBody"));
-            el("postDialog").showModal();
+            showDialog(el("postDialog"));
           } else if (profile) {
             loadProfile(profile);
           }
@@ -351,7 +351,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     f.bio.value = state.me?.bio || "";
     f.avatar.value = state.me?.avatar || "";
     el("profileEditError").textContent = "";
-    el("profileEditDialog").showModal();
+    showDialog(el("profileEditDialog"));
   });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
@@ -431,6 +431,19 @@ function bindProfileLinks(root) {
   });
 }
 
+let lastFocus = null;
+function showDialog(dialog) {
+  if (!dialog) return;
+  lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (!dialog.open) dialog.showModal();
+}
+function closeDialog(dialog) {
+  if (!dialog?.open) return;
+  dialog.close();
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  lastFocus = null;
+}
+
 function bindPostOpen(root) {
   root.querySelectorAll(".post-image, .grid img[data-post-id], .explore-grid img[data-post-id]").forEach((img) => {
     img.addEventListener("click", async (e) => {
@@ -441,7 +454,7 @@ function bindPostOpen(root) {
         const { post } = await api(`/api/posts/${postId}`);
         el("postDialogBody").innerHTML = postHtml(post);
         bindPostActions(el("postDialogBody"));
-        el("postDialog").showModal();
+        showDialog(el("postDialog"));
       } catch (err) { alert(err.message); }
     });
   });
@@ -452,6 +465,10 @@ function bindPostActions(root) {
   bindProfileLinks(root);
   bindPostOpen(root);
   root.querySelectorAll(".post").forEach((postEl) => {
+    postEl.querySelector(".comment-focus-btn")?.addEventListener("click", () => {
+      if (!state.me) return openAuth();
+      postEl.querySelector('.comment-form input[name="text"]')?.focus();
+    });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
       try {
@@ -562,7 +579,7 @@ function openAuth(mode = "login") {
   el("authToggle").textContent = mode === "login" ? "Need an account?" : "Have an account?";
   el("authForm").querySelector('input[name=name]').classList.toggle("hidden", mode === "login");
   el("authError").textContent = "";
-  el("authDialog").showModal();
+  showDialog(el("authDialog"));
 }
 
 async function loadMe() {
@@ -584,7 +601,7 @@ el("authForm").addEventListener("submit", async (e) => {
   try {
     const path = state.authMode === "login" ? "/api/auth/login" : "/api/auth/signup";
     const { user } = await api(path, { method: "POST", body: JSON.stringify(payload) });
-    state.me = user; renderMe(); el("authDialog").close(); setView("feed");
+    state.me = user; renderMe(); closeDialog(el("authDialog")); setView("feed");
   } catch (err) { el("authError").textContent = err.message; }
 });
 
@@ -651,7 +668,7 @@ el("profileEditForm")?.addEventListener("submit", async (e) => {
     const { user } = await api("/api/me/profile", { method: "POST", body: JSON.stringify(Object.fromEntries(fd.entries())) });
     state.me = user;
     renderMe();
-    el("profileEditDialog").close();
+    closeDialog(el("profileEditDialog"));
     loadProfile(user.username);
   } catch (err) { el("profileEditError").textContent = err.message; }
 });
@@ -667,15 +684,14 @@ el("themeBtn")?.addEventListener("click", () => {
   localStorage.setItem("ig_theme", dark ? "dark" : "light");
   el("themeBtn").textContent = dark ? "Light" : "Dark";
 });
-el("postDialogClose")?.addEventListener("click", () => el("postDialog").close());
-el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+el("postDialogClose")?.addEventListener("click", () => closeDialog(el("postDialog")));
+el("postDialog")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeDialog(e.currentTarget); });
 applyTheme();
 setupFeedObserver();
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  const dialog = el("postDialog");
-  if (dialog?.open) dialog.close();
+  ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
 });
 
 async function handleRoute() {
