@@ -223,6 +223,7 @@ async function loadProfile(username) {
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <h2 style="margin:0">${esc(user.username)}</h2>
             ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button>` : ""}
+            ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
           </div>
           <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
           <div><strong>${esc(user.name || "")}</strong></div>
@@ -233,10 +234,18 @@ async function loadProfile(username) {
     <div class="card" style="padding:4px"><div class="grid">${posts.map((p) => `<img class="filter-${esc(p.filter || "none")}" src="${esc(p.image)}" alt="" loading="lazy" />`).join("") || `<div style="padding:16px">No posts</div>`}</div></div>`;
   el("followBtn")?.addEventListener("click", async () => {
     try {
-      const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
+      await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
       loadProfile(user.username);
       refreshNotificationsBadge();
     } catch (e) { alert(e.message); }
+  });
+  el("editProfileBtn")?.addEventListener("click", () => {
+    const f = el("profileEditForm");
+    f.name.value = state.me?.name || "";
+    f.bio.value = state.me?.bio || "";
+    f.avatar.value = state.me?.avatar || "";
+    el("profileEditError").textContent = "";
+    el("profileEditDialog").showModal();
   });
   setView("profile");
 }
@@ -369,6 +378,18 @@ el("postForm").addEventListener("submit", async (e) => {
     el("composer").classList.add("hidden");
     await loadFeed(true);
   } catch (err) { alert(err.message); }
+});
+el("profileEditForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!state.me) return openAuth();
+  const fd = new FormData(e.currentTarget);
+  try {
+    const { user } = await api("/api/me/profile", { method: "POST", body: JSON.stringify(Object.fromEntries(fd.entries())) });
+    state.me = user;
+    renderMe();
+    el("profileEditDialog").close();
+    loadProfile(user.username);
+  } catch (err) { el("profileEditError").textContent = err.message; }
 });
 
 function applyTheme() {

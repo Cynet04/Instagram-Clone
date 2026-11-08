@@ -46,8 +46,8 @@
 - [x] Real-time-ish message persistence UI (conversations, thread view, send)
 - [x] Story viewer modal (clickable stories, prev/next/close)
 - [x] Follow/unfollow (API + profile counts + follow notifications)
-- [ ] Profile edit (bio/avatar)
-- [ ] Post delete
+- [x] Profile edit (bio/name/avatar URL, persisted via `/api/me/profile`)
+- [ ] Post delete (owner)
 - [ ] Additional autonomous features
 
 ## Progress Log
@@ -58,4 +58,5 @@
 - 2026-11-08: Feed pagination/infinite scroll and CSS image filters added. Server restarted and API verified.
 - 2026-11-08: Direct messaging persistence added (conversation/thread/send APIs + UI). `safeUser` helper restored after feed regression; server restarted and health verified.
 - 2026-11-08: Story viewer modal added (story dialog, navigation, and story metadata rendering). Health verified.
-- 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified. Next: profile edit.
+- 2026-11-08: Follow/unfollow added with follower/following counts, profile action button, and follow notifications. Server restarted and health verified.
+- 2026-11-08: Profile edit added (name/bio/avatar URL with API persistence and profile dialog). Server restarted and health verified. Next: post delete.

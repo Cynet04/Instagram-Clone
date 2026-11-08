@@ -83,6 +83,20 @@
       </form>
     </dialog>
 
+    <dialog id="profileEditDialog">
+      <form id="profileEditForm" method="dialog">
+        <h3>Edit profile</h3>
+        <input name="name" placeholder="Name" maxlength="80" />
+        <textarea name="bio" placeholder="Bio" maxlength="150"></textarea>
+        <input name="avatar" placeholder="Avatar URL (https://...)" maxlength="500" />
+        <div class="row">
+          <button id="profileSaveBtn" value="default">Save</button>
+          <button type="button" onclick="document.getElementById('profileEditDialog').close()">Cancel</button>
+        </div>
+        <p id="profileEditError" class="error"></p>
+      </form>
+    </dialog>
+
     <dialog id="storyDialog" class="story-dialog">
       <div class="story-view">
         <button id="storyPrev" type="button" aria-label="Previous">‹</button>
