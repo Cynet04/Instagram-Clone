@@ -243,8 +243,8 @@
 ## Phase 13: New Autonomous Features (2026-11-08)
 - [x] Post save count indicator (show saves count to post owner in UI)
 - [x] Comment sort toggle (newest/top/oldest, client-side)
-- [ ] Quick profile hover card info in post header (local UI enhancement)
-- [ ] "Seen" indicator for own DM messages (client-side/local state)
+- [x] Quick profile hover card info in post header (local UI enhancement)
+- [x] "Seen" indicator for own DM messages (client-side/local state)
 - [x] Search history quick chips on explore page
 - [x] Phase 13 autonomous batch complete (2026-11-08)
 
