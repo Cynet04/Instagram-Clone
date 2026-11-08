@@ -116,7 +116,7 @@
 - [x] Copy caption action (post action copies caption text with clipboard/prompt fallback and toast)
 - [x] Double-tap like on feed post image (image double-click likes post without changing open behavior)
 - [x] Copy image link action (post action copies image URL with clipboard/prompt fallback and toast)
-- [ ] Open image in new tab action
+- [x] Open image in new tab action (post action opens image URL in a new tab)
 - [ ] Recent searches (localStorage) with clear action
 - [ ] Profile counts dialog/list (followers/following basic list)
 - [ ] Settings: app info/version and data notes

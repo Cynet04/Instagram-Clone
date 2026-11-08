@@ -69,6 +69,7 @@ function postHtml(p) {
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
         <button class="copy-caption-btn" type="button" aria-label="Copy caption">Copy caption</button>
         <button class="copy-image-btn" type="button" aria-label="Copy image link">Copy image</button>
+        <button class="open-image-btn" type="button" aria-label="Open image in new tab">Open image</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
         ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
@@ -621,6 +622,10 @@ function bindPostActions(root) {
   bindPostOpen(root);
   const posts = root.classList?.contains("post") ? [root] : Array.from(root.querySelectorAll(".post"));
   posts.forEach((postEl) => {
+    postEl.querySelector(".open-image-btn")?.addEventListener("click", () => {
+      const url = postEl.querySelector(".post-image")?.getAttribute("src") || "";
+      if (url) window.open(url, "_blank", "noopener,noreferrer"); else toast("No image URL.", "error");
+    });
     postEl.querySelector(".copy-image-btn")?.addEventListener("click", async () => {
       const url = postEl.querySelector(".post-image")?.getAttribute("src") || "";
       try { if (url && navigator.clipboard?.writeText) await navigator.clipboard.writeText(url); else prompt("Image URL:", url || ""); toast(url ? "Image link copied." : "No image URL."); } catch { toast("Could not copy image link.", "error"); }
