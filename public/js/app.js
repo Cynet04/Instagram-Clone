@@ -5,7 +5,7 @@ const views = ["feed", "explore", "notifications", "saved", "messages", "profile
 let feedObserver;
 const scrollByView = {};
 
-const APP_BUILD = { name: "Socially MVP", phase: "33", date: "2026-11-08" };
+const APP_BUILD = { name: "Socially MVP", phase: "34", date: "2026-11-08" };
 function hiddenNotifIds(){ try { return new Set(JSON.parse(localStorage.getItem("ig_hidden_notifs")||"[]")); } catch { return new Set(); } }
 function hideNotifId(id){ try { const ids=[...hiddenNotifIds()]; if(!ids.includes(id)) ids.unshift(id); localStorage.setItem("ig_hidden_notifs", JSON.stringify(ids.slice(0,200))); } catch {} }
 function shareCount(postId){ try { return Number(JSON.parse(localStorage.getItem("ig_share_counts")||"{}")[postId]||0); } catch { return 0; } }
