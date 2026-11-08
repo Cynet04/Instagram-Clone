@@ -1,4 +1,4 @@
-const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false }, dm: { userId: null }, stories: [], storyIndex: 0 };
+const state = { me: null, view: "feed", authMode: "login", feed: { offset: 0, limit: 5, hasMore: true, loading: false, posts: [], sort: "newest" }, dm: { userId: null }, stories: [], storyIndex: 0 };
 
 const el = (id) => document.getElementById(id);
 const views = ["feed", "explore", "notifications", "saved", "messages", "profile", "search", "settings"];
