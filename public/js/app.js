@@ -32,121 +32,8 @@ function loadingState(message = "Loading...") {
 function emptyState(title, detail = "") {
   return `<div class="card state-card"><div class="state-title">${esc(title)}</div>${detail ? `<div class="state-detail">${esc(detail)}</div>` : ""}</div>`;
 }
-function errorState(message) {
-  return `<div class="card state-card state-error"><div class="state-title">Something went wrong</div><div class="state-detail">${esc(message)}</div></div>`;
-}
-
-function formatCaption(text = "") {
-  const safe = esc(text);
-  return safe.replace(/(^|[\s(])#([\p{L}\p{N}_]+)/gu, (m, pre, tag) => `${pre}<a href="#" class="hashtag" data-tag="#${esc(tag)}">#${esc(tag)}</a>`);
-}
-
-function avatar(user) {
-  const name = encodeURIComponent(user?.username || "user");
-  return user?.avatar || `https://api.dicebear.com/8.x/initials/svg?seed=${name}`;
-}
-
-function timeAgo(ts) {
-  const s = Math.floor((Date.now() - ts) / 1000);
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60); if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60); if (h < 24) return `${h}h`;
-  return `${Math.floor(h / 24)}d`;
-}
-
-function setDocumentTitle(text) {
-  const unread = state.me ? Number(el("notifBadge")?.textContent || 0) : 0;
-  const prefix = unread > 0 ? `(${unread}) ` : "";
-  document.title = prefix + (text ? `${text} � Instagram Clone` : "Instagram Clone");
-}
-
-function setNavActive(view) {
-  document.querySelectorAll("[data-nav-view]").forEach((b) => {
-    const active = b.dataset.navView === view;
-    b.classList.toggle("active", active);
-    if (active) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
-  });
-}
-
-function routeHash() {
-  return location.hash.replace(/^#\/?/, "");
-}
-
-function setView(view, opts = {}) {
-  state.view = view;
-  setNavActive(view);
-  const titles = { feed: "Feed", explore: "Explore", notifications: "Notifications", saved: "Saved", messages: "Messages", profile: "Profile", search: "Search" };
-  if (!opts.skipTitle) setDocumentTitle(view === "profile" && opts.username ? `@${opts.username}` : (titles[view] || ""));
-  if (!opts.fromHash) {
-    const next = view === "profile" && opts.username ? `#/profile/${encodeURIComponent(opts.username)}` : `#/${view}`;
-    if (location.hash !== next) history.replaceState(null, "", next);
-  }
-  for (const v of views) el(`view-${v}`)?.classList.toggle("hidden", v !== view);
-  el("stories").classList.toggle("hidden", view !== "feed");
-  const composer = el("composer");
-  const composerHidden = view !== "feed" || !state.me;
-  composer.classList.toggle("hidden", composerHidden);
-  el("newPostBtn")?.setAttribute("aria-expanded", composerHidden ? "false" : String(!composer.classList.contains("hidden")));
-  el("storyCreator")?.classList.add("hidden");
-  el("feedSentinel")?.classList.toggle("hidden", view !== "feed");
-  if (opts.skipLoad) return;
-  if (view === "feed") loadFeed();
-  if (view === "explore") loadExplore();
-  if (view === "notifications") loadNotifications();
-  if (view === "saved") loadSaved();
-  if (view === "messages") renderMessages();
-  if (view === "profile") loadProfile(opts.username || state.me?.username, opts.tab || "posts", { fromRoute: !!opts.fromHash });
-}
-
-function renderMe() {
-  const box = el("meCard");
-  const authBtn = el("authBtn");
-  if (!state.me) {
-    box.innerHTML = `<div class="meta"><strong>Welcome</strong><small>Log in to post, like, and comment.</small></div>`;
-    if (authBtn) authBtn.querySelector(".nav-label") ? authBtn.querySelector(".nav-label").textContent = "Log in" : authBtn.textContent = "Log in";
-    return;
-  }
-  if (authBtn) authBtn.querySelector(".nav-label") ? authBtn.querySelector(".nav-label").textContent = "Log out" : authBtn.textContent = "Log out";
-  box.innerHTML = `
-    <button type="button" class="side-user-link" data-profile="${esc(state.me.username)}" aria-label="Open your profile" style="display:flex;gap:12px;align-items:center;border:0;background:none;padding:0;color:inherit;text-align:left;cursor:pointer;width:100%">
-      <img class="avatar" src="${avatar(state.me)}" alt="" />
-      <div class="meta"><strong>${esc(state.me.username)}</strong><small>${esc(state.me.name || "")}</small></div>
-    </button>
-  `;
-  bindProfileLinks(box);
-}
-
-async function renderSuggestions(users = []) {
-  const base = users.filter((u) => u.username !== state.me?.username);
-  let picks = base.slice(0, 5);
-  if (state.me && base.length) {
-    try {
-      const details = await Promise.all(base.slice(0, 8).map((u) => api(`/api/users/${encodeURIComponent(u.username)}`).then((d) => ({ ...u, isFollowing: d.isFollowing })).catch(() => ({ ...u, isFollowing: false }))));
-      picks = details.filter((u) => !u.isFollowing).slice(0, 5);
-      if (!picks.length) picks = details.slice(0, 5);
-    } catch {}
-  }
-  el("suggestions").innerHTML = picks.map((u) => `
-    <div class="suggestion">
-      <img class="avatar" src="${avatar(u)}" alt="" />
-      <div style="flex:1"><div><strong>${esc(u.username)}</strong></div><small class="muted">Suggested for you</small></div>
-      <div style="display:flex;gap:8px">
-        <button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px" aria-label="${u.isFollowing ? "Unfollow" : "Follow"} ${esc(u.username)}">${u.isFollowing ? "Following" : "Follow"}</button>
-        <button data-user="${esc(u.username)}" aria-label="View profile ${esc(u.username)}">View</button>
-      </div>
-    </div>`).join("") || `<small class="muted">No suggestions yet.</small>`;
-  el("suggestions").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
-  el("suggestions").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
-    if (!state.me) return openAuth();
-    try {
-      const res = await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
-      b.textContent = res.following ? "Following" : "Follow";
-      b.classList.toggle("secondary", !!res.following);
-      b.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
-      toast(res.following ? "Following user." : "Unfollowed.");
-      loadFeed(true); refreshNotificationsBadge();
-    } catch (e) { b.textContent = prev; b.setAttribute("aria-label", `${prev === "Following" ? "Unfollow" : "Follow"} ${b.dataset.followUser}`); toast(e.message, "error"); }
-  });
+function errorState(message, retry = "") {
+  return `<div class="card state-card state-error"><div class="state-title">Something went wrong</div><div class="state-detail">${esc(message)}</div>${retry ? `<button type="button" class="mini-btn" data-retry-action="${esc(retry)}" style="margin-top:10px">Try again</button>` : ""}</div>`;
 }
 
 function postHtml(p) {
@@ -286,7 +173,7 @@ async function loadExplore(q = "") {
     </div>`;
     bindPostOpen(el("view-explore"));
     el("clearExplore")?.addEventListener("click", () => { el("searchInput").value = ""; loadExplore(""); });
-  } catch (e) { el("view-explore").innerHTML = errorState(e.message); }
+  } catch (e) { el("view-explore").innerHTML = errorState(e.message, "explore"); }
 }
 
 async function loadSaved() {
@@ -296,7 +183,7 @@ async function loadSaved() {
     const { posts } = await api("/api/saved");
     el("view-saved").innerHTML = `<div class="card" style="padding:14px"><h3 style="margin:0">Saved</h3></div>` + (posts.map(postHtml).join("") || emptyState("No saved posts yet", "Save posts from your feed to see them here."));
     bindPostActions(el("view-saved"));
-  } catch (e) { el("view-saved").innerHTML = errorState(e.message); }
+  } catch (e) { el("view-saved").innerHTML = errorState(e.message, "saved"); }
 }
 
 async function loadNotifications() {
@@ -366,7 +253,7 @@ async function loadNotifications() {
       node.addEventListener("click", openNotif);
       node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openNotif(e); } });
     });
-  } catch (e) { el("view-notifications").innerHTML = errorState(e.message); }
+  } catch (e) { el("view-notifications").innerHTML = errorState(e.message, "notifications"); }
 }
 
 function updateBadge(n = 0) {
@@ -477,7 +364,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
   });
     el("view-profile").querySelectorAll("[data-ptab]").forEach((b) => b.onclick = () => loadProfile(username, b.dataset.ptab));
   } catch (e) {
-    el("view-profile").innerHTML = errorState(e.message || "Failed to load profile.");
+    el("view-profile").innerHTML = errorState(e.message || "Failed to load profile.", `profile:${esc(username || "")}`);
   }
 }
 
@@ -513,7 +400,7 @@ async function loadSearch(q) {
     bindProfileLinks(el("view-search"));
     bindPostActions(el("view-search"));
     setView("search", { skipLoad: true });
-  } catch (e) { el("view-search").innerHTML = errorState(e.message); setView("search", { skipLoad: true }); }
+  } catch (e) { el("view-search").innerHTML = errorState(e.message, `search:${esc(q || "")}`); setView("search", { skipLoad: true }); }
 }
 
 async function openDmWith(userId) {
@@ -579,7 +466,7 @@ async function renderMessages() {
     });
     const body = el("view-messages").querySelector(".dm-body");
     if (body) body.scrollTop = body.scrollHeight;
-  } catch (e) { el("view-messages").innerHTML = errorState(e.message); }
+  } catch (e) { el("view-messages").innerHTML = errorState(e.message, "messages"); }
 }
 
 function bindHashtags(root) {
@@ -1004,13 +891,25 @@ setupFeedObserver();
 refreshHealth();
 setInterval(refreshHealth, 30000);
 
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-retry-action]");
+  if (!btn) return;
+  const action = btn.getAttribute("data-retry-action") || "";
+  if (action === "feed") return loadFeed(true);
+  if (action === "explore") return loadExplore(el("searchInput")?.value || "");
+  if (action === "saved") return loadSaved();
+  if (action === "notifications") return loadNotifications();
+  if (action === "messages") return loadMessages();
+  if (action.startsWith("profile:")) return loadProfile(action.slice(8));
+  if (action.startsWith("search:")) return loadSearch(action.slice(7));
+});
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (e.target?.id === "searchInput" && e.target.value) return;
   ["postDialog", "storyDialog", "authDialog", "profileEditDialog"].forEach((id) => { const d = el(id); if (d?.open) closeDialog(d); });
 });
 
-document.addEventListener("keydown", (e) => {
+ocument.addEventListener("keydown", (e) => {
   const story = el("storyDialog");
   if (!story?.open) return;
   if (e.key === "ArrowLeft") { e.preventDefault(); if (state.storyIndex > 0) { state.storyIndex--; renderStory(); } }

@@ -175,3 +175,5 @@ body.dark .hashtag { color: #e0f1ff; }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: rgba(38,38,38,.95); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 14px; z-index: 120; max-width: min(92vw, 420px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
 .toast.error { background: #b42318; }
 .composer select { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--card); color: var(--text); }
+
+.state-card .mini-btn { margin-top: 10px; }
