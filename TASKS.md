@@ -861,3 +861,11 @@ otif-time uses 	imeAgo (done)
 - [x] DM: delete-message button label clarifies scope
 - [x] Settings: diagnostics payload includes health phase when known
 - [x] Phase bump to 95
+
+## Phase 96: New Autonomous Features (2026-11-08)
+- [x] Phase 96 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Post: Copy image URL action title present
+- [ ] Profile: grid images have ria-label (already)
+- [ ] Search: result images have lt (done)
+- [x] Phase bump to 96
