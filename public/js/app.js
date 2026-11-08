@@ -105,9 +105,12 @@ function renderMe() {
   }
   if (authBtn) authBtn.querySelector(".nav-label") ? authBtn.querySelector(".nav-label").textContent = "Log out" : authBtn.textContent = "Log out";
   box.innerHTML = `
-    <img class="avatar" src="${avatar(state.me)}" alt="" />
-    <div class="meta"><strong>${esc(state.me.username)}</strong><small>${esc(state.me.name || "")}</small></div>
+    <button type="button" class="side-user-link" data-profile="${esc(state.me.username)}" aria-label="Open your profile" style="display:flex;gap:12px;align-items:center;border:0;background:none;padding:0;color:inherit;text-align:left;cursor:pointer;width:100%">
+      <img class="avatar" src="${avatar(state.me)}" alt="" />
+      <div class="meta"><strong>${esc(state.me.username)}</strong><small>${esc(state.me.name || "")}</small></div>
+    </button>
   `;
+  bindProfileLinks(box);
 }
 
 async function renderSuggestions(users = []) {
