@@ -215,7 +215,7 @@ async function loadFeed(reset = true) {
   state.feed.loading = true;
   const statusId = "feedStatus";
   el(statusId)?.remove();
-  if (!reset) el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status">Loading more posts...</div>`);
+  if (!reset) el("view-feed").insertAdjacentHTML("beforeend", `<div id="${statusId}" class="feed-status" role="status" aria-live="polite">Loading more posts...</div>`);
   try {
     const [feed, search] = await Promise.all([
       api(`/api/feed?offset=${state.feed.offset}&limit=${state.feed.limit}`),
@@ -233,11 +233,11 @@ async function loadFeed(reset = true) {
     state.feed.hasMore = !!feed.hasMore;
     if (!el("view-feed").children.length) el("view-feed").innerHTML = emptyState("No posts yet", "When people share photos, they'll appear here.");
     el("feedSentinel").classList.toggle("hidden", state.view !== "feed");
-    if (!state.feed.hasMore && el("view-feed").children.length) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">You're all caught up.</div>`);
+    if (!state.feed.hasMore && el("view-feed").children.length) el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="status">You're all caught up.</div>`);
   } catch (e) {
     el(statusId)?.remove();
     if (!el("view-feed").children.length || reset) el("view-feed").innerHTML = errorState(e.message);
-    else el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status">${esc(e.message)}</div>`);
+    else el("view-feed").insertAdjacentHTML("beforeend", `<div class="feed-status" role="alert">${esc(e.message)}</div>`);
   } finally {
     state.feed.loading = false;
   }
@@ -391,9 +391,9 @@ async function loadProfile(username, tab = "posts", opts = {}) {
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <h2 style="margin:0">${esc(user.username)}</h2>
-              ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}">${isFollowing ? "Following" : "Follow"}</button><button id="messageBtn" class="mini-btn secondary">Message</button>` : ""}
-              ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary">Edit profile</button>` : ""}
-              <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link">Share</button>
+              ${state.me && !isMe ? `<button id="followBtn" class="mini-btn ${isFollowing ? "secondary" : ""}" aria-label="${isFollowing ? "Unfollow" : "Follow"} ${esc(user.username)}">${isFollowing ? "Following" : "Follow"}</button><button id="messageBtn" class="mini-btn secondary" aria-label="Message ${esc(user.username)}">Message</button>` : ""}
+              ${isMe ? `<button id="editProfileBtn" class="mini-btn secondary" aria-label="Edit your profile">Edit profile</button>` : ""}
+              <button id="shareProfileBtn" class="mini-btn secondary" title="Copy profile link" aria-label="Share profile for ${esc(user.username)}">Share</button>
             </div>
             <div style="display:flex;gap:16px;margin:8px 0"><span><strong>${posts.length}</strong> posts</span><span><strong id="followersCount">${followers}</strong> followers</span><span><strong>${following}</strong> following</span></div>
             <div><strong>${esc(user.name || "")}</strong></div>
@@ -418,12 +418,14 @@ async function loadProfile(username, tab = "posts", opts = {}) {
         const res = await api(`/api/users/${encodeURIComponent(user.username)}/follow`, { method: "POST", body: "{}" });
         btn.classList.toggle("secondary", !!res.following);
         btn.textContent = res.following ? "Following" : "Follow";
+        btn.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${user.username}`);
         if (count && typeof res.followers === "number") count.textContent = String(res.followers);
         toast(res.following ? `Following @${user.username}.` : `Unfollowed @${user.username}.`);
         refreshNotificationsBadge();
       } catch (e) {
         btn.classList.toggle("secondary", prevFollowing);
         btn.textContent = prevFollowing ? "Following" : "Follow";
+        btn.setAttribute("aria-label", `${prevFollowing ? "Unfollow" : "Follow"} ${user.username}`);
         if (count) count.textContent = String(prevCount);
         toast(e.message, "error");
       } finally { btn.disabled = false; }

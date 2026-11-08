@@ -99,6 +99,7 @@
 - [x] DM responsive polish (messages layout stacks on small screens; conversation list becomes scrollable panel)
 - [x] Small accessibility polish (comment form inputs get `aria-label` for screen readers)
 - [x] Notification/explore action polish (mark-read shows toast/handles errors; clear/mark-read buttons have accessible labels)
+- [x] Small accessibility/status refinements (profile action labels, feed status/live-region roles, follow rollback aria sync)
 - [ ] Additional autonomous features (e.g., small route refinements, share refinements, accessibility/perf polish)
 
 ## Progress Log
@@ -149,6 +150,7 @@
 - 2026-11-08: DM responsive polish added (messages UI stacks on small screens with bounded conversation list). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small accessibility polish added (comment form inputs have `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Notification/explore action polish added (mark-read toast/error handling; accessible labels for clear/mark-read actions). Client syntax and health verified. Next: additional autonomous features.
+- 2026-11-08: Small accessibility/status refinements added (profile action aria labels, feed status live-region/alert roles, follow rollback label sync). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: DM accessibility polish added (message input includes recipient-specific `aria-label`). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Small route/search refinements added (search syncs `#/search/:q` + document title; search hash route restores query/results). Client syntax and health verified. Next: additional autonomous features.
 - 2026-11-08: Session logout UI cleanup added (logout resets DM/feed/dialog state, refreshes suggestions/badge, closes dialogs). Client syntax and health verified. Next: additional autonomous features.
