@@ -641,7 +641,7 @@ async function renderMessages() {
       <div class="dm-chat">
         <div class="dm-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">${active ? `<div><button type="button" class="profile-link" data-profile="${esc(active.username)}" style="border:0;background:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer">${esc(active.username)}</button>${activityStatusEnabled() ? `<div class="muted" style="font-size:12px;font-weight:400">Active now</div>` : ``}${isDmMuted(active.id) ? `<div class="muted" style="font-size:12px;font-weight:400">Muted</div>` : ``}</div><div style="display:flex;gap:6px"><button id="muteDmBtn" type="button" class="mini-btn secondary">${isDmMuted(active.id)?"Unmute":"Mute"}</button><button id="clearDmBtn" type="button" class="mini-btn secondary">Clear</button></div>` : "Select a conversation"}</div>
         <div class="dm-body">${mutedActive ? `<div style="color:var(--muted)">Messages hidden for this muted conversation. Unmute to view.</div>` : ((thread.messages || []).map((m,i,arr) => { const mine=m.from===state.me.id; const seen=mine && (m.read===true || i===arr.filter(x=>x.from===state.me.id).length-1+arr.findIndex(x=>x.from!==state.me.id && false)); const isLastMine=mine && arr.slice(i+1).every(x=>x.from!==state.me.id); return `<div class="dm-msg ${mine ? "me" : ""}" data-msg-id="${esc(m.id || "")}"><div>${esc(m.text)}</div><div class="dm-time">${timeAgo(m.createdAt)}${isLastMine ? ` · Seen` : ""}${mine && m.id ? ` <button type="button" class="del-msg-btn" data-msg-id="${esc(m.id)}" style="border:0;background:none;color:inherit;cursor:pointer;padding:0;margin-left:6px">Delete</button>` : ""}</div></div>`; }).join("") || `<div style="color:var(--muted)">${active ? "No messages yet. Say hello." : "Choose a contact to start messaging."}</div>`)}</div>
-        ${active ? `<div id="dmTyping" class="form-status" aria-live="polite" style="padding:0 14px"></div><form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
+        ${active ? `<div class="quick-emoji muted" style="padding:0 14px 8px;display:flex;gap:6px;flex-wrap:wrap">${["❤️","😂","👍","🔥","👋"].map((e)=>`<button type="button" class="mini-btn secondary dm-emoji-btn" data-emoji="${e}" style="padding:2px 8px">${e}</button>`).join("")}</div><div id="dmTyping" class="form-status" aria-live="polite" style="padding:0 14px"></div><form class="dm-form" id="dmForm"><input name="text" placeholder="Message..." maxlength="1000" autocomplete="off" aria-label="Message to ${esc(active.username)}" /><button type="submit" aria-label="Send message">Send</button></form>` : ``}
       </div>
     </div>`;
     el("view-messages").querySelectorAll("[data-dm]").forEach((n) => {
@@ -666,6 +666,7 @@ async function renderMessages() {
       catch (e) { toast(e.message, "error"); }
     });
     const dmInput = el("dmForm")?.querySelector("input[name=text]");
+    el("view-messages").querySelectorAll(".dm-emoji-btn").forEach((b)=>b.addEventListener("click",()=>{ if(dmInput){ dmInput.value = (dmInput.value ? dmInput.value + " " : "") + b.dataset.emoji; dmInput.dispatchEvent(new Event("input")); dmInput.focus(); } }));
     let typingTimer;
     dmInput?.addEventListener("input", () => { const t = el("dmTyping"); if (!t) return; t.textContent = dmInput.value.trim() ? `${active?.username || "User"} may be typing...` : ""; clearTimeout(typingTimer); typingTimer = setTimeout(()=>{ if(t) t.textContent=""; }, 1200); });
     el("dmForm")?.addEventListener("submit", async (e) => {
@@ -941,6 +942,7 @@ function bindPostActions(root) {
         span.querySelector(".caption-toggle")?.addEventListener("click", arguments.callee);
       });
     });
+    postEl.querySelectorAll(".emoji-btn").forEach((b)=>b.addEventListener("click",()=>{ if(cInput){ cInput.value = (cInput.value ? cInput.value + " " : "") + b.dataset.emoji; cInput.dispatchEvent(new Event("input")); cInput.focus(); } }));
     postEl.querySelectorAll(".comment-pin-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const postId = postEl.dataset.id; const id = btn.dataset.commentId; const ids = pinnedCommentIds(postId);
@@ -966,6 +968,7 @@ function bindPostActions(root) {
         span.querySelector(".caption-toggle")?.addEventListener("click", arguments.callee);
       });
     });
+    postEl.querySelectorAll(".emoji-btn").forEach((b)=>b.addEventListener("click",()=>{ if(cInput){ cInput.value = (cInput.value ? cInput.value + " " : "") + b.dataset.emoji; cInput.dispatchEvent(new Event("input")); cInput.focus(); } }));
     postEl.querySelectorAll(".comment-pin-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const postId = postEl.dataset.id; const id = btn.dataset.commentId; const ids = pinnedCommentIds(postId);
