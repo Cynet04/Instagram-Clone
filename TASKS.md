@@ -652,3 +652,11 @@
 - [ ] Profile: "Copy username" includes @ (done)
 - [ ] Search: result items have ria-label (done)
 - [x] Phase bump to 69
+
+## Phase 70: New Autonomous Features (2026-11-08)
+- [x] Phase 70 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] Notifications: ria-label on hide button includes actor/context
+- [ ] Profile: website link uses ria-label
+- [x] Feed: comment count span has stable semantics (already)
+- [x] Phase bump to 70
