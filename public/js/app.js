@@ -301,7 +301,7 @@ async function loadNotifications() {
         const postId = n.post?.id || "";
         const profile = n.actor?.username || "";
         const followBtn = n.type === "follow" && state.me && profile && state.me.username !== profile
-          ? `<button type="button" class="mini-btn ${n.actor?.isFollowing ? "secondary" : ""}" data-follow-user="${esc(profile)}" style="margin-left:auto;padding:4px 8px;font-size:12px">${n.actor?.isFollowing ? "Following" : "Follow"}</button>`
+          ? `<button type="button" class="mini-btn ${n.actor?.isFollowing ? "secondary" : ""}" data-follow-user="${esc(profile)}" style="margin-left:auto;padding:4px 8px;font-size:12px" aria-label="${n.actor?.isFollowing ? "Unfollow" : "Follow"} ${esc(profile)}">${n.actor?.isFollowing ? "Following" : "Follow"}</button>`
           : "";
         return `<div class="notif notif-link ${n.read ? "" : "unread"}" data-notif-id="${esc(n.id || "")}" data-notif-post="${esc(postId)}" data-notif-profile="${esc(profile)}" data-notif-type="${esc(n.type || "")}" tabindex="0" role="button" aria-label="${esc(actor)} ${esc(msg.replace(/<[^>]+>/g, ""))}"><img class="avatar" src="${avatar(n.actor)}" alt="" style="width:34px;height:34px" /><span class="notif-text" style="flex:1"><strong>${actor}</strong> ${msg}<span class="notif-time">${timeAgo(n.createdAt)}</span></span>${followBtn}</div>`;
       }).join("") || `<div style="padding:16px">${emptyState("No notifications yet", "When people interact with you, you'll see it here.").replace('<div class="card state-card">','<div class="state-card" style="border:0">')}</div>`) + `</div>`;
@@ -323,8 +323,9 @@ async function loadNotifications() {
           const res = await api(`/api/users/${encodeURIComponent(btn.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
           btn.textContent = res.following ? "Following" : "Follow";
           btn.classList.toggle("secondary", !!res.following);
+          btn.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${btn.dataset.followUser}`);
           toast(res.following ? "Following user." : "Unfollowed.");
-        } catch (err) { btn.textContent = prev; toast(err.message, "error"); }
+        } catch (err) { btn.textContent = prev; btn.setAttribute("aria-label", `${prev === "Following" ? "Unfollow" : "Follow"} ${btn.dataset.followUser}`); toast(err.message, "error"); }
         finally { btn.disabled = false; }
       });
     });
