@@ -223,4 +223,4 @@
 - [ ] Post pin/unpin on own profile (MVP local/API)
 - [ ] Story reply/quick reaction UI (MVP local state/toast)
 - [ ] DM typing indicator simulation (local UI polish)
-- [ ] Account data export (download local-visible JSON snapshot)
+- [x] Account data export (download local-visible JSON snapshot via `/api/me/export`)

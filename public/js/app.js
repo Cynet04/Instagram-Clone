@@ -521,7 +521,7 @@ async function renderSettings() {
       </section>
       <section>
         <h4 style="margin:0 0 8px">Local data / diagnostics</h4>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button id="checkServerBtn" type="button" class="mini-btn secondary">Check server</button><button id="copyDiagBtn" type="button" class="mini-btn secondary">Copy diagnostics</button><button id="exportDataBtn" type="button" class="mini-btn secondary">Export my data</button><button id="clearLocalPrefsBtn" type="button" class="mini-btn secondary">Clear local prefs</button></div>
         <div class="muted" style="font-size:13px;line-height:1.5">Socially MVP (local) · Node/Express + vanilla SPA · JSON data store.<br/>Theme/recent searches stored in localStorage. Runtime data/uploads are local and not exported by this client.</div>
       </section>
       <section>
@@ -541,6 +541,15 @@ async function renderSettings() {
   root.querySelector("#copyDiagBtn")?.addEventListener("click", async () => {
     const text = JSON.stringify({ app: "Socially MVP", origin: location.origin, user: state.me?.username || null, view: state.view, theme: document.body.classList.contains("dark") ? "dark" : "light", recentSearches: recentSearches(), time: new Date().toISOString() }, null, 2);
     try { await navigator.clipboard?.writeText(text); toast("Diagnostics copied."); } catch { prompt("Diagnostics:", text); }
+  });
+  root.querySelector("#exportDataBtn")?.addEventListener("click", async () => {
+    try {
+      const data = await api("/api/me/export");
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = `socially-export-${state.me?.username || "user"}.json`; a.click();
+      URL.revokeObjectURL(url); toast("Data export downloaded.");
+    } catch (e) { toast(e.message, "error"); }
   });
   root.querySelector("#clearLocalPrefsBtn")?.addEventListener("click", () => { localStorage.removeItem("ig_theme"); localStorage.removeItem("ig_recent_searches"); localStorage.removeItem("ig_notif_prefs"); applyTheme(); toast("Local preferences cleared."); });
   root.querySelectorAll("[data-notif-pref]").forEach((cb) => cb.addEventListener("change", () => { const prefs = loadNotifPrefs(); prefs[cb.dataset.notifPref] = cb.checked; saveNotifPrefs(prefs); toast("Notification preferences saved."); }));

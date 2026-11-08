@@ -122,6 +122,20 @@ app.get("/api/me", (req, res) => {
   res.json({ user: safeUser(currentUser(req, db)) });
 });
 
+app.get("/api/me/export", (req, res) => {
+  const db = loadDb();
+  const me = currentUser(req, db);
+  if (!me) return res.status(401).json({ error: "Login required." });
+  const user = db.users.find((u) => u.id === me.id);
+  const posts = (db.posts || []).filter((p) => p.userId === me.id);
+  const postIds = new Set(posts.map((p) => p.id));
+  const messages = (db.messages || []).filter((m) => m.from === me.id || m.to === me.id);
+  const notifications = (db.notifications || []).filter((n) => n.userId === me.id);
+  const reports = (db.reports || []).filter((r) => r.reporterId === me.id);
+  const saved = (db.posts || []).filter((p) => (user?.saved || []).includes(p.id));
+  res.json({ exportedAt: new Date().toISOString(), app: "Socially MVP", user: safeUser(user), posts, saved, messages, notifications, reports, note: "Local MVP export of visible account data from server JSON store." });
+});
+
 app.post("/api/auth/signup", async (req, res) => {
   const { username = "", name = "", password = "" } = req.body || {};
   if (username.length < 3 || password.length < 6) return res.status(400).json({ error: "Username >= 3 chars and password >= 6 chars required." });
