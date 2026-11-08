@@ -991,6 +991,9 @@ function bindPostActions(root) {
         } catch (e) { if (node) node.style.opacity = ""; toast(e.message, "error"); }
       });
     });
+    const cInput = postEl.querySelector(".comment-form input[name=text]");
+    const cCount = postEl.querySelector(".comment-char-count");
+    cInput?.addEventListener("input", ()=>{ if(cCount) cCount.textContent = `${(cInput.value||"").length}/500`; });
     postEl.querySelector(".comment-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!state.me) return openAuth();
