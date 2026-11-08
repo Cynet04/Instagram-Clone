@@ -129,6 +129,7 @@ function postHtml(p) {
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="Like">Like</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
+        <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="Save" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
       </div>
       <div class="post-likes">${p.likesCount} likes</div>
@@ -499,6 +500,12 @@ function bindPostActions(root) {
       if (!state.me) return openAuth();
       postEl.querySelector('.comment-form input[name="text"]')?.focus();
     });
+    postEl.querySelector(".share-post-btn")?.addEventListener("click", async () => {
+      const url = `${location.origin}${location.pathname}#/post/${encodeURIComponent(postEl.dataset.id)}`;
+      const btn = postEl.querySelector(".share-post-btn");
+      try { await navigator.clipboard?.writeText(url); if (btn) { btn.textContent = "Copied"; setTimeout(() => { if (btn) btn.textContent = "Share"; }, 1500); } }
+      catch { prompt("Copy post link:", url); }
+    });
     postEl.querySelector(".delete-post-btn")?.addEventListener("click", async () => {
       if (!state.me || !confirm("Delete this post?")) return;
       try {
@@ -745,6 +752,17 @@ async function handleRoute() {
   if (!route || route === "feed") return setView("feed", { fromHash: true });
   if (route.startsWith("profile/")) return loadProfile(decodeURIComponent(route.slice("profile/".length)), "posts", { fromRoute: true });
   if (route === "profile") return loadProfile(state.me?.username, "posts", { fromRoute: true });
+  if (route.startsWith("post/")) {
+    const id = decodeURIComponent(route.slice("post/".length));
+    setView("feed", { fromHash: true });
+    if (id) try {
+      const { post } = await api(`/api/posts/${id}`);
+      el("postDialogBody").innerHTML = postHtml(post);
+      bindPostActions(el("postDialogBody"));
+      showDialog(el("postDialog"));
+    } catch (e) { alert(e.message); }
+    return;
+  }
   if (views.includes(route)) return setView(route, { fromHash: true });
   setView("feed", { fromHash: true });
 }
