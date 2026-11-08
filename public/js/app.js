@@ -128,14 +128,21 @@ async function renderSuggestions(users = []) {
       <img class="avatar" src="${avatar(u)}" alt="" />
       <div style="flex:1"><div><strong>${esc(u.username)}</strong></div><small class="muted">Suggested for you</small></div>
       <div style="display:flex;gap:8px">
-        <button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px">${u.isFollowing ? "Following" : "Follow"}</button>
-        <button data-user="${esc(u.username)}">View</button>
+        <button data-follow-user="${esc(u.username)}" class="mini-btn ${u.isFollowing ? "secondary" : ""}" style="padding:4px 8px;font-size:12px" aria-label="${u.isFollowing ? "Unfollow" : "Follow"} ${esc(u.username)}">${u.isFollowing ? "Following" : "Follow"}</button>
+        <button data-user="${esc(u.username)}" aria-label="View profile ${esc(u.username)}">View</button>
       </div>
     </div>`).join("") || `<small class="muted">No suggestions yet.</small>`;
   el("suggestions").querySelectorAll("button[data-user]").forEach((b) => b.onclick = () => loadProfile(b.dataset.user));
   el("suggestions").querySelectorAll("button[data-follow-user]").forEach((b) => b.onclick = async () => {
     if (!state.me) return openAuth();
-    try { await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" }); toast("Follow updated."); loadFeed(true); refreshNotificationsBadge(); } catch (e) { toast(e.message, "error"); }
+    try {
+      const res = await api(`/api/users/${encodeURIComponent(b.dataset.followUser)}/follow`, { method: "POST", body: "{}" });
+      b.textContent = res.following ? "Following" : "Follow";
+      b.classList.toggle("secondary", !!res.following);
+      b.setAttribute("aria-label", `${res.following ? "Unfollow" : "Follow"} ${b.dataset.followUser}`);
+      toast(res.following ? "Following user." : "Unfollowed.");
+      loadFeed(true); refreshNotificationsBadge();
+    } catch (e) { b.textContent = prev; b.setAttribute("aria-label", `${prev === "Following" ? "Unfollow" : "Follow"} ${b.dataset.followUser}`); toast(e.message, "error"); }
   });
 }
 
