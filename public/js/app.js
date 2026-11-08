@@ -83,7 +83,7 @@ function postHtml(p) {
           <span><strong class="profile-link" data-profile="${esc(c.user?.username || "")}">${esc(c.user?.username || "user")}</strong> ${esc(c.text)}</span>
           <span class="comment-actions">
             <button class="comment-like-btn ${c.likedByMe ? "liked" : ""}" type="button" aria-label="${c.likedByMe ? "Unlike comment" : "Like comment"}" aria-pressed="${c.likedByMe ? "true" : "false"}">Like ${c.likesCount || 0}</button>
-            ${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
+            ${!state.me || c.user?.id !== state.me.id ? `<button class="comment-report-btn" type="button" aria-label="Report comment">Report</button>` : ""}${canDelete ? `<button class="comment-delete-btn" type="button" aria-label="Delete comment">Delete</button>` : ""}
           </span>
         </div>`; }).join("")}</div>
       <form class="comment-form">
@@ -819,6 +819,14 @@ function bindPostActions(root) {
           btn.setAttribute("aria-label", prevLiked ? "Unlike comment" : "Like comment");
         toast(e.message, "error");
         }
+      });
+    });
+    postEl.querySelectorAll(".comment-report-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!state.me) return openAuth();
+        const commentId = btn.closest(".comment")?.dataset.commentId;
+        try { btn.disabled = true; await api(`/api/posts/${postEl.dataset.id}/comments/${commentId}/report`, { method: "POST", body: JSON.stringify({ reason: "inappropriate" }) }); btn.textContent = "Reported"; toast("Comment reported."); }
+        catch (e) { btn.disabled = false; toast(e.message, "error"); }
       });
     });
     postEl.querySelectorAll(".comment-delete-btn").forEach((btn) => {
