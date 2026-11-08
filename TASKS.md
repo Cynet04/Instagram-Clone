@@ -428,3 +428,11 @@
 - [x] Notifications: show empty badge aria-label clarity
 - [x] Profile: show follower/following buttons as counts only (already)
 - [x] Phase bump to 41
+
+## Phase 42: New Autonomous Features (2026-11-08)
+- [x] Phase 42 autonomous batch complete (2026-11-08)
+- [x] Composer: show image file name/size hint after selection
+- [ ] Profile: saved tab only for owner (already) � add empty saved CTA to Explore
+- [ ] DM: prevent sending whitespace-only (already trimmed) � show error toast
+- [x] Feed: "End of feed" only once (idempotent)
+- [x] Phase bump to 42
