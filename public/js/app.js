@@ -566,13 +566,17 @@ function bindHashtags(root) {
 
 function bindProfileLinks(root) {
   root.querySelectorAll("[data-profile]").forEach((n) => {
-    n.addEventListener("click", (e) => {
+    if (n.matches?.("img.avatar.profile-link, .post-user.profile-link")) n.setAttribute("tabindex", "0");
+    if (n.matches?.("img.avatar.profile-link, .post-user.profile-link") && !n.getAttribute("role")) n.setAttribute("role", "button");
+    const open = (e) => {
       const u = n.dataset.profile;
       if (!u) return;
       e.preventDefault();
       e.stopPropagation();
       loadProfile(u);
-    });
+    };
+    n.addEventListener("click", open);
+    n.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && n.dataset.profile) { e.preventDefault(); open(e); } });
   });
 }
 
