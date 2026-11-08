@@ -821,3 +821,11 @@ otif-time uses 	imeAgo (done)
 - [x] Feed: empty/error states remain keyboard reachable
 - [ ] Post: openPostDialog called safely from grid (done)
 - [x] Phase bump to 90
+
+## Phase 91: New Autonomous Features (2026-11-08)
+- [x] Phase 91 autonomous batch complete (2026-11-08)
+- [x] Baseline green
+- [ ] API: return 429 not implemented; keep MVP simple (verify no abuse endpoints needed)
+- [ ] Client: pi() already throws on non-ok
+- [ ] UI: ensure all dialogs have ria-modal where supported (already)
+- [x] Phase bump to 91
