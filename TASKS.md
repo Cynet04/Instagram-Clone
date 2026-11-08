@@ -321,8 +321,9 @@
 - [x] Phase 27 autonomous batch complete (2026-11-08)
 
 ## Phase 28: New Autonomous Features (2026-11-08)
-- [ ] Feed: "Retry" on feed load error already via errorState; add toast on background refresh failure
-- [ ] Post dialog: show post ID/location metadata
-- [ ] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable — show website/favicon-like label
-- [ ] Explore: show empty state when no posts
-- [ ] Global: improve document title on profile view
+- [x] Phase 28 autonomous batch complete (2026-11-08)
+- [x] Feed: "Retry" on feed load error already via errorState; add toast on background refresh failure
+- [x] Post dialog: show post ID/location metadata
+- [ ] Profile: show "Private account" placeholder not applicable; add message when blocked by self logic not applicable ï¿½ show website/favicon-like label
+- [x] Explore: show empty state when no posts
+- [x] Global: improve document title on profile view
