@@ -67,6 +67,7 @@ function postHtml(p) {
       <div class="post-actions">
         <button class="like-btn ${p.likedByMe ? "liked" : ""}" aria-label="${p.likedByMe ? "Unlike" : "Like"}" aria-pressed="${p.likedByMe ? "true" : "false"}">${p.likedByMe ? "Liked" : "Like"}</button>
         <button class="comment-focus-btn" type="button" aria-label="Comment">Comment</button>
+        <button class="copy-caption-btn" type="button" aria-label="Copy caption">Copy caption</button>
         <button class="share-post-btn" type="button" aria-label="Copy post link" title="Copy post link">Share</button>
         ${!mine ? `<button class="report-post-btn" type="button" aria-label="Report post" title="Report post">Report</button>` : ""}
         <button class="save-btn ${p.savedByMe ? "saved" : ""}" aria-label="${p.savedByMe ? "Remove from saved" : "Save"}" aria-pressed="${p.savedByMe ? "true" : "false"}" style="margin-left:auto">${p.savedByMe ? "Saved" : "Save"}</button>
@@ -619,6 +620,10 @@ function bindPostActions(root) {
   bindPostOpen(root);
   const posts = root.classList?.contains("post") ? [root] : Array.from(root.querySelectorAll(".post"));
   posts.forEach((postEl) => {
+    postEl.querySelector(".copy-caption-btn")?.addEventListener("click", async () => {
+      const caption = (postEl.querySelector(".caption-text")?.textContent || "").trim();
+      try { if (caption && navigator.clipboard?.writeText) await navigator.clipboard.writeText(caption); else prompt("Caption:", caption || ""); toast(caption ? "Caption copied." : "No caption to copy."); } catch { toast("Could not copy caption.", "error"); }
+    });
     postEl.querySelector(".comment-focus-btn")?.addEventListener("click", () => {
       if (!state.me) return openAuth();
       postEl.querySelector('.comment-form input[name="text"]')?.focus();
