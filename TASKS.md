@@ -131,9 +131,9 @@
 - [x] Story expiry (24h filter)
 - [x] Profile website field support (MVP-safe)
 - [x] Post search by own username quick filter (`@me` resolves to current user)
+- [x] Keyboard shortcut: focus/open new post (`n`/`c`)
 - [ ] Block user MVP (hide blocked users content in UI/API filters)
 - [ ] Comment report action (MVP local)
-- [ ] Keyboard shortcut: focus new post
 - [ ] DM conversation clear (local MVP)
 - [ ] Notification type filter tabs
 
