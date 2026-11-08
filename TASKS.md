@@ -237,4 +237,5 @@
 - [x] Mute/unmute user in DM (hide messages locally, MVP)
 - [x] Post archive (owner hides post from profile/feed, local MVP)
 - [x] Comment pin by post owner (MVP, highlight pinned comment)
-- [ ] Profile notes/private memo (local, visible only to self)
+- [x] Profile notes/private memo (local, visible only to self)
+- [x] Phase 12 autonomous batch complete (2026-11-08)

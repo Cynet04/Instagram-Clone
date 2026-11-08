@@ -356,6 +356,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
             <div><strong>${esc(user.name || "")}</strong></div>
             <div>${esc(user.bio || "")}</div>
             ${user.website ? `<div><a href="${esc(user.website)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none">${esc(user.website.replace(/^https?:\/\//,""))}</a></div>` : ""}
+            ${state.me && !isMe ? `<div id="profileNoteWrap" style="margin-top:10px"><label class="muted" style="font-size:12px;display:block;margin-bottom:4px">Private note (only you can see)</label><textarea id="profilePrivateNote" rows="2" maxlength="500" placeholder="Add a note about @${esc(user.username)}" style="width:100%;resize:vertical;background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px">${esc(getProfileNote(state.me.id,user.id))}</textarea><div style="margin-top:6px"><button type="button" id="saveProfileNoteBtn" class="mini-btn secondary">Save note</button></div></div>` : ""}
           </div>
         </div>
         ${isMe ? `<div class="profile-tabs" role="tablist" aria-label="Profile sections"><button type="button" role="tab" aria-selected="${tab === "posts" ? "true" : "false"}" data-ptab="posts" class="${tab === "posts" ? "active" : ""}">Posts</button><button type="button" role="tab" aria-selected="${tab === "saved" ? "true" : "false"}" data-ptab="saved" class="${tab === "saved" ? "active" : ""}">Saved</button></div>` : ""}
@@ -429,6 +430,7 @@ async function loadProfile(username, tab = "posts", opts = {}) {
     const text = [`@${user.username}`, user.name||"", user.bio||"", user.website||"", `${posts.length} posts · ${followers} followers · ${following} following`, url].filter(Boolean).join("\n");
     try { await navigator.clipboard?.writeText(text); toast("Profile card copied."); } catch { prompt("Profile card:", text); }
   });
+  el("saveProfileNoteBtn")?.addEventListener("click", () => { if(!state.me) return; setProfileNote(state.me.id, user.id, el("profilePrivateNote")?.value||""); toast("Private note saved."); });
   el("shareProfileBtn")?.addEventListener("click", async () => {
     const btn = el("shareProfileBtn");
     const url = `${location.origin}${location.pathname}#/profile/${encodeURIComponent(user.username)}`;
