@@ -962,8 +962,11 @@ function updateCaptionCount() {
   const ta = el("postCaption"); const out = el("captionCount"); if (!ta || !out) return;
   out.textContent = `${ta.value.length}/2200`;
 }
-el("postCaption")?.addEventListener("input", updateCaptionCount);
-el("postFormReset")?.addEventListener("click", () => { el("postForm")?.reset(); updatePostPreview(); updateCaptionCount(); el("postFormStatus").textContent = ""; el("postFormStatus").classList.remove("error"); });
+function savePostDraft(){ try { const f=el("postForm"); if(!f) return; localStorage.setItem("ig_post_draft", JSON.stringify({ caption:f.caption?.value||"", imageUrl:f.imageUrl?.value||"", altText:f.altText?.value||"", filter:f.filter?.value||"none" })); } catch {} }
+function loadPostDraft(){ try { const d=JSON.parse(localStorage.getItem("ig_post_draft")||"null"); const f=el("postForm"); if(!d||!f) return; if(f.caption) f.caption.value=d.caption||""; if(f.imageUrl) f.imageUrl.value=d.imageUrl||""; if(f.altText) f.altText.value=d.altText||""; if(f.filter) f.filter.value=d.filter||"none"; updatePostPreview(); updateCaptionCount(); } catch {} }
+el("postCaption")?.addEventListener("input", () => { updateCaptionCount(); savePostDraft(); });
+el("postForm")?.addEventListener("input", (e)=>{ if(e.target?.name) savePostDraft(); });
+el("postFormReset")?.addEventListener("click", () => { el("postForm")?.reset(); localStorage.removeItem("ig_post_draft"); updatePostPreview(); updateCaptionCount(); el("postFormStatus").textContent = ""; el("postFormStatus").classList.remove("error"); toast("Composer cleared."); });
 el("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.currentTarget.value.trim()) {
     const q = e.currentTarget.value.trim();
@@ -992,7 +995,7 @@ el("postForm").addEventListener("submit", async (e) => {
     const res = await fetch("/api/posts", { method: "POST", body: fd, credentials: "same-origin" });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Upload failed");
-    form.reset(); updatePostPreview(); updateCaptionCount();
+    form.reset(); localStorage.removeItem("ig_post_draft"); updatePostPreview(); updateCaptionCount();
     status.textContent = "Post shared."; status.classList.remove("error");
     toast("Post shared.");
     el("composer").classList.add("hidden");
@@ -1144,6 +1147,7 @@ async function handleRoute() {
 }
 window.addEventListener("hashchange", handleRoute);
 
+loadPostDraft();
 await loadMe();
 await loadStories();
 renderMessages();
